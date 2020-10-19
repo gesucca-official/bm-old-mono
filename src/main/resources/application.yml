@@ -1,0 +1,9 @@
+server:
+  servlet:
+    context-path: /bm/
+spring:
+  datasource:
+      url: jdbc:sqlite:cards.db
+      driver-class-name: org.sqlite.JDBC
+  jpa:
+    open-in-view: false
