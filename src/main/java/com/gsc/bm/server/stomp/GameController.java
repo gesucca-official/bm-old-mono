@@ -2,6 +2,7 @@ package com.gsc.bm.server.stomp;
 
 import com.gsc.bm.server.model.Game;
 import com.gsc.bm.server.model.Player;
+import com.gsc.bm.server.service.PlayerFactoryService;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
@@ -12,22 +13,26 @@ import java.util.List;
 @Controller
 public class GameController {
 
+    private final PlayerFactoryService playerFactoryService;
+
     // TODO for now a single queue will do
     private List<Player> playersQueue = new ArrayList<>();
 
+    public GameController(PlayerFactoryService playerFactoryService) {
+        this.playerFactoryService = playerFactoryService;
+    }
+
     @MessageMapping("/game/join")
     @SendTo("/topic/game/ready")
-    public Game joinGame(Player player) throws InterruptedException {
-
-        System.out.println("message!!");
-
-        playersQueue.add(player);
+    public Game joinGame(String playerId) throws InterruptedException {
+        playersQueue.add(playerFactoryService.craftRandomPlayer(playerId));
         while (true) {
             if (playersQueue.size() >= 2) {
                 Game game = new Game(playersQueue);
                 playersQueue = new ArrayList<>();
                 return game;
             }
+            // TODO find a way to catch the event instead of busy waiting
             Thread.sleep(1000);
         }
     }
