@@ -19,7 +19,7 @@ public class GameController {
     @SendTo("/topic/game/ready")
     public Game joinGame(Player player) throws InterruptedException {
 
-        System.out.println("connection is coming");
+        System.out.println("message!!");
 
         playersQueue.add(player);
         while (true) {
