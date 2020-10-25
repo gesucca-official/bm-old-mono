@@ -1,8 +1,13 @@
 package com.gsc.bm.server.stomp;
 
 import com.gsc.bm.server.model.Game;
+import com.gsc.bm.server.model.Move;
 import com.gsc.bm.server.model.Player;
 import com.gsc.bm.server.service.PlayerFactoryService;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
+import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
@@ -42,7 +47,24 @@ public class GameController {
 
     @MessageMapping("/game/move")
     @SendTo("/topic/game/update")
-    public Game makeYourMove(String cardPlayed) {
-        return games.stream().findAny().orElse(null);
+    public Game makeYourMove(Move cardPlayed) throws RuntimeException {
+        // return games.get(0);
+        // TODO this has to be managed better (and AT ALL)
+        throw new RuntimeException(cardPlayed.getPlayerId());
+        //return null;
+    }
+
+    @AllArgsConstructor
+    @Getter
+    @ToString
+    private static class IllegalMove {
+        String playerId;
+        String message;
+    }
+
+    @MessageExceptionHandler
+    @SendTo(value = "/topic/game/illegal")
+    public IllegalMove handleException(RuntimeException exception) {
+        return new IllegalMove(exception.getMessage(), "Illegal Move");
     }
 }

@@ -14,8 +14,17 @@ public class CocktailOnTheGround implements Card {
     }
 
     @Override
+    public String getEffect() {
+        return "+20 violenza";
+    }
+
+    @Override
     public Map<Resource, Integer> getCost() {
-        return null;
+        // TODO this is just an example, this card should not cost anything
+        return Map.ofEntries(
+                Map.entry(Resource.AP, 5),
+                Map.entry(Resource.HP, 5)
+        );
     }
 
     @Override

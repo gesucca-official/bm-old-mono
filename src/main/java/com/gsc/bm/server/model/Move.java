@@ -7,7 +7,9 @@ import lombok.Getter;
 @Getter
 public class Move {
 
-    private final Card cardPlayed;
-    private final String targetPlayerId;
+    private final String playedCardName;
+    private final String playerId;
+    private final String targetId;
+    private final String gameId;
 
 }

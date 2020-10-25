@@ -6,6 +6,8 @@ public interface Card {
 
     String getName();
 
+    String getEffect();
+
     Map<Resource, Integer> getCost();
 
     void resolve(Game game, String targetPlayerId);
