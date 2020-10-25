@@ -1,6 +1,7 @@
 package com.gsc.bm.server.service;
 
 import com.gsc.bm.server.model.Card;
+import com.gsc.bm.server.model.cards.CocktailOnTheGround;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -12,6 +13,10 @@ public class DeckFactoryServiceImpl implements DeckFactoryService {
     @Override
     public List<Card> craftCharacterStarterDeck(String characterName) {
         // TODO do it
-        return new ArrayList<>();
+        List<Card> deck = new ArrayList<>();
+        deck.add(new CocktailOnTheGround());
+        deck.add(new CocktailOnTheGround());
+        deck.add(new CocktailOnTheGround());
+        return deck;
     }
 }
