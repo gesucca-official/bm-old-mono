@@ -1,7 +1,14 @@
 package com.gsc.bm.server.model.game;
 
+import lombok.Getter;
+
+@Getter
 public class IllegalMoveException extends RuntimeException {
-    public IllegalMoveException(String playerThatMadeTheIllegalMoveId) {
-        super(playerThatMadeTheIllegalMoveId);
+    private final String playerId, whatHeDid;
+
+    public IllegalMoveException(String playerId, String whatHeDid) {
+        super();
+        this.playerId = playerId;
+        this.whatHeDid = whatHeDid;
     }
 }

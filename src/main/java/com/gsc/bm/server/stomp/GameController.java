@@ -51,6 +51,6 @@ public class GameController {
     @MessageExceptionHandler
     @SendTo(value = "/topic/game/illegal")
     public IllegalMoveMessage handleException(IllegalMoveException exception) {
-        return new IllegalMoveMessage(exception.getMessage(), "Illegal Move");
+        return new IllegalMoveMessage(exception.getPlayerId(), exception.getWhatHeDid());
     }
 }

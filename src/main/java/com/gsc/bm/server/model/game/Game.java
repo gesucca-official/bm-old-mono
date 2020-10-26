@@ -35,7 +35,8 @@ public class Game {
 
     public void submitMove(Move move) throws IllegalMoveException {
         if (!isMoveValid(move)) // this checking method also throws IllegalMoveException
-            throw new IllegalMoveException(move.getPlayerId());
+            throw new IllegalMoveException(move.getPlayerId(), "cant be cast with current resources");
+        // TODO this exception throwing logic should be unified and broke into smaller pieces
         pendingMoves.add(move);
     }
 
@@ -82,13 +83,13 @@ public class Game {
     private boolean isMoveValid(Move move) throws IllegalMoveException {
         // check is player has already submit a move
         if (pendingMoves.stream().anyMatch(m -> m.getPlayerId().equalsIgnoreCase(move.getPlayerId())))
-            throw new IllegalMoveException(move.getPlayerId());
+            throw new IllegalMoveException(move.getPlayerId(), "already submitted a move");
 
         // getting this card also checks if it is in that player's hand
         Card playedCard = players.get(move.getPlayerId()).getCardsInHand().stream()
                 .filter(c -> c.getName().equalsIgnoreCase(move.getPlayedCardName()))
                 .findAny()
-                .orElseThrow(() -> new IllegalMoveException(move.getPlayerId()));
+                .orElseThrow(() -> new IllegalMoveException(move.getPlayerId(), "don't have that card in hand"));
         Map<Resource, Integer> playerResources = players.get(move.getPlayerId()).getChosenCharacter().getResources();
 
         // check if costs can be satisfied
