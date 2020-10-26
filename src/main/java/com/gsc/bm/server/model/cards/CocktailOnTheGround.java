@@ -1,7 +1,7 @@
 package com.gsc.bm.server.model.cards;
 
 import com.gsc.bm.server.model.Card;
-import com.gsc.bm.server.model.Game;
+import com.gsc.bm.server.model.game.Game;
 import com.gsc.bm.server.model.Resource;
 
 import java.util.Map;

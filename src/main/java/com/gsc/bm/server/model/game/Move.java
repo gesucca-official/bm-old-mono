@@ -1,4 +1,4 @@
-package com.gsc.bm.server.model;
+package com.gsc.bm.server.model.game;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

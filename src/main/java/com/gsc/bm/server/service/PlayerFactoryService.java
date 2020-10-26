@@ -1,6 +1,6 @@
 package com.gsc.bm.server.service;
 
-import com.gsc.bm.server.model.Player;
+import com.gsc.bm.server.model.game.Player;
 
 public interface PlayerFactoryService {
 

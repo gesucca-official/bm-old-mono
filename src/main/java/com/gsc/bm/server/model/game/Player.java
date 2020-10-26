@@ -1,5 +1,7 @@
-package com.gsc.bm.server.model;
+package com.gsc.bm.server.model.game;
 
+import com.gsc.bm.server.model.Card;
+import com.gsc.bm.server.model.Character;
 import lombok.Getter;
 
 import java.util.List;
@@ -25,6 +27,6 @@ public class Player {
 
     // stuff like this can be added later here for Game commodity
     public boolean isDead() {
-        return chosenCharacter.resources.get(Resource.HP) <= 0;
+        return chosenCharacter.isDead();
     }
 }

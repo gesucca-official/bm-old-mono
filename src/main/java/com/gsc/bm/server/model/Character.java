@@ -32,4 +32,8 @@ public abstract class Character {
         resources.put(res, resources.get(res) - amount);
     }
 
+    public boolean isDead() {
+        return resources.get(Resource.HP) <= 0;
+    }
+
 }
