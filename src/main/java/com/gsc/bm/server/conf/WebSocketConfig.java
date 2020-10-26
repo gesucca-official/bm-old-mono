@@ -19,7 +19,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/bm-server")
-                .setAllowedOrigins("http://localhost:4200") //TODO only for angular
+                .setAllowedOrigins("*")
                 .withSockJS();
     }
 
