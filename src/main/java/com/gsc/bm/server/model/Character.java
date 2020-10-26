@@ -18,6 +18,11 @@ public abstract class Character {
         return name;
     }
 
+    public Map<Resource, Integer> getResources() {
+        // attempting to clone to not let this be modified
+        return new EnumMap<>(resources);
+    }
+
     public void gainResource(Resource res, int amount) {
         resources.put(res, resources.get(res) + amount);
     }

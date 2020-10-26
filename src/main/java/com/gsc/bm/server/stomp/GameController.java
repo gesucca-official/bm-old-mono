@@ -33,16 +33,12 @@ public class GameController {
     @SendTo("/topic/game/update")
     public Game joinGame(String playerId) throws InterruptedException {
         playersQueue.add(playerFactoryService.craftRandomPlayer(playerId));
-        while (true) {
-            if (playersQueue.size() >= 2) {
-                Game game = new Game(playersQueue);
-                playersQueue = new ArrayList<>();
-                games.add(game);
-                return game;
-            }
-            // TODO find a way to catch the event instead of busy waiting
-            Thread.sleep(1000);
-        }
+        if (playersQueue.size() >= 2) {
+            Game game = new Game(playersQueue);
+            playersQueue = new ArrayList<>();
+            games.add(game);
+            return game;
+        } else return null;
     }
 
     @MessageMapping("/game/move")
@@ -54,13 +50,13 @@ public class GameController {
         //return null;
     }
 
-    @AllArgsConstructor
-    @Getter
-    @ToString
-    private static class IllegalMove {
-        String playerId;
-        String message;
-    }
+@AllArgsConstructor
+@Getter
+@ToString
+private static class IllegalMove {
+    String playerId;
+    String message;
+}
 
     @MessageExceptionHandler
     @SendTo(value = "/topic/game/illegal")
