@@ -11,7 +11,7 @@ public class Player {
 
     // TODO builder pattern for this
 
-    //TODO expose public information
+    // TODO expose public information
 
     private final String playerId;
     private final Character chosenCharacter;

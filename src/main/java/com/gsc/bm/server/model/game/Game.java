@@ -1,7 +1,7 @@
 package com.gsc.bm.server.model.game;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gsc.bm.server.model.Card;
-import com.gsc.bm.server.model.Resource;
 import lombok.Getter;
 import org.apache.commons.codec.binary.Hex;
 
@@ -34,10 +34,10 @@ public class Game {
     }
 
     public void submitMove(Move move) throws IllegalMoveException {
-        if (!isMoveValid(move)) // this checking method also throws IllegalMoveException
-            throw new IllegalMoveException(move.getPlayerId(), "cant be cast with current resources");
-        // TODO this exception throwing logic should be unified and broke into smaller pieces
-        pendingMoves.add(move);
+        Move.MoveCheckResult moveCheckResult = move.isValidFor(this);
+        if (moveCheckResult.isValid())
+            pendingMoves.add(move);
+        else throw new IllegalMoveException(move.getPlayerId(), moveCheckResult.getComment());
     }
 
     public boolean isReadyToResolveMoves() {
@@ -48,6 +48,15 @@ public class Game {
         lastResolvedMoves.clear();
         lastResolvedMoves.addAll(pendingMoves);
         pendingMoves.clear();
+    }
+
+    @JsonIgnore
+    public Card getPlayedCardFromHand(Move move) {
+        // getting this card also checks if it is in that player's hand adn throws exception accordingly
+        return players.get(move.getPlayerId()).getCardsInHand().stream()
+                .filter(c -> c.getName().equalsIgnoreCase(move.getPlayedCardName()))
+                .findAny()
+                .orElseThrow(() -> new IllegalMoveException(move.getPlayerId(), "don't have that card in hand"));
     }
 
     public boolean isOver() {
@@ -77,27 +86,5 @@ public class Game {
         } catch (NoSuchAlgorithmException e) {
             this.gameId = players.toString() + System.currentTimeMillis();
         }
-    }
-
-    // TODO adopt IOC and move this on move class??
-    private boolean isMoveValid(Move move) throws IllegalMoveException {
-        // check is player has already submit a move
-        if (pendingMoves.stream().anyMatch(m -> m.getPlayerId().equalsIgnoreCase(move.getPlayerId())))
-            throw new IllegalMoveException(move.getPlayerId(), "already submitted a move");
-
-        // getting this card also checks if it is in that player's hand
-        Card playedCard = players.get(move.getPlayerId()).getCardsInHand().stream()
-                .filter(c -> c.getName().equalsIgnoreCase(move.getPlayedCardName()))
-                .findAny()
-                .orElseThrow(() -> new IllegalMoveException(move.getPlayerId(), "don't have that card in hand"));
-        Map<Resource, Integer> playerResources = players.get(move.getPlayerId()).getChosenCharacter().getResources();
-
-        // check if costs can be satisfied
-        for (Map.Entry<Resource, Integer> cost : playedCard.getCost().entrySet()) {
-            int availableResource = playerResources.get(cost.getKey());
-            if (availableResource < cost.getValue())
-                return false;
-        }
-        return true;
     }
 }
