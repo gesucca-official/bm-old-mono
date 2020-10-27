@@ -9,7 +9,6 @@ import lombok.ToString;
 
 import java.util.Map;
 
-@AllArgsConstructor
 @Getter
 @ToString
 public class Move {
@@ -18,6 +17,16 @@ public class Move {
     private final String playerId;
     private final String targetId;
     private final String gameId;
+
+    private String moveEffectToSelf;
+    private String moveEffectToTarget;
+
+    public Move(String playedCardName, String playerId, String targetId, String gameId) {
+        this.playedCardName = playedCardName;
+        this.playerId = playerId;
+        this.targetId = targetId;
+        this.gameId = gameId;
+    }
 
     @AllArgsConstructor
     @Getter
@@ -53,7 +62,9 @@ public class Move {
 
     @JsonIgnore
     public void applyEffectTo(Game game) {
-        game.getPlayedCardFromHand(this).resolve(game, this);
+        Card.CardResolutionReport report = game.getPlayedCardFromHand(this).resolve(game, this);
+        moveEffectToSelf = report.getSelfReport();
+        moveEffectToTarget = report.getTargetReport();
     }
 
 }

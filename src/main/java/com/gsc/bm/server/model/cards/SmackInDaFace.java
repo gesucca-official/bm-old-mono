@@ -27,8 +27,9 @@ public class SmackInDaFace implements Card {
     }
 
     @Override
-    public void resolve(Game game, Move move) {
+    public CardResolutionReport resolve(Game game, Move move) {
         int damage = 20 + (game.getSelf(move).getResources().get(Resource.VIOLENCE) / 5);
         game.getTarget(move).loseResource(Resource.HEALTH, damage);
+        return new CardResolutionReport("nulla", "hai inflitto " + damage + " danni");
     }
 }

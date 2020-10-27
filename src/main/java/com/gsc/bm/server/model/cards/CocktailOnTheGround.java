@@ -29,7 +29,11 @@ public class CocktailOnTheGround implements Card {
     }
 
     @Override
-    public void resolve(Game game, Move move) {
+    public CardResolutionReport resolve(Game game, Move move) {
         game.getSelf(move).gainResource(Resource.VIOLENCE, 20);
+        return new CardResolutionReport(
+                "hai bevuto un negroni trovato per terra, come credi di stare",
+                "niente"
+        );
     }
 }

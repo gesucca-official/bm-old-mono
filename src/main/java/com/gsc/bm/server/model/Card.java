@@ -2,6 +2,8 @@ package com.gsc.bm.server.model;
 
 import com.gsc.bm.server.model.game.Game;
 import com.gsc.bm.server.model.game.Move;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.util.Map;
 
@@ -14,6 +16,13 @@ public interface Card {
 
     Map<Resource, Integer> getCost();
 
-    void resolve(Game game, Move move);
+    CardResolutionReport resolve(Game game, Move move);
+
+    @AllArgsConstructor
+    @Getter
+    class CardResolutionReport {
+        String selfReport;
+        String targetReport;
+    }
 
 }
