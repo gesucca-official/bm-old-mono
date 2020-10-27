@@ -1,17 +1,16 @@
 package com.gsc.bm.server.model.game;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gsc.bm.server.model.Card;
+import com.gsc.bm.server.model.Resource;
 import lombok.Getter;
 import org.apache.commons.codec.binary.Hex;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Getter
 public class Game {
@@ -33,6 +32,25 @@ public class Game {
             this.players.put(p.getPlayerId(), p);
     }
 
+    @JsonProperty
+    public boolean isOver() {
+        // TODO this only works for single player
+        for (String playerId : players.keySet())
+            if (players.get(playerId).isDead())
+                return true;
+        return false;
+    }
+
+    @JsonProperty
+    public String getWinner() {
+        // TODO this only works for single player
+        if (isOver())
+            for (String playerId : players.keySet())
+                if (!players.get(playerId).isDead())
+                    return players.get(playerId).getPlayerId();
+        return null;
+    }
+
     public void submitMove(Move move) throws IllegalMoveException {
         Move.MoveCheckResult moveCheckResult = move.isValidFor(this);
         if (moveCheckResult.isValid())
@@ -45,9 +63,17 @@ public class Game {
     }
 
     public void resolveMoves() {
-        lastResolvedMoves.clear();
-        lastResolvedMoves.addAll(pendingMoves);
-        pendingMoves.clear();
+        for (Move m : pendingMoves)
+            m.applyCostTo(this);
+        pendingMoves.sort(
+                Comparator.comparingInt(
+                        m -> -getSelf(m).getChosenCharacter().getResources().get(Resource.SPEED)));
+        for (Move m : pendingMoves) {
+            m.applyEffectTo(this);
+            getSelf(m).discardCard(getPlayedCardFromHand(m));
+            getSelf(m).drawCard();
+        }
+        prepareForNextTurn();
     }
 
     @JsonIgnore
@@ -59,21 +85,20 @@ public class Game {
                 .orElseThrow(() -> new IllegalMoveException(move.getPlayerId(), "don't have that card in hand"));
     }
 
-    public boolean isOver() {
-        // TODO this only works for single player
-        for (String playerId : players.keySet())
-            if (players.get(playerId).isDead())
-                return true;
-        return false;
+    @JsonIgnore
+    public Player getSelf(Move move) {
+        return players.get(move.getPlayerId());
     }
 
-    public String getWinner() {
-        // TODO this only works for single player
-        if (isOver())
-            for (String playerId : players.keySet())
-                if (!players.get(playerId).isDead())
-                    return players.get(playerId).getPlayerId();
-        return null;
+    @JsonIgnore
+    public Player getTarget(Move move) {
+        if (move.getTargetId().equalsIgnoreCase("opponent")) // now client return always this
+            return players.keySet().stream()
+                    .filter(p -> !p.equalsIgnoreCase(move.getPlayerId()))
+                    .findAny()
+                    .map(players::get)
+                    .orElse(null); // this stinks
+        else return players.get(move.getTargetId());
     }
 
     private void generateGameId(List<Player> players) {
@@ -86,5 +111,11 @@ public class Game {
         } catch (NoSuchAlgorithmException e) {
             this.gameId = players.toString() + System.currentTimeMillis();
         }
+    }
+
+    private void prepareForNextTurn() {
+        lastResolvedMoves.clear();
+        lastResolvedMoves.addAll(pendingMoves);
+        pendingMoves.clear();
     }
 }

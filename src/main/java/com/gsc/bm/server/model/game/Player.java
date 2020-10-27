@@ -1,10 +1,12 @@
 package com.gsc.bm.server.model.game;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gsc.bm.server.model.Card;
 import com.gsc.bm.server.model.Character;
+import com.gsc.bm.server.model.Resource;
 import lombok.Getter;
 
-import java.util.List;
+import java.util.*;
 
 @Getter
 public class Player {
@@ -15,18 +17,47 @@ public class Player {
 
     private final String playerId;
     private final Character chosenCharacter;
-    private final List<Card> cardsInHand;
-    private final List<Card> deck;
+    private final List<Card> cardsInHand = new ArrayList<>();
+    private final Stack<Card> deck = new Stack<>();
 
     public Player(String id, Character chosenCharacter, List<Card> deck) {
         this.playerId = id;
         this.chosenCharacter = chosenCharacter;
-        this.deck = deck;
-        this.cardsInHand = deck; // for now there's no deck or drawing cards
+
+        this.deck.addAll(deck);
+        Collections.shuffle(this.deck);
+        drawCards(3);
     }
 
-    // stuff like this can be added later here for Game commodity
+    public void drawCard() {
+        if (!deck.isEmpty())
+            cardsInHand.add(deck.pop());
+    }
+
+    public void drawCards(int howMany) {
+        for (int i = 0; i < howMany; i++)
+            drawCard();
+    }
+
+    public void discardCard(Card card) {
+        cardsInHand.remove(card);
+    }
+
+    @JsonIgnore
+    public Map<Resource, Integer> getResources() {
+        return chosenCharacter.getResources();
+    }
+
+    public void gainResource(Resource res, int amount) {
+        chosenCharacter.getResources().put(res, chosenCharacter.getResources().get(res) + amount);
+    }
+
+    public void loseResource(Resource res, int amount) {
+        // manage when resource is not already present in map?? should never happen
+        chosenCharacter.getResources().put(res, chosenCharacter.getResources().get(res) - amount);
+    }
+
     public boolean isDead() {
-        return chosenCharacter.isDead();
+        return chosenCharacter.getResources().get(Resource.HEALTH) <= 0;
     }
 }

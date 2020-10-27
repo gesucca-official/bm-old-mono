@@ -7,29 +7,28 @@ import com.gsc.bm.server.model.game.Move;
 
 import java.util.Map;
 
-public class CocktailOnTheGround implements Card {
+public class SmackInDaFace implements Card {
 
     @Override
     public String getName() {
-        return "Negroni trovato per terra";
+        return "ORMALE SCHIAFFEGGIAMO IL TU::::";
     }
 
     @Override
     public String getEffect() {
-        return "+20 violenza";
+        return "20 danni + 1 ogni 5 di violenza che ti rimane";
     }
 
     @Override
     public Map<Resource, Integer> getCost() {
-        // TODO this is just an example, this card should not cost anything
         return Map.ofEntries(
-                Map.entry(Resource.SPEED, 5),
-                Map.entry(Resource.HEALTH, 5)
+                Map.entry(Resource.VIOLENCE, 10)
         );
     }
 
     @Override
     public void resolve(Game game, Move move) {
-        game.getSelf(move).gainResource(Resource.VIOLENCE, 20);
+        int damage = 20 + (game.getSelf(move).getResources().get(Resource.VIOLENCE) / 5);
+        game.getTarget(move).loseResource(Resource.HEALTH, damage);
     }
 }

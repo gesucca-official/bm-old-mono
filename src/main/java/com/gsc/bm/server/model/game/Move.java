@@ -5,11 +5,13 @@ import com.gsc.bm.server.model.Card;
 import com.gsc.bm.server.model.Resource;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.util.Map;
 
 @AllArgsConstructor
 @Getter
+@ToString
 public class Move {
 
     private final String playedCardName;
@@ -40,6 +42,18 @@ public class Move {
                 new MoveCheckResult(false, "cant be cast with current resources");
         }
         return new MoveCheckResult(true, "good, cast it");
+    }
+
+    @JsonIgnore
+    public void applyCostTo(Game game) {
+        game.getPlayedCardFromHand(this).getCost().forEach(
+                (key, value) -> game.getSelf(this).loseResource(key, value)
+        );
+    }
+
+    @JsonIgnore
+    public void applyEffectTo(Game game) {
+        game.getPlayedCardFromHand(this).resolve(game, this);
     }
 
 }
