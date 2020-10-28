@@ -2,8 +2,8 @@ package com.gsc.bm.server.model.game;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gsc.bm.server.model.Card;
 import com.gsc.bm.server.model.Resource;
+import com.gsc.bm.server.model.cards.Card;
 import lombok.Getter;
 import org.apache.commons.codec.binary.Hex;
 
@@ -36,7 +36,7 @@ public class Game {
     public boolean isOver() {
         // TODO this only works for single player
         for (String playerId : players.keySet())
-            if (players.get(playerId).isDead())
+            if (players.get(playerId).getCharacter().isDead())
                 return true;
         return false;
     }
@@ -46,7 +46,7 @@ public class Game {
         // TODO this only works for single player
         if (isOver())
             for (String playerId : players.keySet())
-                if (!players.get(playerId).isDead())
+                if (!players.get(playerId).getCharacter().isDead())
                     return players.get(playerId).getPlayerId();
         return null;
     }
@@ -67,7 +67,7 @@ public class Game {
             m.applyCostTo(this);
         pendingMoves.sort(
                 Comparator.comparingInt(
-                        m -> -getSelf(m).getChosenCharacter().getResources().get(Resource.SPEED)));
+                        m -> -getSelf(m).getCharacter().getResources().get(Resource.ALERTNESS)));
         for (Move m : pendingMoves) {
             m.applyEffectTo(this);
             getSelf(m).discardCard(getPlayedCardFromHand(m));
@@ -114,6 +114,9 @@ public class Game {
     }
 
     private void prepareForNextTurn() {
+        for (String playerId : players.keySet())
+            players.get(playerId).getCharacter().resolveTimeBasedEffects();
+
         lastResolvedMoves.clear();
         lastResolvedMoves.addAll(pendingMoves);
         pendingMoves.clear();

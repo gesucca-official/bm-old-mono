@@ -1,6 +1,6 @@
 package com.gsc.bm.server.service;
 
-import com.gsc.bm.server.model.Card;
+import com.gsc.bm.server.model.cards.Card;
 
 import java.util.List;
 

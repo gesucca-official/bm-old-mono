@@ -1,9 +1,9 @@
 package com.gsc.bm.server.model.game;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.gsc.bm.server.model.Card;
 import com.gsc.bm.server.model.Character;
 import com.gsc.bm.server.model.Resource;
+import com.gsc.bm.server.model.cards.Card;
 import lombok.Getter;
 
 import java.util.*;
@@ -16,13 +16,13 @@ public class Player {
     // TODO expose public information
 
     private final String playerId;
-    private final Character chosenCharacter;
+    private final Character character;
     private final List<Card> cardsInHand = new ArrayList<>();
     private final Stack<Card> deck = new Stack<>();
 
-    public Player(String id, Character chosenCharacter, List<Card> deck) {
+    public Player(String id, Character character, List<Card> deck) {
         this.playerId = id;
-        this.chosenCharacter = chosenCharacter;
+        this.character = character;
 
         this.deck.addAll(deck);
         Collections.shuffle(this.deck);
@@ -45,19 +45,7 @@ public class Player {
 
     @JsonIgnore
     public Map<Resource, Integer> getResources() {
-        return chosenCharacter.getResources();
+        return character.getResources();
     }
 
-    public void gainResource(Resource res, int amount) {
-        chosenCharacter.getResources().put(res, chosenCharacter.getResources().get(res) + amount);
-    }
-
-    public void loseResource(Resource res, int amount) {
-        // manage when resource is not already present in map?? should never happen
-        chosenCharacter.getResources().put(res, chosenCharacter.getResources().get(res) - amount);
-    }
-
-    public boolean isDead() {
-        return chosenCharacter.getResources().get(Resource.HEALTH) <= 0;
-    }
 }

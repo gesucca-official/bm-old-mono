@@ -1,8 +1,8 @@
 package com.gsc.bm.server.service;
 
 import com.gsc.bm.server.model.Character;
+import com.gsc.bm.server.model.cards.bruiser.BigBadBruiser;
 import com.gsc.bm.server.model.game.Player;
-import com.gsc.bm.server.model.cards.BigBadBruiser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

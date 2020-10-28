@@ -1,5 +1,7 @@
-package com.gsc.bm.server.model;
+package com.gsc.bm.server.model.cards;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gsc.bm.server.model.Resource;
 import com.gsc.bm.server.model.game.Game;
 import com.gsc.bm.server.model.game.Move;
 import lombok.AllArgsConstructor;
@@ -12,6 +14,7 @@ public interface Card {
     String getName();
 
     // description only, no game logic purpose
+    @JsonProperty
     String getEffect();
 
     Map<Resource, Integer> getCost();

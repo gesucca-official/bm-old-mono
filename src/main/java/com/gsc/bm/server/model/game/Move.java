@@ -1,7 +1,7 @@
 package com.gsc.bm.server.model.game;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.gsc.bm.server.model.Card;
+import com.gsc.bm.server.model.cards.Card;
 import com.gsc.bm.server.model.Resource;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -42,7 +42,7 @@ public class Move {
             return new MoveCheckResult(false, "already submitted a move");
         // getting this card also checks if it is in that player's hand
         Card playedCard = game.getPlayedCardFromHand(this);
-        Map<Resource, Integer> playerResources = game.getPlayers().get(playerId).getChosenCharacter().getResources();
+        Map<Resource, Integer> playerResources = game.getPlayers().get(playerId).getCharacter().getResources();
 
         // check if costs can be satisfied
         for (Map.Entry<Resource, Integer> cost : playedCard.getCost().entrySet()) {
@@ -56,7 +56,7 @@ public class Move {
     @JsonIgnore
     public void applyCostTo(Game game) {
         game.getPlayedCardFromHand(this).getCost().forEach(
-                (key, value) -> game.getSelf(this).loseResource(key, value)
+                (key, value) -> game.getSelf(this).getCharacter().loseResource(key, value)
         );
     }
 
