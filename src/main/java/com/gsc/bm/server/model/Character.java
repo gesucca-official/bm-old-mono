@@ -13,7 +13,7 @@ public abstract class Character {
     private final String name;
     protected final Map<Resource, Integer> resources = new EnumMap<>(Resource.class);
 
-    private final List<StatusAliment> statuses = new ArrayList<>();
+    private final List<Status> statuses = new ArrayList<>();
 
     public Character(String name, int hp, int speed) {
         this.name = name;
@@ -31,8 +31,8 @@ public abstract class Character {
         }
 
         // clear statuses
-        List<StatusAliment> expiredStatuses = new ArrayList<>();  // concurrent access problem with foreach
-        for (StatusAliment status : statuses) {
+        List<Status> expiredStatuses = new ArrayList<>();  // concurrent access problem with foreach
+        for (Status status : statuses) {
             status.aTurnIsPassed();
             if (status.getLastsForTurns() < 0)
                 expiredStatuses.add(status);
@@ -41,26 +41,37 @@ public abstract class Character {
     }
 
     public int gainResource(Resource res, int amount) {
-        int modifiedAmount = applyStatusModifier(res, amount);
-        resources.putIfAbsent(res, 0);
-        getResources().put(res, getResources().get(res) + modifiedAmount);
-        return modifiedAmount;
+        return editResource(res, Math.abs(amount), true, true);
     }
 
     public int loseResource(Resource res, int amount) {
-        int modifiedAmount = applyStatusModifier(res, amount);
-        resources.putIfAbsent(res, 0);
-        getResources().put(res, getResources().get(res) - modifiedAmount);
-        return modifiedAmount;
+        return editResource(res, -Math.abs(amount), true, true);
+    }
+
+    public int loseResource(Resource res, int amount, boolean applyGoodStatus, boolean applyBadStatus) {
+        return editResource(res, -Math.abs(amount), applyGoodStatus, applyBadStatus);
     }
 
     public boolean isDead() {
         return resources.get(Resource.HEALTH) <= 0;
     }
 
-    private int applyStatusModifier(Resource res, int amount) {
-        for (StatusAliment status : statuses)
-            if (status.getResourceAfflicted() == res)
+    // algebraic sum
+    private int editResource(Resource res, int amount, boolean applyGoodStatus, boolean applyBadStatus) {
+        int modifiedAmount = amount;
+        if (applyBadStatus)
+            modifiedAmount = applyStatusModifier(res, modifiedAmount, Status.StatusType.BAD);
+        if (applyGoodStatus)
+            modifiedAmount = applyStatusModifier(res, modifiedAmount, Status.StatusType.GOOD);
+
+        resources.putIfAbsent(res, 0);
+        getResources().put(res, resources.get(res) + modifiedAmount);
+        return Math.abs(modifiedAmount);
+    }
+
+    private int applyStatusModifier(Resource res, int amount, Status.StatusType goodOrBad) {
+        for (Status status : statuses)
+            if (status.getResourceAfflicted() == res && status.getType() == goodOrBad)
                 return status.getFunction().apply(amount);
         return amount;
     }

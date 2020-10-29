@@ -7,14 +7,18 @@ import java.util.function.Function;
 
 @AllArgsConstructor
 @Getter
-public class StatusAliment {
+public class Status {
 
-    private final Function<Integer, Integer> function;
+    public enum StatusType {
+        GOOD, BAD
+    }
+
+    private final StatusType type;
     private final Resource resourceAfflicted;
     private int lastsForTurns;
+    private final Function<Integer, Integer> function;
 
     public void aTurnIsPassed() {
         this.lastsForTurns--;
     }
-
 }
