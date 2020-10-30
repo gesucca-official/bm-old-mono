@@ -40,15 +40,23 @@ public abstract class Character {
         statuses.removeAll(expiredStatuses);
     }
 
-    public int gainResource(Resource res, int amount) {
+    public Map.Entry<Resource, Integer> inflictDamage(Character target, int amount) {
+        return target.loseResource(Resource.HEALTH, editDamage(amount));
+    }
+
+    public Map.Entry<Resource, Integer> inflictDamage(Character target, int amount, boolean applyGoodStatus, boolean applyBadStatus) {
+        return target.loseResource(Resource.HEALTH, editDamage(amount), applyGoodStatus, applyBadStatus);
+    }
+
+    public Map.Entry<Resource, Integer> gainResource(Resource res, int amount) {
         return editResource(res, Math.abs(amount), true, true);
     }
 
-    public int loseResource(Resource res, int amount) {
+    public Map.Entry<Resource, Integer> loseResource(Resource res, int amount) {
         return editResource(res, -Math.abs(amount), true, true);
     }
 
-    public int loseResource(Resource res, int amount, boolean applyGoodStatus, boolean applyBadStatus) {
+    public Map.Entry<Resource, Integer> loseResource(Resource res, int amount, boolean applyGoodStatus, boolean applyBadStatus) {
         return editResource(res, -Math.abs(amount), applyGoodStatus, applyBadStatus);
     }
 
@@ -57,7 +65,7 @@ public abstract class Character {
     }
 
     // algebraic sum
-    private int editResource(Resource res, int amount, boolean applyGoodStatus, boolean applyBadStatus) {
+    private Map.Entry<Resource, Integer> editResource(Resource res, int amount, boolean applyGoodStatus, boolean applyBadStatus) {
         int modifiedAmount = amount;
         if (applyBadStatus)
             modifiedAmount = applyStatusModifier(res, modifiedAmount, Status.StatusType.BAD);
@@ -66,7 +74,15 @@ public abstract class Character {
 
         resources.putIfAbsent(res, 0);
         getResources().put(res, resources.get(res) + modifiedAmount);
-        return Math.abs(modifiedAmount);
+        return Map.entry(res, modifiedAmount);
+    }
+
+    private int editDamage(int amount) {
+        int boostedOrDulledAmount = amount;
+        for (Status s : statuses)
+            if (s.getResourceAfflicted() == Resource.DAMAGE_MOD)
+                boostedOrDulledAmount = s.getFunction().apply(amount);
+        return boostedOrDulledAmount;
     }
 
     private int applyStatusModifier(Resource res, int amount, Status.StatusType goodOrBad) {

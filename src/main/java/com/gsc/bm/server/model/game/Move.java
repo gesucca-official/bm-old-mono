@@ -1,8 +1,8 @@
 package com.gsc.bm.server.model.game;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.gsc.bm.server.model.cards.Card;
 import com.gsc.bm.server.model.Resource;
+import com.gsc.bm.server.model.cards.Card;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
@@ -18,8 +18,8 @@ public class Move {
     private final String targetId;
     private final String gameId;
 
-    private String moveEffectToSelf;
-    private String moveEffectToTarget;
+    private Map<Resource, Integer> moveEffectToSelf;
+    private Map<Resource, Integer> moveEffectToTarget;
 
     public Move(String playedCardName, String playerId, String targetId, String gameId) {
         this.playedCardName = playedCardName;

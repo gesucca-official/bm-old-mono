@@ -10,7 +10,7 @@ import java.util.Map;
 public class SeagullFly extends AbstractCard {
 
     public SeagullFly() {
-        super("GABBIANO? VOLIAMOTI", "20 danni, bypassa protezioni");
+        super("GABBIANO? VOLIAMOTI", "20 danni, ignora status di protezione");
     }
 
     @Override
@@ -20,10 +20,14 @@ public class SeagullFly extends AbstractCard {
 
     @Override
     public CardResolutionReport resolve(Game game, Move move) {
-        int damage = game.getTarget(move).getCharacter().loseResource(Resource.ALERTNESS, 20, false, true);
         return new CardResolutionReport(
-                "pagato 15 violenza",
-                damage + " danni"
-        );
+                null,
+                Map.ofEntries(
+                        game.getSelf(move).getCharacter().inflictDamage(
+                                game.getTarget(move).getCharacter(),
+                                20,
+                                false,
+                                true)
+                ));
     }
 }

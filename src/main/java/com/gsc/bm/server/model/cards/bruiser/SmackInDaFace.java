@@ -22,9 +22,11 @@ public class SmackInDaFace extends AbstractCard {
 
     @Override
     public CardResolutionReport resolve(Game game, Move move) {
-        int damage = game.getTarget(move).getCharacter().loseResource(
-                Resource.HEALTH,
-                20 + (game.getSelf(move).getResources().get(Resource.VIOLENCE) / 2));
-        return new CardResolutionReport("-15 violenza", "hai inflitto " + damage + " danni");
+        return new CardResolutionReport(
+                null,
+                Map.ofEntries(
+                        game.getSelf(move).getCharacter().inflictDamage(game.getTarget(move).getCharacter(),
+                                20 + (game.getSelf(move).getResources().get(Resource.VIOLENCE) / 2)
+                        )));
     }
 }

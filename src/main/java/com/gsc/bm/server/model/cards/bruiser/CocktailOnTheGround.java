@@ -10,24 +10,23 @@ import java.util.Map;
 public class CocktailOnTheGround extends AbstractCard {
 
     public CocktailOnTheGround() {
-        super("Negroni trovato per terra", "+20 violenza, +5 toxic, -5 alertness");
+        super("Negroni trovato per terra", "+5 toxic +10 tasso alcolemico e +20 violenza");
     }
 
     @Override
     public Map<Resource, Integer> getCost() {
-        return Map.ofEntries(
-                Map.entry(Resource.ALERTNESS, 5)
-        );
+        return Map.of(Resource.ALERTNESS, 5);
     }
 
     @Override
     public CardResolutionReport resolve(Game game, Move move) {
-        game.getSelf(move).getCharacter().gainResource(Resource.VIOLENCE, 20);
-        game.getSelf(move).getCharacter().gainResource(Resource.ALCOHOL, 10);
-        game.getSelf(move).getCharacter().gainResource(Resource.TOXICITY, 5);
         return new CardResolutionReport(
-                "-5 alertness per berlo, poi +5 toxic +10 tasso alcolemico e +20 violenza",
-                "niente"
+                Map.ofEntries(
+                        game.getSelf(move).getCharacter().gainResource(Resource.VIOLENCE, 20),
+                        game.getSelf(move).getCharacter().gainResource(Resource.ALCOHOL, 10),
+                        game.getSelf(move).getCharacter().gainResource(Resource.TOXICITY, 5)
+                ),
+                null
         );
     }
 }

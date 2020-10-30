@@ -20,11 +20,11 @@ public class StunningBlow extends AbstractCard {
 
     @Override
     public CardResolutionReport resolve(Game game, Move move) {
-        int alertnessDamage = game.getTarget(move).getCharacter().loseResource(Resource.ALERTNESS, 10);
-        int damage = game.getTarget(move).getCharacter().loseResource(Resource.HEALTH, 10);
         return new CardResolutionReport(
-                "pagato 10 violenza",
-                damage + " danno e -" + alertnessDamage + " alertness all'oppo"
-        );
+                null,
+                Map.ofEntries(
+                        game.getTarget(move).getCharacter().loseResource(Resource.ALERTNESS, 10),
+                        game.getSelf(move).getCharacter().inflictDamage(game.getTarget(move).getCharacter(), 10)
+                ));
     }
 }

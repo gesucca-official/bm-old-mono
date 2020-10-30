@@ -24,8 +24,8 @@ public interface Card {
     @AllArgsConstructor
     @Getter
     class CardResolutionReport {
-        String selfReport;
-        String targetReport;
+        Map<Resource, Integer> selfReport;
+        Map<Resource, Integer> targetReport;
     }
 
 }
