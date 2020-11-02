@@ -6,14 +6,16 @@ import com.gsc.bm.server.model.Resource;
 import com.gsc.bm.server.model.cards.Card;
 import lombok.Getter;
 import org.apache.commons.codec.binary.Hex;
+import org.springframework.util.SerializationUtils;
 
+import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 @Getter
-public class Game {
+public class Game implements Serializable {
 
     //TODO extract an interface out of this so the controllers depends on it and not on this implementation
 
@@ -74,6 +76,19 @@ public class Game {
             getSelf(m).drawCard();
         }
         prepareForNextTurn();
+    }
+
+    public Game getViewFor(String playerId) {
+        // this way it should make a clone
+        byte[] bytes = SerializationUtils.serialize(this);
+        Game gameViewForPlayer = (Game) SerializationUtils.deserialize(bytes);
+
+        for (Player p : gameViewForPlayer.getPlayers().values()) {
+            p.getDeck().clear();
+            if (!p.getPlayerId().equals(playerId))
+                p.getCardsInHand().clear();
+        }
+        return gameViewForPlayer;
     }
 
     @JsonIgnore

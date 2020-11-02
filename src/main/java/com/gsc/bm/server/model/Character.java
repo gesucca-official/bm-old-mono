@@ -2,13 +2,14 @@ package com.gsc.bm.server.model;
 
 import lombok.Getter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
 @Getter
-public abstract class Character {
+public abstract class Character implements Serializable {
 
     private final String name;
     protected final Map<Resource, Integer> resources = new EnumMap<>(Resource.class);

@@ -6,10 +6,11 @@ import com.gsc.bm.server.model.Resource;
 import com.gsc.bm.server.model.cards.Card;
 import lombok.Getter;
 
+import java.io.Serializable;
 import java.util.*;
 
 @Getter
-public class Player {
+public class Player implements Serializable {
 
     // TODO builder pattern for this
 

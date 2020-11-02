@@ -7,11 +7,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.Map;
 
 @Getter
 @ToString
-public class Move {
+public class Move implements Serializable {
 
     private final String playedCardName;
     private final String playerId;
