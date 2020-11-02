@@ -34,23 +34,25 @@ public class GameController {
     @SendTo("/topic/game/1v1/join")
     public String queueFor1v1(String playerId) {
         queue1v1.add(playerFactoryService.craftRandomPlayer(playerId));
+        int queueSizeBeforeChanges = queue1v1.size();
         if (queue1v1.size() >= 2) {
             game = new Game(queue1v1);
             queue1v1.clear();
             messagingTemplate.convertAndSend("/topic/game/update", game.getGameId());
         }
-        return playerId + " queued for 1v1 game. Players in queue: " + queue1v1.size();
+        return playerId + " queued for 1v1 game. Players in queue: " + queueSizeBeforeChanges;
     }
 
     @MessageMapping("/game/move")
     @SendTo("/topic/game/move")
     public String makeYourMove(Move move) throws RuntimeException {
         game.submitMove(move);
+        int pendingMoveSizeBeforeChanges = game.getPendingMoves().size();
         if (game.isReadyToResolveMoves()) {
             game.resolveMoves();
             messagingTemplate.convertAndSend("/topic/game/update", game.getGameId());
         }
-        return move.getPlayerId() + " submitted a Move. Moves submitted: " + game.getPendingMoves().size();
+        return move.getPlayerId() + " submitted a Move. Moves submitted: " + pendingMoveSizeBeforeChanges;
     }
 
     @MessageMapping("game/view")

@@ -10,14 +10,18 @@ import java.util.function.Function;
 @Getter
 public class Status implements Serializable {
 
-    public enum StatusType {
+    public enum StatusType implements Serializable {
         GOOD, BAD
+    }
+
+    public interface StatusFunction extends Function<Integer, Integer>, Serializable {
+        // TODO here we can add a toString
     }
 
     private final StatusType type;
     private final Resource resourceAfflicted;
     private int lastsForTurns;
-    private final Function<Integer, Integer> function;
+    private final StatusFunction function;
 
     public void aTurnIsPassed() {
         this.lastsForTurns--;
