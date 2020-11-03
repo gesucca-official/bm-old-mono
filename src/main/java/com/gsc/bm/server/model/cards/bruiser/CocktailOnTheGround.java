@@ -5,6 +5,7 @@ import com.gsc.bm.server.model.cards.AbstractCard;
 import com.gsc.bm.server.model.game.Game;
 import com.gsc.bm.server.model.game.Move;
 
+import java.util.List;
 import java.util.Map;
 
 public class CocktailOnTheGround extends AbstractCard {
@@ -15,13 +16,13 @@ public class CocktailOnTheGround extends AbstractCard {
 
     @Override
     public Map<Resource, Integer> getCost() {
-        return Map.of(Resource.ALERTNESS, 5);
+        return Map.of();
     }
 
     @Override
     public CardResolutionReport resolve(Game game, Move move) {
         return new CardResolutionReport(
-                Map.ofEntries(
+                List.of(
                         game.getSelf(move).getCharacter().gainResource(Resource.VIOLENCE, 20),
                         game.getSelf(move).getCharacter().gainResource(Resource.ALCOHOL, 10),
                         game.getSelf(move).getCharacter().gainResource(Resource.TOXICITY, 5)

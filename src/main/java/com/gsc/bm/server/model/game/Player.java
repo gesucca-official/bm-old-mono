@@ -12,7 +12,7 @@ import java.util.*;
 @Getter
 public class Player implements Serializable {
 
-    // TODO builder pattern for this
+    // TODO builder pattern for this?
 
     // TODO expose public information
 

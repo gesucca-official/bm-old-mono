@@ -1,10 +1,12 @@
 package com.gsc.bm.server.model.cards.bruiser;
 
+import com.gsc.bm.server.model.Damage;
 import com.gsc.bm.server.model.Resource;
 import com.gsc.bm.server.model.cards.AbstractCard;
 import com.gsc.bm.server.model.game.Game;
 import com.gsc.bm.server.model.game.Move;
 
+import java.util.List;
 import java.util.Map;
 
 public class SmackInDaFace extends AbstractCard {
@@ -24,9 +26,9 @@ public class SmackInDaFace extends AbstractCard {
     public CardResolutionReport resolve(Game game, Move move) {
         return new CardResolutionReport(
                 null,
-                Map.ofEntries(
+                List.of(
                         game.getSelf(move).getCharacter().inflictDamage(game.getTarget(move).getCharacter(),
-                                20 + (game.getSelf(move).getResources().get(Resource.VIOLENCE) / 2)
+                                new Damage(Damage.DamageType.HIT, 20 + (game.getSelf(move).getResources().get(Resource.VIOLENCE) / 2))
                         )));
     }
 }

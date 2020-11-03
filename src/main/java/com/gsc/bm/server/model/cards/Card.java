@@ -7,6 +7,7 @@ import com.gsc.bm.server.model.game.Move;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.List;
 import java.util.Map;
 
 public interface Card {
@@ -24,8 +25,8 @@ public interface Card {
     @AllArgsConstructor
     @Getter
     class CardResolutionReport {
-        Map<Resource, Integer> selfReport;
-        Map<Resource, Integer> targetReport;
+        List<String> selfReport;
+        List<String> targetReport;
     }
 
 }

@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -19,8 +20,8 @@ public class Move implements Serializable {
     private final String targetId;
     private final String gameId;
 
-    private Map<Resource, Integer> moveEffectToSelf;
-    private Map<Resource, Integer> moveEffectToTarget;
+    private List<String> moveEffectToSelf;
+    private List<String> moveEffectToTarget;
 
     public Move(String playedCardName, String playerId, String targetId, String gameId) {
         this.playedCardName = playedCardName;
