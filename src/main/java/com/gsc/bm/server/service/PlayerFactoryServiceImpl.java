@@ -2,6 +2,7 @@ package com.gsc.bm.server.service;
 
 import com.gsc.bm.server.model.Character;
 import com.gsc.bm.server.model.cards.bruiser.BigBadBruiser;
+import com.gsc.bm.server.model.game.ComPlayer;
 import com.gsc.bm.server.model.game.Player;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,12 @@ public class PlayerFactoryServiceImpl implements PlayerFactoryService {
     @Autowired
     public PlayerFactoryServiceImpl(DeckFactoryService deckFactoryService) {
         this.deckFactoryService = deckFactoryService;
+    }
+
+    @Override
+    public Player craftRandomComPlayer() {
+        Character chosenChar = new BigBadBruiser();
+        return new ComPlayer(chosenChar, deckFactoryService.craftCharacterStarterDeck(chosenChar.getName()));
     }
 
     @Override

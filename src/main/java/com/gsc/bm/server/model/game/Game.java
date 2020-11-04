@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gsc.bm.server.model.Resource;
 import com.gsc.bm.server.model.cards.Card;
 import lombok.Getter;
+import lombok.ToString;
 import org.apache.commons.codec.binary.Hex;
 import org.springframework.util.SerializationUtils;
 
@@ -15,6 +16,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 @Getter
+@ToString
 public class Game implements Serializable {
 
     //TODO extract an interface out of this so the controllers depends on it and not on this implementation
@@ -78,6 +80,7 @@ public class Game implements Serializable {
         prepareForNextTurn();
     }
 
+    @JsonIgnore
     public Game getViewFor(String playerId) {
         // this way it should make a clone
         byte[] bytes = SerializationUtils.serialize(this);
@@ -89,6 +92,16 @@ public class Game implements Serializable {
                 p.getCardsInHand().clear();
         }
         return gameViewForPlayer;
+    }
+
+    @JsonIgnore
+    public List<Player> getOpponents(String playerId) {
+        List<Player> opponents = new ArrayList<>(players.size());
+        players.values().forEach(p -> {
+            if (!p.getPlayerId().equals(playerId))
+                opponents.add(p);
+        });
+        return opponents;
     }
 
     @JsonIgnore
@@ -107,13 +120,7 @@ public class Game implements Serializable {
 
     @JsonIgnore
     public Player getTarget(Move move) {
-        if (move.getTargetId().equalsIgnoreCase("opponent")) // now client return always this
-            return players.keySet().stream()
-                    .filter(p -> !p.equalsIgnoreCase(move.getPlayerId()))
-                    .findAny()
-                    .map(players::get)
-                    .orElse(null); // this stinks
-        else return players.get(move.getTargetId());
+        return players.get(move.getTargetId());
     }
 
     private void generateGameId(List<Player> players) {

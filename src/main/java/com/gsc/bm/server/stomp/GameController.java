@@ -3,8 +3,9 @@ package com.gsc.bm.server.stomp;
 import com.gsc.bm.server.model.game.Game;
 import com.gsc.bm.server.model.game.IllegalMoveException;
 import com.gsc.bm.server.model.game.Move;
-import com.gsc.bm.server.model.game.Player;
-import com.gsc.bm.server.service.PlayerFactoryService;
+import com.gsc.bm.server.others.Games;
+import com.gsc.bm.server.others.Queues;
+import com.gsc.bm.server.service.GameFactoryService;
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -12,53 +13,69 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class GameController {
 
     private final SimpMessagingTemplate messagingTemplate;
+    private final GameFactoryService gameFactoryService;
 
-    private final PlayerFactoryService playerFactoryService;
-    private final List<Player> queue1v1 = new ArrayList<>(); // TODO for now a single queue will do
-
-    private Game game;
-
-    public GameController(PlayerFactoryService playerFactoryService, SimpMessagingTemplate messagingTemplate) {
-        this.playerFactoryService = playerFactoryService;
+    public GameController(SimpMessagingTemplate messagingTemplate, GameFactoryService gameFactoryService) {
         this.messagingTemplate = messagingTemplate;
+        this.gameFactoryService = gameFactoryService;
+    }
+
+    @MessageMapping("/game/1vCom/join")
+    public void queueForQuick1vCom(String playerId) {
+        Game game = gameFactoryService.craftQuick1vComGame(playerId);
+        Games.getInstance().addNewGame(game);
+        messagingTemplate.convertAndSend("/topic/game/update", game.getGameId());
+    }
+
+    @MessageMapping("/game/4ffaCom/join")
+    public void queueForQuick4ffaCom(String playerId) {
+        Game game = gameFactoryService.craftQuick4ffaComGame(playerId);
+        Games.getInstance().addNewGame(game);
+        messagingTemplate.convertAndSend("/topic/game/update", game.getGameId());
     }
 
     @MessageMapping("/game/1v1/join")
     @SendTo("/topic/game/1v1/join")
-    public String queueFor1v1(String playerId) {
-        queue1v1.add(playerFactoryService.craftRandomPlayer(playerId));
-        int queueSizeBeforeChanges = queue1v1.size();
-        if (queue1v1.size() >= 2) {
-            game = new Game(queue1v1);
-            queue1v1.clear();
+    public String queueForQuick1v1(String playerId) {
+        Optional<List<String>> players = Queues.getInstance().join1v1Queue(playerId);
+        if (players.isPresent()) {
+            Game game = gameFactoryService.craftQuickMultiPlayerGame(players.get());
+            Games.getInstance().addNewGame(game);
             messagingTemplate.convertAndSend("/topic/game/update", game.getGameId());
         }
-        return playerId + " queued for 1v1 game. Players in queue: " + queueSizeBeforeChanges;
+        return playerId + " queued for 1v1 game";
+    }
+
+    @MessageMapping("/game/4ffa/join")
+    @SendTo("/topic/game/4ffa/join")
+    public String queueForQuick4ffa(String playerId) {
+        Optional<List<String>> players = Queues.getInstance().join4ffaQueue(playerId);
+        if (players.isPresent()) {
+            Game game = gameFactoryService.craftQuickMultiPlayerGame(players.get());
+            Games.getInstance().addNewGame(game);
+            messagingTemplate.convertAndSend("/topic/game/update", game.getGameId());
+        }
+        return playerId + " queued for 4ffa game";
     }
 
     @MessageMapping("/game/move")
     @SendTo("/topic/game/move")
-    public String makeYourMove(Move move) throws RuntimeException {
-        game.submitMove(move);
-        int pendingMoveSizeBeforeChanges = game.getPendingMoves().size();
-        if (game.isReadyToResolveMoves()) {
-            game.resolveMoves();
-            messagingTemplate.convertAndSend("/topic/game/update", game.getGameId());
-        }
-        return move.getPlayerId() + " submitted a Move. Moves submitted: " + pendingMoveSizeBeforeChanges;
+    public String makeYourMove(Move move) throws IllegalMoveException {
+        Games.getInstance().submitMove(move, () -> messagingTemplate.convertAndSend("/topic/game/update", move.getGameId()));
+        return move.getPlayerId() + " submitted a Move";
     }
 
     @MessageMapping("game/view")
     @SendToUser("queue/game/view")
     public Game getGameView(GameViewRequest gameViewRequest) {
-        return game.getViewFor(gameViewRequest.getPlayerId());
+        return Games.getInstance().getGame(gameViewRequest.getGameId()).getViewFor(gameViewRequest.getPlayerId());
     }
 
     @MessageExceptionHandler
