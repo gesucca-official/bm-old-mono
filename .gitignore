@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### built client - I already include the sources in the project
+src/main/resources/static
