@@ -33,7 +33,7 @@ public class Queues {
     public synchronized Optional<List<String>> join4ffaQueue(String playerId) {
         queue4ffa.add(playerId);
         if (queue4ffa.size() >= 4) {
-            List<String> playersInGame = new ArrayList<>(queue1v1);
+            List<String> playersInGame = new ArrayList<>(queue4ffa);
             queue4ffa.clear();
             return Optional.of(playersInGame);
         }

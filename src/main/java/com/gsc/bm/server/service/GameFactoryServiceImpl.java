@@ -40,6 +40,7 @@ public class GameFactoryServiceImpl implements GameFactoryService {
 
     @Override
     public Game craftQuickMultiPlayerGame(List<String> playerIds) {
+        System.out.println(playerIds.stream().map(playerFactoryService::craftRandomPlayer).collect(Collectors.toList()));
         return new Game(
                 playerIds.stream().map(playerFactoryService::craftRandomPlayer).collect(Collectors.toList())
         );

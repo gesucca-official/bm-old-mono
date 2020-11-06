@@ -7,10 +7,10 @@
     Player ID
     <input type="text" [(ngModel)]="playerId" [disabled]="gameState">
   </label>
-  <button (click)="join1vComGame()" [disabled]="joinClicked">Join 1vCom Game</button>
-  <button (click)="join4ffaComGame()" [disabled]="joinClicked && playerId">Join 4ffaCom Game</button>
-  <button (click)="join1v1Game()" [disabled]="joinClicked && playerId">Join 1v1 Game</button>
-  <button (click)="join4ffaGame()" [disabled]="joinClicked && playerId">Join 4ffa Game</button>
+  <button (click)="joinGame('1vCom', '/user/queue')" [disabled]="joinClicked">Join 1vCom Game</button>
+  <button (click)="joinGame('4ffaCom', '/user/queue')" [disabled]="joinClicked && playerId">Join 4ffaCom Game</button>
+  <button (click)="joinGame('1v1', '/topic')" [disabled]="joinClicked && playerId">Join 1v1 Game</button>
+  <button (click)="joinGame('4ffa', '/topic')" [disabled]="joinClicked && playerId">Join 4ffa Game</button>
 </div>
 
 <!--view the game state-->

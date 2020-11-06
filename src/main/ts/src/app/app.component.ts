@@ -44,29 +44,6 @@ export class AppComponent {
 
     this.stompClient.connect({}, () => {
       this.isConnected = true;
-      this.stompClient.subscribe('/topic/game/1v1/join', (sdkEvent) =>
-        this.snackBar.open(sdkEvent.body, 'close', {duration: 5000})
-      );
-      this.stompClient.subscribe('/topic/game/update', (sdkEvent) => {
-          if (!this.gameId) {
-            this.gameId = sdkEvent.body;
-          }
-          const info = {
-            playerId: this.playerId,
-            gameId: this.gameId
-          };
-          this.stompClient.send('/app/game/view', {}, JSON.stringify(info));
-        }
-      );
-      this.stompClient.subscribe('/topic/game/move', (sdkEvent) =>
-        this.snackBar.open(sdkEvent.body, 'close', {duration: 5000})
-      );
-      this.stompClient.subscribe('/user/queue/game/move', (sdkEvent) =>
-        this.snackBar.open(sdkEvent.body, 'close', {duration: 5000})
-      );
-      this.stompClient.subscribe('/user/queue/game/view', (sdkEvent) =>
-        this.onGameUpdate(sdkEvent.body)
-      );
     }, (error) => {
       console.log('errorCallBack -> ' + error);
       setTimeout(() => {
@@ -75,24 +52,23 @@ export class AppComponent {
     });
   }
 
-  join1v1Game(): void {
+  joinGame(whichGame: string, endpoint: string) {
     this.joinClicked = true;
-    this.stompClient.send('/app/game/1v1/join', {}, this.playerId);
+    const subscription = this.stompClient.subscribe(endpoint + '/game/' + whichGame + '/ready', (sdkEvent) => {
+      subscription.unsubscribe();
+      this.initGame(sdkEvent.body);
+    });
+    this.stompClient.send('/app/game/' + whichGame + '/join', {}, this.playerId);
   }
 
-  join4ffaComGame(): void {
-    this.joinClicked = true;
-    this.stompClient.send('/app/game/4ffaCom/join', {}, this.playerId);
-  }
-
-  join1vComGame(): void {
-    this.joinClicked = true;
-    this.stompClient.send('/app/game/1vCom/join', {}, this.playerId);
-  }
-
-  join4ffaGame(): void {
-    this.joinClicked = true;
-    this.stompClient.send('/app/game/4ffa/join', {}, this.playerId);
+  playCard(cardName: string): void {
+    const move = {
+      playedCardName: cardName,
+      playerId: this.playerId,
+      targetId: this.targetOpponent,
+      gameId: this.gameState.gameId
+    };
+    this.stompClient.send('/app/game/' + this.gameId + '/move', {}, JSON.stringify(move));
   }
 
   onGameUpdate(game: any): void {
@@ -130,17 +106,31 @@ export class AppComponent {
     }
   }
 
-  playCard(cardName: string): void {
-    const move = {
-      playedCardName: cardName,
-      playerId: this.playerId,
-      targetId: this.targetOpponent,
-      gameId: this.gameState.gameId
-    };
-    this.stompClient.send('/app/game/move', {}, JSON.stringify(move));
-  }
-
   logGameState(): void {
     console.log(this.gameState);
   }
+
+  private initGame(gameId: string) {
+    this.gameId = gameId;
+    // alert about other players moves
+    this.stompClient.subscribe('/topic/game/' + gameId + '/move', (sdkEvent) => {
+      this.snackBar.open(sdkEvent.body, 'close', {duration: 5000})
+    });
+    // when there's an update about the game get your view
+    this.stompClient.subscribe('/topic/game/' + gameId + '/update', (sdkEvent) => {
+        this.stompClient.send('/app/game/' + gameId + '/' + this.playerId + '/view', {});
+      }
+    );
+    // update game when there's new view
+    this.stompClient.subscribe('/user/queue/game/' + gameId + '/' + this.playerId + '/view', (sdkEvent) =>
+      this.onGameUpdate(sdkEvent.body)
+    );
+    // alert me when I select an illegal move
+    this.stompClient.subscribe('/user/queue/player/action/illegalMove', (sdkEvent) =>
+      this.snackBar.open(sdkEvent.body, 'close', {duration: 5000})
+    );
+
+    this.stompClient.send('/app/game/' + gameId + '/' + this.playerId + '/view', {});
+  }
+
 }

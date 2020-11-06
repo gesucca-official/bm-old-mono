@@ -6,9 +6,7 @@ import com.gsc.bm.server.model.game.Move;
 import com.gsc.bm.server.others.Games;
 import com.gsc.bm.server.others.Queues;
 import com.gsc.bm.server.service.GameFactoryService;
-import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.handler.annotation.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
@@ -22,64 +20,71 @@ public class GameController {
     private final SimpMessagingTemplate messagingTemplate;
     private final GameFactoryService gameFactoryService;
 
+    private final Games games = Games.getInstance();
+
     public GameController(SimpMessagingTemplate messagingTemplate, GameFactoryService gameFactoryService) {
         this.messagingTemplate = messagingTemplate;
         this.gameFactoryService = gameFactoryService;
     }
 
     @MessageMapping("/game/1vCom/join")
-    public void queueForQuick1vCom(String playerId) {
+    @SendToUser("/queue/game/1vCom/ready")
+    public String queueForQuick1vCom(String playerId) {
         Game game = gameFactoryService.craftQuick1vComGame(playerId);
-        Games.getInstance().addNewGame(game);
-        messagingTemplate.convertAndSend("/topic/game/update", game.getGameId());
+        games.addNewGame(game);
+        return game.getGameId();
     }
 
     @MessageMapping("/game/4ffaCom/join")
-    public void queueForQuick4ffaCom(String playerId) {
+    @SendToUser("/queue/game/4ffaCom/ready")
+    public String queueForQuick4ffaCom(String playerId) {
         Game game = gameFactoryService.craftQuick4ffaComGame(playerId);
-        Games.getInstance().addNewGame(game);
-        messagingTemplate.convertAndSend("/topic/game/update", game.getGameId());
+        games.addNewGame(game);
+        return game.getGameId();
     }
 
     @MessageMapping("/game/1v1/join")
-    @SendTo("/topic/game/1v1/join")
-    public String queueForQuick1v1(String playerId) {
+    @SendTo("/topic/game/1v1/ready")
+    public synchronized String queueForQuick1v1(String playerId) {
         Optional<List<String>> players = Queues.getInstance().join1v1Queue(playerId);
         if (players.isPresent()) {
             Game game = gameFactoryService.craftQuickMultiPlayerGame(players.get());
-            Games.getInstance().addNewGame(game);
-            messagingTemplate.convertAndSend("/topic/game/update", game.getGameId());
+            games.addNewGame(game);
+            return game.getGameId();
         }
-        return playerId + " queued for 1v1 game";
+        return null;
     }
 
     @MessageMapping("/game/4ffa/join")
-    @SendTo("/topic/game/4ffa/join")
-    public String queueForQuick4ffa(String playerId) {
+    @SendTo("/topic/game/4ffa/ready")
+    public synchronized String queueForQuick4ffa(String playerId) {
         Optional<List<String>> players = Queues.getInstance().join4ffaQueue(playerId);
         if (players.isPresent()) {
             Game game = gameFactoryService.craftQuickMultiPlayerGame(players.get());
-            Games.getInstance().addNewGame(game);
-            messagingTemplate.convertAndSend("/topic/game/update", game.getGameId());
+            games.addNewGame(game);
+            return game.getGameId();
         }
-        return playerId + " queued for 4ffa game";
+        return null;
     }
 
-    @MessageMapping("/game/move")
-    @SendTo("/topic/game/move")
-    public String makeYourMove(Move move) throws IllegalMoveException {
-        Games.getInstance().submitMove(move, () -> messagingTemplate.convertAndSend("/topic/game/update", move.getGameId()));
+    @MessageMapping("/game/{gameId}/move")
+    @SendTo("/topic/game/{gameId}/move")
+    public String makeYourMove(@DestinationVariable String gameId, @Payload Move move) throws IllegalMoveException {
+        games.submitMove(move, () -> messagingTemplate.convertAndSend("/topic/game/" + gameId + "/update", move.getGameId()));
         return move.getPlayerId() + " submitted a Move";
     }
 
-    @MessageMapping("game/view")
-    @SendToUser("queue/game/view")
-    public Game getGameView(GameViewRequest gameViewRequest) {
-        return Games.getInstance().getGame(gameViewRequest.getGameId()).getViewFor(gameViewRequest.getPlayerId());
+    @MessageMapping("game/{gameId}/{playerId}/view")
+    @SendToUser("/queue/game/{gameId}/{playerId}/view")
+    public Game getGameView(@DestinationVariable String gameId, @DestinationVariable String playerId) {
+        Game view = games.getGame(gameId).getViewFor(playerId);
+        if (games.getGame(gameId).isOver())
+            games.destroyGame(gameId);
+        return view;
     }
 
     @MessageExceptionHandler
-    @SendToUser(value = "/queue/game/move")
+    @SendToUser(value = "/queue/player/action/illegalMove")
     public String handleException(IllegalMoveException exception) {
         return exception.getWhatHeDid();
     }
