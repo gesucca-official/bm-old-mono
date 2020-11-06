@@ -38,16 +38,15 @@ public class Game implements Serializable {
 
     @JsonProperty
     public boolean isOver() {
-        // TODO this only works for single player
+        int dead = 0;
         for (String playerId : players.keySet())
             if (players.get(playerId).getCharacter().isDead())
-                return true;
-        return false;
+                dead++;
+        return dead == players.size() - 1;
     }
 
     @JsonProperty
     public String getWinner() {
-        // TODO this only works for single player
         if (isOver())
             for (String playerId : players.keySet())
                 if (!players.get(playerId).getCharacter().isDead())
