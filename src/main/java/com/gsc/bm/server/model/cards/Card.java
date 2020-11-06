@@ -22,6 +22,11 @@ public interface Card {
 
     CardResolutionReport resolve(Game game, Move move);
 
+    // high priority: resolved first (2 before 1)
+    default int getPriority() {
+        return 1;
+    }
+
     @AllArgsConstructor
     @Getter
     class CardResolutionReport {

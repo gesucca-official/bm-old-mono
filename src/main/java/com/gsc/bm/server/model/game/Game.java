@@ -69,9 +69,14 @@ public class Game implements Serializable {
     public void resolveMoves() {
         for (Move m : pendingMoves)
             m.applyCostTo(this);
+
         pendingMoves.sort(
                 Comparator.comparingInt(
-                        m -> -getSelf(m).getCharacter().getResources().get(Resource.ALERTNESS)));
+                        m -> -getPlayedCardFromHand((Move) m).getPriority() // I am not sure why I have to downcast here
+                ).thenComparingInt(
+                        m -> -getSelf((Move) m).getCharacter().getResources().get(Resource.ALERTNESS)
+                ));
+
         for (Move m : pendingMoves) {
             m.applyEffectTo(this);
             getSelf(m).discardCard(getPlayedCardFromHand(m));

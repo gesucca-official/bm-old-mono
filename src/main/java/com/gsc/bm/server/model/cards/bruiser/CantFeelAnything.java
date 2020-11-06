@@ -7,41 +7,38 @@ import com.gsc.bm.server.model.cards.AbstractCard;
 import com.gsc.bm.server.model.game.Game;
 import com.gsc.bm.server.model.game.Move;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class Glare extends AbstractCard {
+public class CantFeelAnything extends AbstractCard {
 
-    public Glare() {
-        super("PAZIENZA FINITA::::", "danni subiti x1.5 in questo turno, ma violenza +30 alertness +20");
+    public CantFeelAnything() {
+        super("GENTILO IL TUO CAREZZO::", "first strike, +10 alertness e dimezza i danni da botte in questo turno");
     }
 
     @Override
     public Map<Resource, Integer> getCost() {
-        return Collections.emptyMap();
+        return Map.of(Resource.VIOLENCE, 20);
     }
 
     @Override
     public CardResolutionReport resolve(Game game, Move move) {
         game.getSelf(move).getCharacter().getStatuses().add(
                 new Status(
-                        "PAZIENZA FINITA",
-                        "danni subiti x1.5",
-                        Status.StatusType.BAD,
+                        "MI FAI LE CAREZZE",
+                        "danni subiti x0.5",
+                        Status.StatusType.GOOD,
                         Status.StatusFlow.INPUT,
                         Damage.DamageType.HIT,
-                        (incomingDamage -> incomingDamage * 1.5f),
-                        1
+                        (incomingDamage -> incomingDamage * 0.5f),
+                        0
                 ));
 
         return new CardResolutionReport(
                 List.of(
-                        "status PAZIENZA FINITA",
-                        game.getSelf(move).getCharacter().gainResource(Resource.VIOLENCE, 30),
-                        game.getSelf(move).getCharacter().gainResource(Resource.ALERTNESS, 20)
-                ),
-                null
+                        "carezze status",
+                        game.getSelf(move).getCharacter().gainResource(Resource.ALERTNESS, 10)
+                ), null
         );
     }
 }

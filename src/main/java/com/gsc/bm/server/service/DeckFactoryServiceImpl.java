@@ -17,19 +17,21 @@ public class DeckFactoryServiceImpl implements DeckFactoryService {
             List<Card> deck = new ArrayList<>();
             deck.add(new CocktailOnTheGround());
             deck.add(new CocktailOnTheGround());
-            deck.add(new CocktailOnTheGround());
-            deck.add(new SmackInDaFace());
-            deck.add(new SmackInDaFace());
             deck.add(new Glare());
             deck.add(new Glare());
             deck.add(new StunningBlow());
             deck.add(new StunningBlow());
-            deck.add(new StunningBlow());
             deck.add(new SeagullFly());
             deck.add(new SeagullFly());
+            deck.add(new CantFeelAnything());
+            deck.add(new CantFeelAnything());
             deck.add(new RottenBeer());
             deck.add(new RottenBeer());
-            deck.add(new RottenBeer());
+
+
+            deck.add(new HealingBlow());
+            deck.add(new SickeningBlow());
+            deck.add(new ExtremelyViolentBlow());
             return deck;
         } else return null;
     }

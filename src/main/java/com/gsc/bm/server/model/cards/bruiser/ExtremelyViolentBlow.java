@@ -9,9 +9,9 @@ import com.gsc.bm.server.model.game.Move;
 import java.util.List;
 import java.util.Map;
 
-public class SmackInDaFace extends AbstractCard {
+public class ExtremelyViolentBlow extends AbstractCard {
 
-    public SmackInDaFace() {
+    public ExtremelyViolentBlow() {
         super("SPEDIAMOTI DUNQUE IN O-AHIO", "20 danni + 1 per ogni 2 di Violenza che ti rimane");
     }
 

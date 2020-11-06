@@ -13,7 +13,7 @@ import java.io.Serializable;
 @ToString
 public class Damage implements Serializable {
 
-    public enum DamageType {
+    public enum DamageType implements Statistic, Serializable {
         HIT, CUT, POISON
     }
 

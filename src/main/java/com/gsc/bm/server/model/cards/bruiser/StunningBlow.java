@@ -17,7 +17,7 @@ public class StunningBlow extends AbstractCard {
 
     @Override
     public Map<Resource, Integer> getCost() {
-        return Map.of(Resource.VIOLENCE, 100);
+        return Map.of(Resource.VIOLENCE, 10);
     }
 
     @Override

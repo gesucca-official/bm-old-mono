@@ -1,6 +1,6 @@
 package com.gsc.bm.server.model.cards.bruiser;
 
-import com.gsc.bm.server.model.Attribute;
+import com.gsc.bm.server.model.Damage;
 import com.gsc.bm.server.model.Resource;
 import com.gsc.bm.server.model.Status;
 import com.gsc.bm.server.model.cards.AbstractCard;
@@ -19,7 +19,7 @@ public class RottenBeer extends AbstractCard {
 
     @Override
     public Map<Resource, Integer> getCost() {
-        return Map.of(Resource.ALERTNESS, 5);
+        return Map.of();
     }
 
     @Override
@@ -29,8 +29,9 @@ public class RottenBeer extends AbstractCard {
                         "PERONI VUOTA IN MANO",
                         "danni inflitti x1.5",
                         Status.StatusType.GOOD,
-                        Attribute.STRENGTH,
-                        (strengthSupplier -> strengthSupplier.get() * 1.5f),
+                        Status.StatusFlow.OUTPUT,
+                        Damage.DamageType.HIT,
+                        (damageDone -> damageDone * 1.5f),
                         1
                 ));
         return new CardResolutionReport(
