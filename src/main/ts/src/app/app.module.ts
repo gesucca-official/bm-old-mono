@@ -7,10 +7,12 @@ import {CommonModule} from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatSelectModule} from '@angular/material/select';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import { PhaserGameComponentComponent } from './phaser-game-component/phaser-game-component.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    PhaserGameComponentComponent
   ],
     imports: [
         CommonModule,
