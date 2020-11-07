@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {WebsocketService} from "../service/websocket.service";
-import Swal from 'sweetalert2';
+import {MatDialog} from "@angular/material/dialog";
+import {CodeDialogComponent} from "./code-dialog/code-dialog.component";
 
 @Component({
   selector: 'app-debug-client',
@@ -20,7 +21,7 @@ export class DebugClientComponent implements OnInit {
   targetOpponent: string;
   cardsInHand: any[];
 
-  constructor(protected websocketService: WebsocketService) {
+  constructor(protected websocketService: WebsocketService, public dialog: MatDialog) {
   }
 
   connect(): void {
@@ -70,22 +71,37 @@ export class DebugClientComponent implements OnInit {
     this.cardsInHand = this.gameState.players[this.playerId].cardsInHand;
 
     if (this.gameState.lastResolvedMoves !== null) {
-      let turnReport = '';
-      this.gameState.lastResolvedMoves.forEach((move) =>
-        turnReport = turnReport += ('<b>' + move.playerId + '->' + move.targetId
-          + '</b><br>'
-          + move.playedCardName + ' self:' + JSON.stringify(move.moveEffectToSelf) + ' target:' + JSON.stringify(move.moveEffectToTarget)
-          + '<br><br>')
+      this.dialog.open(CodeDialogComponent, {
+          width: 'fit-content',
+          data: {
+            // if there are no last resolved moves, game is just begun
+            title: this.gameState.lastResolvedMoves.length == 0 ? 'Begin' : 'Turn Resolution',
+            data: this.gameState.lastResolvedMoves.length == 0 ? {
+                you: this.playerId,
+                opponents: this.opponentsNames
+              }
+              : this.gameState.lastResolvedMoves.map(m => {
+                // clean null values and game id from moves?? not sure if it's a good idea, can hide important things
+                delete m.gameId;
+                Object.keys(m).forEach(k => {
+                  if (m[k] === null)
+                    delete m[k];
+                })
+                return m;
+              })
+          }
+        }
       );
-      Swal.fire({
-        title: turnReport === '' ? 'Game Begins' : 'Turn Resolution',
-        html: turnReport,
-        confirmButtonText: 'Ok'
-      });
     }
 
     if (this.gameState.over) {
-      Swal.fire('GAME IS OVER!!! WINNER: ' + this.gameState.winner);
+      this.dialog.open(CodeDialogComponent, {
+        width: 'fit-content',
+        data: {
+          title: 'WINNER: ' + this.gameState.winner,
+          data: this.gameState.lastResolvedMoves
+        }
+      });
 
       this.websocketService.unsubToGame(this.gameId);
 
@@ -101,11 +117,15 @@ export class DebugClientComponent implements OnInit {
     }
   }
 
-  logGameState(): void {
+  logGameState()
+    :
+    void {
     console.log(this.gameState);
   }
 
-  ngOnInit(): void {
+  ngOnInit()
+    :
+    void {
   }
 
 }

@@ -1,20 +1,30 @@
-<!--websocket connection-->
-<button (click)="connect()">Connect to Server</button>
+<mat-card class="init-game-card" style="margin-top: 5px">
+  <!--websocket connection-->
+  <button mat-raised-button color="accent" (click)="connect()">Connect to Server</button>
+  <!--view the game state-->
+  <button mat-raised-button (click)="logGameState()" style="float: right">Log Game State</button>
 
-<!--join game-->
-<div *ngIf="isConnected()" style="margin-top: 20px;">
-  <label>
-    Player ID
-    <input type="text" [(ngModel)]="playerId" [disabled]="gameState">
-  </label>
-  <button (click)="joinGame('1vCom')" [disabled]="joinClicked || playerId == ''">Join 1vCom Game</button>
-  <button (click)="joinGame('4ffaCom')" [disabled]="joinClicked || playerId == ''">Join 4ffaCom Game</button>
-  <button (click)="joinGame('1v1')" [disabled]="joinClicked || playerId == ''">Join 1v1 Game</button>
-  <button (click)="joinGame('4ffa')" [disabled]="joinClicked || playerId == ''">Join 4ffa Game</button>
-</div>
+  <!--join game-->
+  <div *ngIf="isConnected()" style="margin-top: 20px">
+    <form>
+      <mat-form-field color="accent" style="margin-right: 10px">
+        <mat-label>Player ID</mat-label>
+        <input matInput type="text" [disabled]="gameState" [(ngModel)]="playerId" [ngModelOptions]="{standalone: true}">
+      </mat-form-field>
+      <button mat-raised-button color="accent" [disabled]="joinClicked || playerId == ''"
+              [matMenuTriggerFor]="playModes">Play Modes
+      </button>
+      <mat-menu #playModes="matMenu">
+        <button mat-menu-item (click)="joinGame('1vCom')">Join 1vCom Game</button>
+        <button mat-menu-item (click)="joinGame('4ffaCom')">Join 4ffaCom Game</button>
+        <button mat-menu-item (click)="joinGame('1v1')">Join 1v1 Game</button>
+        <button mat-menu-item (click)="joinGame('4ffa')">Join 4ffa Game</button>
+      </mat-menu>
+    </form>
+  </div>
 
-<!--view the game state-->
-<button (click)="logGameState()" style="float: right">Log Game State</button>
+</mat-card>
+
 <div *ngIf="gameState">
   <pre class="code-back-player">
     <code [innerText]="playerState | json">
