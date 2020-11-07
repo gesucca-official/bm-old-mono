@@ -1,0 +1,47 @@
+<!--websocket connection-->
+<button (click)="connect()">Connect to Server</button>
+
+<!--join game-->
+<div *ngIf="isConnected()" style="margin-top: 20px;">
+  <label>
+    Player ID
+    <input type="text" [(ngModel)]="playerId" [disabled]="gameState">
+  </label>
+  <button (click)="joinGame('1vCom')" [disabled]="joinClicked || playerId == ''">Join 1vCom Game</button>
+  <button (click)="joinGame('4ffaCom')" [disabled]="joinClicked || playerId == ''">Join 4ffaCom Game</button>
+  <button (click)="joinGame('1v1')" [disabled]="joinClicked || playerId == ''">Join 1v1 Game</button>
+  <button (click)="joinGame('4ffa')" [disabled]="joinClicked || playerId == ''">Join 4ffa Game</button>
+</div>
+
+<!--view the game state-->
+<button (click)="logGameState()" style="float: right">Log Game State</button>
+<div *ngIf="gameState">
+  <pre class="code-back-player">
+    <code [innerText]="playerState | json">
+    </code>
+  </pre>
+  <pre *ngFor="let opponent of opponents" class="code-back-opponent">
+    <code [innerText]="opponent | json">
+    </code>
+  </pre>
+</div>
+
+<!--choose your move-->
+<label *ngIf="cardsInHand">
+  Target Opponent
+  <select [(ngModel)]="targetOpponent">
+    <option *ngFor="let opponent of opponentsNames" [value]="opponent" ngDefaultControl>
+      {{opponent}}
+    </option>
+  </select>
+</label>
+<div *ngFor="let card of cardsInHand" style="margin-bottom: 5px;">
+  {{card.name}}
+  <button (click)="playCard(card.name)">Play This</button>
+  <br>
+  cost:{{card.cost | json}}
+  <br>
+  effect:{{card.effect}}
+  <br>
+  ----------------------------------------------------------------
+</div>
