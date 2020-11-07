@@ -1,3 +1,15 @@
 .client-button {
   margin: 5px;
 }
+
+.presentation-card {
+  width: 75%;
+  margin-top: 10px;
+  margin-inline: auto;
+}
+
+.client-chooser-card {
+  width: fit-content;
+  margin-top: 10px;
+  margin-inline: auto;
+}
