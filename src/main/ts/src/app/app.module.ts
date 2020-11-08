@@ -15,7 +15,8 @@ import {MatSelectModule} from "@angular/material/select";
 import {MatInputModule} from "@angular/material/input";
 import {MatMenuModule} from "@angular/material/menu";
 import {MatDialogModule} from "@angular/material/dialog";
-import { CodeDialogComponent } from './client-debug/code-dialog/code-dialog.component';
+import {CodeDialogComponent} from './client-debug/code-dialog/code-dialog.component';
+import {MatSnackBarModule} from "@angular/material/snack-bar";
 
 @NgModule({
   declarations: [
@@ -41,7 +42,11 @@ import { CodeDialogComponent } from './client-debug/code-dialog/code-dialog.comp
     MatSelectModule,
     MatInputModule,
     MatMenuModule,
-    MatDialogModule
+    MatDialogModule,
+    MatSnackBarModule
+  ],
+  providers: [
+    MatSnackBarModule
   ],
   bootstrap: [
     AppComponent

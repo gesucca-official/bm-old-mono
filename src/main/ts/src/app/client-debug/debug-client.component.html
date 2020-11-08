@@ -9,10 +9,10 @@
     <form>
       <mat-form-field color="accent" style="margin-right: 10px">
         <mat-label>Player ID</mat-label>
-        <input matInput type="text" [disabled]="gameState" [(ngModel)]="playerId" [ngModelOptions]="{standalone: true}">
+        <input matInput type="text" [disabled]="gameService.gameState" [(ngModel)]="gameService.playerId" [ngModelOptions]="{standalone: true}">
       </mat-form-field>
-      <button mat-raised-button color="accent" [disabled]="joinClicked || playerId == ''"
-              [matMenuTriggerFor]="playModes">Play Modes
+      <button mat-raised-button color="accent" [disabled]="joinClicked || gameService.playerId == null"
+              [matMenuTriggerFor]="playModes">Quick Play Modes
       </button>
       <mat-menu #playModes="matMenu">
         <button mat-menu-item (click)="joinGame('1vCom')">Join 1vCom Game</button>
@@ -25,7 +25,7 @@
 
 </mat-card>
 
-<div *ngIf="gameState">
+<div *ngIf="gameService.gameState">
   <pre class="code-back-player">
     <code [innerText]="playerState | json">
     </code>
