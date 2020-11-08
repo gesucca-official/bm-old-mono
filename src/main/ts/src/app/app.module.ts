@@ -17,13 +17,15 @@ import {MatMenuModule} from "@angular/material/menu";
 import {MatDialogModule} from "@angular/material/dialog";
 import {CodeDialogComponent} from './client-debug/code-dialog/code-dialog.component';
 import {MatSnackBarModule} from "@angular/material/snack-bar";
+import { CharacterCardComponent } from './client-debug/character-card/character-card.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     DebugClientComponent,
     PhaserClientComponent,
-    CodeDialogComponent
+    CodeDialogComponent,
+    CharacterCardComponent
   ],
   imports: [
     CommonModule,

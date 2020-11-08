@@ -1,0 +1,14 @@
+<mat-card class="character-card">
+  <mat-card-header>
+    <mat-card-title>{{playerState.playerId}}</mat-card-title>
+    <mat-card-subtitle>{{playerState.character.name}}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <div *ngFor="let mapEntry of playerState.character.resources | keyvalue">
+      {{mapEntry.key}}: {{mapEntry.value}}
+    </div>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button (click)="logState()">Log State</button>
+  </mat-card-actions>
+</mat-card>
