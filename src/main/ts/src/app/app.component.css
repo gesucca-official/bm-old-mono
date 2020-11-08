@@ -4,12 +4,10 @@
 
 .presentation-card {
   width: 75%;
-  margin-top: 10px;
-  margin-inline: auto;
+  margin: 10px auto;
 }
 
 .client-chooser-card {
   width: fit-content;
-  margin-top: 20px;
-  margin-inline: auto;
+  margin: 20px auto;
 }

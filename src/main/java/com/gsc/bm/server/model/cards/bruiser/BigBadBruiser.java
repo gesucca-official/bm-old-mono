@@ -7,7 +7,7 @@ public class BigBadBruiser extends Character {
 
     public BigBadBruiser() {
         super("Spazienzio de la Ucciso", 100, 20);
-        resources.put(Resource.VIOLENCE, 30);
+        resources.put(Resource.VIOLENCE, 200); // increase starting violence to avoid bug for now
     }
 
 }

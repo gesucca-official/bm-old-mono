@@ -1,7 +1,7 @@
-<h1 mat-dialog-title>{{data.title}}</h1>
+<h1 mat-dialog-title>{{dialogData.title}}</h1>
 <div mat-dialog-content>
   <pre>
-    <code [innerText]="data.data | json">
+    <code [innerText]="dialogData.jsonTextData | json">
     </code>
   </pre>
 </div>

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {WebsocketService} from "../service/websocket.service";
 import {MatDialog} from "@angular/material/dialog";
 import {CodeDialogComponent} from "./code-dialog/code-dialog.component";
@@ -10,15 +10,10 @@ import {GameService} from "../service/game.service";
   templateUrl: './debug-client.component.html',
   styleUrls: ['./debug-client.component.css']
 })
-export class DebugClientComponent implements OnInit {
+export class DebugClientComponent {
 
   joinClicked: boolean;
-
-  playerState: any;
-  opponents: any[];
-  opponentsNames: string[];
-  targetOpponent: string;
-  cardsInHand: any[];
+  selectedTargetOpponent: string;
 
   constructor(protected websocketService: WebsocketService,
               public  gameService: GameService,
@@ -41,8 +36,8 @@ export class DebugClientComponent implements OnInit {
       this.websocketService.subToGame(
         this.gameService.gameId,
         this.gameService.playerId,
-        (sdkEvent) => this.snackBar.open(sdkEvent.body, 'ok', {duration: 2000}),
-        (sdkEvent) => this.snackBar.open(sdkEvent.body, 'ok', {duration: 2000}),
+        (sdkEvent) => this.snackBar.open(sdkEvent.body, 'ok', {duration: 3000}),
+        (sdkEvent) => this.snackBar.open(sdkEvent.body, 'ok', {duration: 1500}),
         (sdkEvent) => this.onGameUpdate(sdkEvent.body)
       );
       this.websocketService.requestGameView(this.gameService.gameId, this.gameService.playerId);
@@ -53,47 +48,23 @@ export class DebugClientComponent implements OnInit {
     this.websocketService.submitMove({
       playedCardName: cardName,
       playerId: this.gameService.playerId,
-      targetId: this.targetOpponent,
+      targetId: this.selectedTargetOpponent,
       gameId: this.gameService.gameId
     });
   }
 
   onGameUpdate(game: any): void {
     this.gameService.gameState = JSON.parse(game);
-    this.playerState = JSON.parse(JSON.stringify(this.gameService.gameState.players[this.gameService.playerId]));
-    delete this.playerState.cardsInHand;
-    delete this.playerState.deck;
+    this.selectedTargetOpponent = this.gameService.opponents[0].playerId; // auto select first
 
-    this.opponents = JSON.parse(JSON.stringify(this.gameService.gameState.players));
-    delete this.opponents[this.gameService.playerId];
-    this.opponentsNames = Object.keys(this.opponents);
-    this.targetOpponent = this.opponentsNames[0]; // auto select first
-    this.opponents = new Array(this.opponents); // ngFor is complaining otherwise
-
-    this.cardsInHand = this.gameService.gameState.players[this.gameService.playerId].cardsInHand;
-
-    if (this.gameService.gameState.lastResolvedMoves !== null) {
+    if (!this.gameService.gameState.over) {
       this.dialog.open(CodeDialogComponent, {
-          width: 'fit-content',
-          data: {
-            // if there are no last resolved moves, game is just begun
-            title: this.gameService.gameState.lastResolvedMoves.length == 0 ? 'Begin' : 'Turn Resolution',
-            data: this.gameService.gameState.lastResolvedMoves.length == 0 ? {
-                you: this.gameService.playerId,
-                opponents: this.opponentsNames
-              }
-              : this.gameService.gameState.lastResolvedMoves.map(m => {
-                // clean null values and game id from moves?? not sure if it's a good idea, can hide important things
-                delete m.gameId;
-                Object.keys(m).forEach(k => {
-                  if (m[k] === null)
-                    delete m[k];
-                })
-                return m;
-              })
-          }
+        width: 'fit-content',
+        data: {
+          title: CodeDialogComponent.getDialogTitle(this.gameService.gameState),
+          jsonTextData: CodeDialogComponent.getDialogRawJsonTest(this.gameService)
         }
-      );
+      });
     }
 
     if (this.gameService.gameState.over) {
@@ -106,23 +77,14 @@ export class DebugClientComponent implements OnInit {
       });
 
       this.websocketService.unsubToGame(this.gameService.gameId);
-
       this.gameService.clearGame();
-
       this.joinClicked = false;
-      this.playerState = null;
-      this.opponents = [];
-      this.opponentsNames = [];
-      this.targetOpponent = null;
-      this.cardsInHand = [];
+      this.selectedTargetOpponent = null;
     }
   }
 
   logGameState(): void {
     console.log(this.gameService.gameState);
-  }
-
-  ngOnInit(): void {
   }
 
 }
