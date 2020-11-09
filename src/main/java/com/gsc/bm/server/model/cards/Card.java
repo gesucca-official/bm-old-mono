@@ -9,14 +9,21 @@ import lombok.Getter;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface Card {
+
+    public enum CardTarget {
+        SELF, OPPONENT
+    }
 
     String getName();
 
     // description only, no game logic purpose
     @JsonProperty
     String getEffect();
+
+    Set<CardTarget> getCanTarget();
 
     Map<Resource, Integer> getCost();
 

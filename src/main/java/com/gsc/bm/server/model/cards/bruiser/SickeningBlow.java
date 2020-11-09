@@ -8,11 +8,17 @@ import com.gsc.bm.server.model.game.Move;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class SickeningBlow extends AbstractCard {
 
     public SickeningBlow() {
         super("ORMALE AMMALIAMOTI DI BOTTE", "10 danni e 10 tossicità al target");
+    }
+
+    @Override
+    public Set<CardTarget> getCanTarget() {
+        return Set.of(CardTarget.OPPONENT);
     }
 
     @Override

@@ -8,11 +8,17 @@ import com.gsc.bm.server.model.game.Move;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class HealingBlow extends AbstractCard {
 
     public HealingBlow() {
         super("GUARIAMOTI HO DETTO", "Botta micidiale (30 danni) che toglie tossicità e alcool dal sangue");
+    }
+
+    @Override
+    public Set<CardTarget> getCanTarget() {
+        return Set.of(CardTarget.OPPONENT);
     }
 
     @Override

@@ -7,11 +7,17 @@ import com.gsc.bm.server.model.game.Move;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class CocktailOnTheGround extends AbstractCard {
 
     public CocktailOnTheGround() {
         super("Negroni trovato per terra", "+5 toxic +10 tasso alcolemico e +20 violenza");
+    }
+
+    @Override
+    public Set<CardTarget> getCanTarget() {
+        return Set.of(CardTarget.SELF);
     }
 
     @Override

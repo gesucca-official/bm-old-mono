@@ -10,11 +10,17 @@ import com.gsc.bm.server.model.game.Move;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Glare extends AbstractCard {
 
     public Glare() {
         super("PAZIENZA FINITA::::", "danni subiti x1.5 in questo turno, ma violenza +30 alertness +20");
+    }
+
+    @Override
+    public Set<CardTarget> getCanTarget() {
+        return Set.of(CardTarget.SELF);
     }
 
     @Override

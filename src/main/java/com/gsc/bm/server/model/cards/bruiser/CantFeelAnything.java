@@ -9,11 +9,17 @@ import com.gsc.bm.server.model.game.Move;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class CantFeelAnything extends AbstractCard {
 
     public CantFeelAnything() {
         super("GENTILO IL TUO CAREZZO::", "first strike, +10 alertness e dimezza i danni da botte in questo turno");
+    }
+
+    @Override
+    public Set<CardTarget> getCanTarget() {
+        return Set.of(CardTarget.SELF);
     }
 
     @Override

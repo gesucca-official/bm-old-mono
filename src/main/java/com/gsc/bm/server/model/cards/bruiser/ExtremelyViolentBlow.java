@@ -8,11 +8,17 @@ import com.gsc.bm.server.model.game.Move;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ExtremelyViolentBlow extends AbstractCard {
 
     public ExtremelyViolentBlow() {
         super("SPEDIAMOTI DUNQUE IN O-AHIO", "20 danni + 1 per ogni 2 di Violenza che ti rimane");
+    }
+
+    @Override
+    public Set<CardTarget> getCanTarget() {
+        return Set.of(CardTarget.OPPONENT);
     }
 
     @Override

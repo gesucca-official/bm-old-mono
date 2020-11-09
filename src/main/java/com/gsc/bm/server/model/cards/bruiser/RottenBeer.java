@@ -9,12 +9,18 @@ import com.gsc.bm.server.model.game.Move;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class RottenBeer extends AbstractCard {
 
     public RottenBeer() {
         super("Peroni da 66, calda", "+5 tasso alcolemico, +5 violenza, " +
                 "prossimi danni x1.5 perché gliela tiri in testa");
+    }
+
+    @Override
+    public Set<CardTarget> getCanTarget() {
+        return Set.of(CardTarget.SELF);
     }
 
     @Override

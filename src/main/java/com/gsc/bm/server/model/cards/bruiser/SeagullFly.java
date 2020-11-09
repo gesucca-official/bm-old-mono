@@ -18,6 +18,11 @@ public class SeagullFly extends AbstractCard {
     }
 
     @Override
+    public Set<CardTarget> getCanTarget() {
+        return Set.of(CardTarget.OPPONENT);
+    }
+
+    @Override
     public Map<Resource, Integer> getCost() {
         return Map.of(Resource.VIOLENCE, 10);
     }
