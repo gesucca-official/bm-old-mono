@@ -128,4 +128,8 @@ export class DebugClientComponent {
         + '</p>';
     }).reduce((a, b) => a + '<br>' + b)
   }
+
+  playDraggedCard($event: any) {
+    console.log($event);
+  }
 }

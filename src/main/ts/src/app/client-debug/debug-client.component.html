@@ -28,13 +28,25 @@
 
 </mat-card>
 
-<div *ngIf="gameService.gameState" fxLayout="row wrap" fxLayoutGap="5px grid">
-  <app-character-card fxFlex="25%" fxFlex.xs="100%" fxFlex.sm="33%"
-                      [isPlayer]="true"
-                      [playerState]="gameService.playerState"></app-character-card>
-  <app-character-card fxFlex="25%" fxFlex.xs="100%" fxFlex.sm="33%" *ngFor="let opponent of gameService.opponents"
-                      [isPlayer]="false"
-                      [playerState]="opponent"></app-character-card>
+<div *ngIf="gameService.gameState" cdkDropListGroup>
+  <div fxLayout="row wrap" fxLayoutGap="5px grid">
+    <app-character-card fxFlex="25%" fxFlex.xs="100%" fxFlex.sm="33%"
+                        [isPlayer]="true"
+                        [playerState]="gameService.playerState"
+                        id="self"
+                        cdkDropList (cdkDropListDropped)="playDraggedCard($event)">
+    </app-character-card>
+    <app-character-card fxFlex="25%" fxFlex.xs="100%" fxFlex.sm="33%" *ngFor="let opponent of gameService.opponents"
+                        [isPlayer]="false"
+                        [playerState]="opponent"
+                        id="{{opponent}}"
+                        cdkDropList (cdkDropListDropped)="playDraggedCard($event)">
+    </app-character-card>
+  </div>
+
+  <app-card-in-hand *ngFor="let card of gameService.cardsInHand"
+                    id="{{card.name}}"
+                    cdkDropList cdkDrag></app-card-in-hand>
 </div>
 
 <br>
