@@ -1,14 +1,32 @@
 <mat-card class="character-card">
-  <mat-card-header>
-    <mat-card-title>{{playerState.playerId}}</mat-card-title>
+  <mat-card-header [ngStyle]="{'color': isPlayer ? '#fff176' : ''}">
+    <mat-card-title>
+      {{playerState.playerId}}
+      <b style="color: red" *ngIf="playerState.character.dead">DEAD</b>
+    </mat-card-title>
     <mat-card-subtitle>{{playerState.character.name}}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <div *ngFor="let mapEntry of playerState.character.resources | keyvalue">
-      {{mapEntry.key}}: {{mapEntry.value}}
+
+    <p>
+      <b>HEALTH</b>: {{health}}
+      <b>ALERTNESS</b>: {{alertness}}
+    </p>
+
+    <div *ngFor="let mapEntry of otherResources | keyvalue">
+      <div *ngIf="mapEntry.value > 0">
+        <b>{{mapEntry.key}}</b>: {{mapEntry.value}}
+      </div>
     </div>
+
+    <br>
+
+    <p *ngFor="let status of playerState.character.statuses">
+      Status: <b>{{status.name}}</b> <br> ({{status.description}})
+    </p>
+
   </mat-card-content>
   <mat-card-actions>
-    <button mat-raised-button (click)="logState()">Log State</button>
+    <button mat-raised-button class="mat-elevation-z2" (click)="logState()">Log State</button>
   </mat-card-actions>
 </mat-card>

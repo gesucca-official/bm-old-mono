@@ -75,6 +75,7 @@ public abstract class Character implements Serializable {
     }
 
     public String emptyResource(Resource res) {
+        resources.putIfAbsent(res, 0);
         return editResource(res, -getResources().get(res), Set.of());
     }
 

@@ -2,7 +2,9 @@
   <!--websocket connection-->
   <button mat-raised-button color="accent" (click)="connect()">Connect to Server</button>
   <!--view the game state-->
-  <button mat-raised-button (click)="logGameState()" style="float: right">Log Game State</button>
+  <button mat-raised-button class="mat-elevation-z2" (click)="logGameState()" style="float: right">
+    Log Game State
+  </button>
 
   <!--join game-->
   <div *ngIf="isConnected()" style="margin-top: 20px">
@@ -26,19 +28,16 @@
 
 </mat-card>
 
-<div *ngIf="gameService.gameState">
-  <!--<pre class="code-back-player">
-    <code [innerText]="gameService.playerState | json">
-    </code>
-  </pre>
-  <pre *ngFor="let opponent of gameService.opponents" class="code-back-opponent">
-    <code [innerText]="opponent | json">
-    </code>
-  </pre>-->
-
-  <app-character-card [playerState]="gameService.playerState"></app-character-card>
+<div *ngIf="gameService.gameState" fxLayout="row wrap" fxLayoutGap="5px grid">
+  <app-character-card fxFlex="25%" fxFlex.xs="100%" fxFlex.sm="33%"
+                      [isPlayer]="true"
+                      [playerState]="gameService.playerState"></app-character-card>
+  <app-character-card fxFlex="25%" fxFlex.xs="100%" fxFlex.sm="33%" *ngFor="let opponent of gameService.opponents"
+                      [isPlayer]="false"
+                      [playerState]="opponent"></app-character-card>
 </div>
 
+<br>
 <!--choose your move-->
 <label *ngIf="gameService.cardsInHand">
   Target Opponent
