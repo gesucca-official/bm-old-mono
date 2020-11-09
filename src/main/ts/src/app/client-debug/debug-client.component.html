@@ -36,7 +36,10 @@
                       [isPlayer]="false"
                       [playerState]="opponent"></app-character-card>
 </div>
-
+<br>
+<div style="margin: auto; width: 75%">
+  <app-card-in-hand *ngFor="let card of gameService.cardsInHand"></app-card-in-hand>
+</div>
 <br>
 <!--choose your move-->
 <label *ngIf="gameService.cardsInHand">

@@ -19,6 +19,8 @@ import {CodeDialogComponent} from './client-debug/code-dialog/code-dialog.compon
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {CharacterCardComponent} from './client-debug/character-card/character-card.component';
 import {FlexLayoutModule} from "@angular/flex-layout";
+import { CardInHandComponent } from './client-debug/card-in-hand/card-in-hand.component';
+import {MatExpansionModule} from "@angular/material/expansion";
 
 @NgModule({
   declarations: [
@@ -26,7 +28,8 @@ import {FlexLayoutModule} from "@angular/flex-layout";
     DebugClientComponent,
     PhaserClientComponent,
     CodeDialogComponent,
-    CharacterCardComponent
+    CharacterCardComponent,
+    CardInHandComponent
   ],
   imports: [
     CommonModule,
@@ -47,7 +50,8 @@ import {FlexLayoutModule} from "@angular/flex-layout";
     MatInputModule,
     MatMenuModule,
     MatDialogModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatExpansionModule
   ],
   providers: [
     MatSnackBarModule
