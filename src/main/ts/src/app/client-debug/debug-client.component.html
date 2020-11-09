@@ -36,17 +36,39 @@
                         id="self"
                         cdkDropList (cdkDropListDropped)="playDraggedCard($event)">
     </app-character-card>
-    <app-character-card fxFlex="25%" fxFlex.xs="100%" fxFlex.sm="33%" *ngFor="let opponent of gameService.opponents"
+    <!--TODO OK hear me out, I'm not gone mad-->
+    <!--ngFor somehow messes with cdkDropList and I figured out I can't dynamically generate this with it-->
+    <!--luckily I have either 1 or 3 opponents, so with this heresy I can get away and have my dear d&d-->
+    <app-character-card fxFlex="25%" fxFlex.xs="100%" fxFlex.sm="33%"
                         [isPlayer]="false"
-                        [playerState]="opponent"
-                        id="{{opponent}}"
+                        [playerState]="gameService.opponents[0]"
+                        id="{{gameService.opponents[0].playerId}}"
                         cdkDropList (cdkDropListDropped)="playDraggedCard($event)">
+    </app-character-card>
+    <app-character-card fxFlex="25%" fxFlex.xs="100%" fxFlex.sm="33%" *ngIf="gameService.opponents.length >= 2"
+                        [isPlayer]="false"
+                        [playerState]="gameService.opponents[1]"
+                        id="{{gameService.opponents[1].playerId}}"
+                        cdkDropList (cdkDropListDropped)="playDraggedCard($event)">
+    </app-character-card>
+    <app-character-card fxFlex="25%" fxFlex.xs="100%" fxFlex.sm="33%" *ngIf="gameService.opponents.length >= 3"
+                        [isPlayer]="false"
+                        [playerState]="gameService.opponents[2]"
+                        id="{{gameService.opponents[2].playerId}}"
+                        cdkDropList (cdkDropListDropped)="playDraggedCard($event)">
+      <!--no placeholder-->
+      <div *cdkDragPlaceholder></div>
     </app-character-card>
   </div>
 
-  <app-card-in-hand *ngFor="let card of gameService.cardsInHand"
-                    id="{{card.name}}"
-                    cdkDropList cdkDrag></app-card-in-hand>
+  <br>
+
+  <div>
+    <app-card-in-hand *ngFor="let card of gameService.cardsInHand"
+                      id="{{card.name}}"
+                      cdkDropList cdkDrag></app-card-in-hand>
+  </div>
+
 </div>
 
 <br>

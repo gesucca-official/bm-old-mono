@@ -2,6 +2,11 @@
   margin: 10px;
 }
 
+app-card-in-hand {
+  width: 75%;
+  margin: auto;
+}
+
 .code-back-player {
   background: rgb(226,246,226);
 }

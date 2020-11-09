@@ -21,6 +21,7 @@ import {CharacterCardComponent} from './client-debug/character-card/character-ca
 import {FlexLayoutModule} from "@angular/flex-layout";
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {CardInHandComponent} from './client-debug/card-in-hand/card-in-hand.component';
+import {MatExpansionModule} from '@angular/material/expansion';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import {CardInHandComponent} from './client-debug/card-in-hand/card-in-hand.comp
     MatInputModule,
     MatMenuModule,
     MatDialogModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatExpansionModule
   ],
   providers: [
     MatSnackBarModule
