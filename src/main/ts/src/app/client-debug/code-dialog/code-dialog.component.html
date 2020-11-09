@@ -1,7 +1,8 @@
 <h1 mat-dialog-title>{{dialogData.title}}</h1>
 <div mat-dialog-content>
-  <pre>
-    <code [innerText]="dialogData.jsonTextData | json">
-    </code>
-  </pre>
+
+  <div [innerHTML]="dialogData.html">
+  </div>
+
+  <button mat-raised-button (click)="logRawJson()">Log JSON</button>
 </div>

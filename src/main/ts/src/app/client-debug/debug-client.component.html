@@ -27,14 +27,14 @@
 </mat-card>
 
 <div *ngIf="gameService.gameState">
-  <pre class="code-back-player">
+  <!--<pre class="code-back-player">
     <code [innerText]="gameService.playerState | json">
     </code>
   </pre>
   <pre *ngFor="let opponent of gameService.opponents" class="code-back-opponent">
     <code [innerText]="opponent | json">
     </code>
-  </pre>
+  </pre>-->
 
   <app-character-card [playerState]="gameService.playerState"></app-character-card>
 </div>

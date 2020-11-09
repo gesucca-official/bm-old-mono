@@ -61,8 +61,9 @@ export class DebugClientComponent {
       this.dialog.open(CodeDialogComponent, {
         width: 'fit-content',
         data: {
-          title: CodeDialogComponent.getDialogTitle(this.gameService.gameState),
-          jsonTextData: CodeDialogComponent.getDialogRawJsonTest(this.gameService)
+          title: this.getDialogTitle(),
+          html: this.getDialogHtml(),
+          jsonTextData: this.getDialogRawJsonTest()
         }
       });
     }
@@ -87,4 +88,44 @@ export class DebugClientComponent {
     console.log(this.gameService.gameState);
   }
 
+  private getDialogTitle(): string {
+    // if there are no last resolved moves, game is just begun
+    return this.gameService.gameState.lastResolvedMoves.length == 0 ? 'Begin' : 'Turn Resolution';
+  }
+
+  private getDialogRawJsonTest(): string {
+    return this.gameService.gameState.lastResolvedMoves.length == 0 ?
+      this.getPlayersRawJsonText() : this.gameService.gameState.lastResolvedMoves
+  }
+
+  private getPlayersRawJsonText() {
+    return {
+      you: this.gameService.playerId,
+      opponents: this.gameService.opponents.map(o => o.playerId)
+    };
+  }
+
+  private getDialogHtml() {
+    return this.gameService.gameState.lastResolvedMoves.length == 0 ?
+      this.getBeginGameHtml()
+      : this.getMovesHtml();
+  }
+
+  private getBeginGameHtml() {
+    return '<p><b>Player</b>: ' + this.gameService.playerId + '</p><p><b>Opponent</b>(s): <ul><li>'
+      + this.gameService.opponents.map(o => o.playerId).reduce((a, b) => a + '</li><li>' + b) + '</li></ul></p>';
+  }
+
+  private getMovesHtml() {
+    return this.gameService.gameState.lastResolvedMoves.map(m => {
+      return '<p><b>' + m.playerId + '</b> ---> <b>' + m.targetId + '</b></p>'
+        + '<p><b>' + m.playedCardName + '</b></p>'
+        + '<p>SELF: '
+        + (!m.moveEffectToSelf ? 'nothing' : '<ul><li>' + m.moveEffectToSelf.reduce((a, b) => a + '</li><li>' + b) + '</li></ul>')
+        + '</p>'
+        + '<p>TARGET: '
+        + (!m.moveEffectToTarget ? 'nothing' : '<ul><li>' + m.moveEffectToTarget.reduce((a, b) => a + '</li><li>' + b) + '</li></ul>')
+        + '</p>';
+    }).reduce((a, b) => a + '<br>' + b)
+  }
 }
