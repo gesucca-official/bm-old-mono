@@ -94,6 +94,6 @@ export class WebsocketService {
   private static inferJoinGameEndpoint(gameType: string): string {
     if (gameType.includes('Com'))
       return '/user/queue/game/' + gameType + '/ready';
-    else return '/topic/game' + gameType + '/ready';
+    else return '/topic/game/' + gameType + '/ready';
   }
 }

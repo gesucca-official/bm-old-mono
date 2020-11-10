@@ -5,8 +5,10 @@
         {{cardData.name}}
       </mat-panel-title>
       <mat-panel-description class="right-aligned">
-        <button mat-raised-button color="accent" style="height: fit-content"
-                (click)="playThis()">
+        <button mat-raised-button
+                color="accent"
+                style="height: fit-content"
+                (click)="playThis(); $event.stopPropagation();">
           Play
         </button>
       </mat-panel-description>

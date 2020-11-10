@@ -43,11 +43,10 @@ public abstract class Character implements Serializable {
     }
 
     public String inflictDamage(Character target, Damage damage, Set<Status.StatusType> statusToBeApplied) {
-        return "Inflicting this to " + target.name + ": " +
-                target.takeDamage(
-                        applyStatusToDamage(damage, statusToBeApplied, Status.StatusFlow.OUTPUT),
-                        Status.invertViewPoint(statusToBeApplied)
-                );
+        return target.takeDamage(
+                applyStatusToDamage(damage, statusToBeApplied, Status.StatusFlow.OUTPUT),
+                Status.invertViewPoint(statusToBeApplied)
+        );
     }
 
     public String takeDamage(Damage damage) {
@@ -88,7 +87,7 @@ public abstract class Character implements Serializable {
         resources.putIfAbsent(res, 0);
         int originalAmount = resources.get(res);
         getResources().put(res, resources.get(res) + applyStatusToResourceChange(res, amount, toBeApplied));
-        return res + ": " + originalAmount + "->" + resources.get(res);
+        return res + ": " + originalAmount + "->" + resources.get(res) + " (" + (resources.get(res) - originalAmount) + ")";
     }
 
     private Damage applyStatusToDamage(Damage damage, Set<Status.StatusType> toBeApplied, Status.StatusFlow flow) {

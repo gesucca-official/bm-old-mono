@@ -6,6 +6,7 @@ import com.gsc.bm.server.model.game.Move;
 import com.gsc.bm.server.others.Games;
 import com.gsc.bm.server.others.Queues;
 import com.gsc.bm.server.service.GameFactoryService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.messaging.handler.annotation.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
+@Log4j2
 public class GameController {
 
     private final SimpMessagingTemplate messagingTemplate;
@@ -46,6 +48,7 @@ public class GameController {
     @MessageMapping("/game/1v1/join")
     @SendTo("/topic/game/1v1/ready")
     public synchronized String queueForQuick1v1(String playerId) {
+        log.info("Player " + playerId + " queued for a 1v1 Game");
         Optional<List<String>> players = Queues.getInstance().join1v1Queue(playerId);
         if (players.isPresent()) {
             Game game = gameFactoryService.craftQuickMultiPlayerGame(players.get());
