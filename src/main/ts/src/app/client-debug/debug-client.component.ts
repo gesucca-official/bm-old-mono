@@ -13,7 +13,6 @@ import {GameService} from "../service/game.service";
 export class DebugClientComponent {
 
   joinClicked: boolean;
-  selectedTargetOpponent: string;
 
   constructor(protected websocketService: WebsocketService,
               public  gameService: GameService,
@@ -44,18 +43,17 @@ export class DebugClientComponent {
     }));
   }
 
-  playCard(cardName: string): void {
+  playCard(event: any): void {
     this.websocketService.submitMove({
-      playedCardName: cardName,
+      playedCardName: event.cardName,
       playerId: this.gameService.playerId,
-      targetId: this.selectedTargetOpponent,
+      targetId: event.target,
       gameId: this.gameService.gameId
     });
   }
 
   onGameUpdate(game: any): void {
     this.gameService.gameState = JSON.parse(game);
-    this.selectedTargetOpponent = this.gameService.opponents[0].playerId; // auto select first
 
     if (!this.gameService.gameState.over) {
       this.dialog.open(CodeDialogComponent, {
@@ -73,6 +71,7 @@ export class DebugClientComponent {
         width: 'fit-content',
         data: {
           title: 'WINNER: ' + this.gameService.gameState.winner,
+          html: this.getDialogHtml(),
           data: this.gameService.gameState.lastResolvedMoves
         }
       });
@@ -80,7 +79,6 @@ export class DebugClientComponent {
       this.websocketService.unsubToGame(this.gameService.gameId);
       this.gameService.clearGame();
       this.joinClicked = false;
-      this.selectedTargetOpponent = null;
     }
   }
 
@@ -127,5 +125,15 @@ export class DebugClientComponent {
         + (!m.moveEffectToTarget ? 'nothing' : '<ul><li>' + m.moveEffectToTarget.reduce((a, b) => a + '</li><li>' + b) + '</li></ul>')
         + '</p>';
     }).reduce((a, b) => a + '<br>' + b)
+  }
+
+  getTargets(card: any): string[] {
+    const targets = [];
+    if (card.canTarget.includes('SELF'))
+      targets.push('SELF')
+    if (card.canTarget.includes('OPPONENT'))
+      this.gameService.opponents.map(o => o.playerId)
+        .forEach(o => targets.push(o))
+    return targets;
   }
 }

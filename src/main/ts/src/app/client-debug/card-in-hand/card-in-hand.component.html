@@ -1,13 +1,34 @@
-<mat-accordion>
-  <mat-expansion-panel hideToggle>
+<mat-accordion style="padding: 5px">
+  <mat-expansion-panel>
     <mat-expansion-panel-header>
       <mat-panel-title>
-        This is the expansion title
+        {{cardData.name}}
       </mat-panel-title>
-      <mat-panel-description>
-        This is a summary of the content
+      <mat-panel-description class="right-aligned">
+        <button mat-raised-button color="accent" style="height: fit-content"
+                (click)="playThis()">
+          Play
+        </button>
       </mat-panel-description>
     </mat-expansion-panel-header>
-    <p>This is the primary content of the panel.</p>
+
+    <ul>
+      <li *ngFor="let mapEntry of cardData.cost | keyvalue; let last = isLast">
+        <b>{{mapEntry.key}}</b>: {{mapEntry.value}}
+      </li>
+    </ul>
+
+    <p [innerHTML]="cardData.effect"></p>
+
+    <mat-form-field style="float: left" color="accent">
+      <mat-label>Target</mat-label>
+      <mat-select [(value)]="chosenTarget">
+        <mat-option *ngFor="let target of targets" [value]="target">
+          {{target}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-raised-button class="mat-elevation-z2" style="float: right" (click)="logState()">Log Card</button>
   </mat-expansion-panel>
 </mat-accordion>
