@@ -118,11 +118,9 @@ export class DebugClientComponent {
     return this.gameService.gameState.lastResolvedMoves.map(m => {
       return '<p><b>' + m.playerId + '</b> ---> <b>' + m.targetId + '</b></p>'
         + '<p><b>' + m.playedCardName + '</b></p>'
-        + '<p>SELF: '
-        + (!m.moveEffectToSelf ? 'nothing' : '<ul><li>' + m.moveEffectToSelf.reduce((a, b) => a + '</li><li>' + b) + '</li></ul>')
+        + (!m.moveEffectToSelf ? '' : '<p>SELF: <ul><li>' + m.moveEffectToSelf.reduce((a, b) => a + '</li><li>' + b) + '</li></ul>')
         + '</p>'
-        + '<p>TARGET: '
-        + (!m.moveEffectToTarget ? 'nothing' : '<ul><li>' + m.moveEffectToTarget.reduce((a, b) => a + '</li><li>' + b) + '</li></ul>')
+        + (!m.moveEffectToTarget ? '' : '<p>TARGET: <ul><li>' + m.moveEffectToTarget.reduce((a, b) => a + '</li><li>' + b) + '</li></ul>')
         + '</p>';
     }).reduce((a, b) => a + '<br>' + b)
   }
