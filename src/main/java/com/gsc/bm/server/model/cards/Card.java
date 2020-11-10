@@ -13,7 +13,7 @@ import java.util.Set;
 
 public interface Card {
 
-    public enum CardTarget {
+    enum CardTarget {
         SELF, OPPONENT
     }
 
@@ -23,7 +23,10 @@ public interface Card {
     @JsonProperty
     String getEffect();
 
+    // the name is hideous but it translates to canTarget
     Set<CardTarget> getCanTarget();
+
+    boolean isFixed();
 
     Map<Resource, Integer> getCost();
 

@@ -12,4 +12,8 @@ public abstract class AbstractCard implements Card, Serializable {
     private final String name;
     private final String effect;
 
+    @Override
+    public boolean isFixed() {
+        return false;
+    }
 }

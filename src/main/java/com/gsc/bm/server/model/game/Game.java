@@ -78,7 +78,10 @@ public class Game implements Serializable {
 
         for (Move m : pendingMoves) {
             m.applyEffectTo(this);
-            getSelf(m).discardCard(getPlayedCardFromHand(m));
+            if (getPlayedCardFromHand(m).isFixed()) {
+
+            } else
+                getSelf(m).discardCard(getPlayedCardFromHand(m));
             getSelf(m).drawCard();
         }
         prepareForNextTurn();
@@ -110,11 +113,31 @@ public class Game implements Serializable {
 
     @JsonIgnore
     public Card getPlayedCardFromHand(Move move) {
-        // getting this card also checks if it is in that player's hand adn throws exception accordingly
-        return players.get(move.getPlayerId()).getCardsInHand().stream()
-                .filter(c -> c.getName().equalsIgnoreCase(move.getPlayedCardName()))
+        // TODO refactor
+        // getting this card also checks if it is in that player's hand and throws exception accordingly
+        String cleanName = move.getPlayedCardName();
+        if (move.getPlayedCardName().contains("->")) {
+            String[] playedCardAndReferencedCard = move.getPlayedCardName().split("->");
+            if (players.get(move.getPlayerId())
+                    .getCardsInHand()
+                    .stream()
+                    .anyMatch(c -> c.getName().equalsIgnoreCase(playedCardAndReferencedCard[1])))
+                throw new IllegalMoveException(move.getPlayerId(), "don't have referenced card in hand: " + playedCardAndReferencedCard[1]);
+            cleanName = playedCardAndReferencedCard[0];
+        }
+
+        final String finalCleanName = cleanName; // lambda wants final variables or it complains
+        return players.get(move.getPlayerId())
+                .getCardsInHand()
+                .stream()
+                .filter(c -> c.getName().equalsIgnoreCase(finalCleanName))
                 .findAny()
                 .orElseThrow(() -> new IllegalMoveException(move.getPlayerId(), "don't have that card in hand"));
+    }
+
+    private Card getReferencedCardFromHand(Move move) {
+        // TODO
+        return null;
     }
 
     @JsonIgnore
