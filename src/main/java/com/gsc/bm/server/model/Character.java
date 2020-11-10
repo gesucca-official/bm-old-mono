@@ -1,5 +1,6 @@
 package com.gsc.bm.server.model;
 
+import com.gsc.bm.server.model.cards.Card;
 import lombok.Getter;
 
 import java.io.Serializable;
@@ -17,6 +18,8 @@ public abstract class Character implements Serializable {
         this.resources.put(Resource.HEALTH, hp);
         this.resources.put(Resource.ALERTNESS, speed);
     }
+
+    public abstract Set<Card> getCharacterBoundCards();
 
     public void resolveTimeBasedEffects() {
         // resources based effect

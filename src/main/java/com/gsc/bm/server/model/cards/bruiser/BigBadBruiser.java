@@ -2,6 +2,9 @@ package com.gsc.bm.server.model.cards.bruiser;
 
 import com.gsc.bm.server.model.Character;
 import com.gsc.bm.server.model.Resource;
+import com.gsc.bm.server.model.cards.Card;
+
+import java.util.Set;
 
 public class BigBadBruiser extends Character {
 
@@ -10,4 +13,8 @@ public class BigBadBruiser extends Character {
         resources.put(Resource.VIOLENCE, 50);
     }
 
+    @Override
+    public Set<Card> getCharacterBoundCards() {
+        return Set.of(new LittleSmack());
+    }
 }

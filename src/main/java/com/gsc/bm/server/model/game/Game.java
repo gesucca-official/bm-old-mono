@@ -73,7 +73,7 @@ public class Game implements Serializable {
                 Comparator.comparingInt(
                         m -> {
                             Move move = (Move) m; // I am not sure why I have to downcast here
-                            return -getPlayedCardFromHand(move.getPlayerId(), move.getPlayedCardName()).getPriority();
+                            return -getCardFromHand(move.getPlayerId(), move.getPlayedCardName()).getPriority();
                         }
                 ).thenComparingInt(
                         m -> -getSelf((Move) m).getCharacter().getResources().get(Resource.ALERTNESS)
@@ -81,7 +81,7 @@ public class Game implements Serializable {
 
         for (Move m : pendingMoves) {
             m.applyEffectTo(this);
-            getSelf(m).discardCard(getPlayedCardFromHand(m.getPlayerId(), m.getPlayedCardName()));
+            getSelf(m).discardCard(getCardFromHand(m.getPlayerId(), m.getPlayedCardName()));
             getSelf(m).drawCard();
         }
         prepareForNextTurn();
@@ -112,7 +112,7 @@ public class Game implements Serializable {
     }
 
     @JsonIgnore
-    public Card getPlayedCardFromHand(String playerId, String cardName) {
+    public Card getCardFromHand(String playerId, String cardName) {
         // getting this card also checks if it is in that player's hand adn throws exception accordingly
         return players.get(playerId).getCardsInHand().stream()
                 .filter(c -> c.getName().equalsIgnoreCase(cardName))

@@ -24,6 +24,7 @@ public class Player implements Serializable {
     public Player(String id, Character character, List<Card> deck) {
         this.playerId = id;
         this.character = character;
+        this.cardsInHand.addAll(this.character.getCharacterBoundCards());
 
         this.deck.addAll(deck);
         Collections.shuffle(this.deck);
@@ -41,6 +42,7 @@ public class Player implements Serializable {
     }
 
     public void discardCard(Card card) {
+        if (!card.isCharacterBound())
         cardsInHand.remove(card);
     }
 

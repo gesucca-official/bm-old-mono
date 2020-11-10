@@ -16,6 +16,10 @@ import java.util.Map;
 @ToString
 public class Move implements Serializable {
 
+    public enum AdditionalAction {
+        DISCARD_ONE
+    }
+
     @JsonIgnore
     public static Move EMPTY = new Move();
 
@@ -24,17 +28,25 @@ public class Move implements Serializable {
     private final String targetId;
     private final String gameId;
 
+    private final Map<AdditionalAction, String> choices;
+
     private final boolean isEmpty;
 
     private List<String> moveEffectToSelf;
     private List<String> moveEffectToTarget;
 
+    // TODO consider builder pattern for this? dunno the interaction with jackson
     @JsonCreator
-    public Move(String playedCardName, String playerId, String targetId, String gameId) {
+    public Move(String playedCardName,
+                String playerId,
+                String targetId,
+                String gameId,
+                Map<AdditionalAction, String> choices) {
         this.playedCardName = playedCardName;
         this.playerId = playerId;
         this.targetId = targetId;
         this.gameId = gameId;
+        this.choices = choices;
         this.isEmpty = false;
     }
 
@@ -43,6 +55,7 @@ public class Move implements Serializable {
         this.playerId = null;
         this.targetId = null;
         this.gameId = null;
+        this.choices = null;
         this.isEmpty = true;
     }
 
@@ -58,11 +71,19 @@ public class Move implements Serializable {
         if (this.isEmpty)
             return new MoveCheckResult(true, "is empty and you do nothing");
 
+        if (game.getCardFromHand(playerId, playedCardName).isCharacterBound()) {
+            if (choices == null)
+                return new MoveCheckResult(false, "character bound cards should discard something else");
+            Card toBeDiscarded = game.getCardFromHand(playerId, choices.get(AdditionalAction.DISCARD_ONE));
+            if (toBeDiscarded.isCharacterBound())
+                throw new IllegalMoveException(game.getSelf(this).getPlayerId(), "can't discard character bound card");
+        }
+
         // check is player has already submitted a move
         if (game.getPendingMoves().stream().anyMatch(m -> m.getPlayerId().equalsIgnoreCase(playerId)))
             return new MoveCheckResult(false, "already submitted a move");
         // getting this card also checks if it is in that player's hand
-        Card playedCard = game.getPlayedCardFromHand(playerId, playedCardName);
+        Card playedCard = game.getCardFromHand(playerId, playedCardName);
         Map<Resource, Integer> playerResources = game.getPlayers().get(playerId).getCharacter().getResources();
 
         // check if costs can be satisfied
@@ -78,7 +99,7 @@ public class Move implements Serializable {
     public void applyCostTo(Game game) {
         if (this.isEmpty)
             return;
-        game.getPlayedCardFromHand(playerId, playedCardName).getCost().forEach(
+        game.getCardFromHand(playerId, playedCardName).getCost().forEach(
                 (key, value) -> game.getSelf(this).getCharacter().loseResource(key, value)
         );
     }
@@ -87,7 +108,7 @@ public class Move implements Serializable {
     public void applyEffectTo(Game game) {
         if (this.isEmpty)
             return;
-        Card.CardResolutionReport report = game.getPlayedCardFromHand(playerId, playedCardName).resolve(game, this);
+        Card.CardResolutionReport report = game.getCardFromHand(playerId, playedCardName).resolve(game, this);
         moveEffectToSelf = report.getSelfReport();
         moveEffectToTarget = report.getTargetReport();
     }

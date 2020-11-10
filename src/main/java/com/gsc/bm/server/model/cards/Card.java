@@ -35,7 +35,7 @@ public interface Card {
         return 1;
     }
 
-    default boolean isBoundToCharacter() {
+    default boolean isCharacterBound() {
         return false;
     }
 
