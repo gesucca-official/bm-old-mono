@@ -62,7 +62,7 @@ public class Move implements Serializable {
         if (game.getPendingMoves().stream().anyMatch(m -> m.getPlayerId().equalsIgnoreCase(playerId)))
             return new MoveCheckResult(false, "already submitted a move");
         // getting this card also checks if it is in that player's hand
-        Card playedCard = game.getPlayedCardFromHand(this);
+        Card playedCard = game.getPlayedCardFromHand(playerId, playedCardName);
         Map<Resource, Integer> playerResources = game.getPlayers().get(playerId).getCharacter().getResources();
 
         // check if costs can be satisfied
@@ -78,7 +78,7 @@ public class Move implements Serializable {
     public void applyCostTo(Game game) {
         if (this.isEmpty)
             return;
-        game.getPlayedCardFromHand(this).getCost().forEach(
+        game.getPlayedCardFromHand(playerId, playedCardName).getCost().forEach(
                 (key, value) -> game.getSelf(this).getCharacter().loseResource(key, value)
         );
     }
@@ -87,7 +87,7 @@ public class Move implements Serializable {
     public void applyEffectTo(Game game) {
         if (this.isEmpty)
             return;
-        Card.CardResolutionReport report = game.getPlayedCardFromHand(this).resolve(game, this);
+        Card.CardResolutionReport report = game.getPlayedCardFromHand(playerId, playedCardName).resolve(game, this);
         moveEffectToSelf = report.getSelfReport();
         moveEffectToTarget = report.getTargetReport();
     }

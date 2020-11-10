@@ -9,11 +9,12 @@ import lombok.Getter;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 public interface Card {
 
-    public enum CardTarget {
+    enum CardTarget {
         SELF, OPPONENT
     }
 
@@ -32,6 +33,14 @@ public interface Card {
     // high priority: resolved first (2 before 1)
     default int getPriority() {
         return 1;
+    }
+
+    default boolean isBoundToCharacter() {
+        return false;
+    }
+
+    default Optional<String> boundToCharacter() {
+        return Optional.empty();
     }
 
     @AllArgsConstructor
