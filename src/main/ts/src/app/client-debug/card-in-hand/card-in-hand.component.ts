@@ -11,6 +11,9 @@ export class CardInHandComponent {
   @Input() targets: string[];
   @Input() chosenTarget: string;
 
+  @Input() discardableCards: string[];
+  cardToDiscard: string;
+
   @Output()
   onPlayThis: EventEmitter<any> = new EventEmitter<any>();
 
@@ -21,7 +24,8 @@ export class CardInHandComponent {
   playThis() {
     this.onPlayThis.emit({
       cardName: this.cardData.name,
-      target: this.chosenTarget
+      target: this.chosenTarget,
+      choices: this.cardData.characterBound ? {'DISCARD_ONE': this.cardToDiscard} : null
     })
   }
 }

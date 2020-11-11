@@ -3,9 +3,7 @@ package com.gsc.bm.server.model.game;
 import com.gsc.bm.server.model.Character;
 import com.gsc.bm.server.model.cards.Card;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ComPlayer extends Player {
@@ -47,12 +45,23 @@ public class ComPlayer extends Player {
     }
 
     private Move craftMoveByIndex(List<Card> cards, int index, String target, String gameId) {
-        return new Move(
+        Map<Move.AdditionalAction, String> choices = new HashMap<>();
+        if (cards.get(index).isCharacterBound())
+            choices.put(Move.AdditionalAction.DISCARD_ONE, chooseDiscard(cards)); // TODO this is sketchy
+       return new Move(
                 cards.get(index).getName(),
                 getPlayerId(),
                 target,
-                gameId
+                gameId,
+                choices
         );
+    }
+
+    private String chooseDiscard(List<Card> cards) {
+        for (Card c : cards)
+            if (!c.isCharacterBound())
+                return  c.getName();
+            return null; // TODO throw exception here and catch it to return empty move?
     }
 
 }

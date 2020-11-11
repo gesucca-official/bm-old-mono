@@ -71,14 +71,17 @@ public class Game implements Serializable {
 
         pendingMoves.sort(
                 Comparator.comparingInt(
-                        m -> -getPlayedCardFromHand((Move) m).getPriority() // I am not sure why I have to downcast here
+                        m -> {
+                            Move move = (Move) m; // I am not sure why I have to downcast here
+                            return -getCardFromHand(move.getPlayerId(), move.getPlayedCardName()).getPriority();
+                        }
                 ).thenComparingInt(
                         m -> -getSelf((Move) m).getCharacter().getResources().get(Resource.ALERTNESS)
                 ));
 
         for (Move m : pendingMoves) {
             m.applyEffectTo(this);
-            getSelf(m).discardCard(getPlayedCardFromHand(m));
+            getSelf(m).discardCard(getCardFromHand(m.getPlayerId(), m.getPlayedCardName()));
             getSelf(m).drawCard();
         }
         prepareForNextTurn();
@@ -109,12 +112,12 @@ public class Game implements Serializable {
     }
 
     @JsonIgnore
-    public Card getPlayedCardFromHand(Move move) {
+    public Card getCardFromHand(String playerId, String cardName) {
         // getting this card also checks if it is in that player's hand adn throws exception accordingly
-        return players.get(move.getPlayerId()).getCardsInHand().stream()
-                .filter(c -> c.getName().equalsIgnoreCase(move.getPlayedCardName()))
+        return players.get(playerId).getCardsInHand().stream()
+                .filter(c -> c.getName().equalsIgnoreCase(cardName))
                 .findAny()
-                .orElseThrow(() -> new IllegalMoveException(move.getPlayerId(), "don't have that card in hand"));
+                .orElseThrow(() -> new IllegalMoveException(playerId, "don't have that card in hand"));
     }
 
     @JsonIgnore
