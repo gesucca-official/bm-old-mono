@@ -1,6 +1,5 @@
 package com.gsc.bm.server.model.cards;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gsc.bm.server.model.Resource;
 import com.gsc.bm.server.model.game.Game;
 import com.gsc.bm.server.model.game.Move;
@@ -14,40 +13,31 @@ import java.util.Set;
 
 public interface Card {
 
-    enum CardTarget {
-        SELF, OPPONENT
-    }
-
-    String getName();
-
-    // description only, no game logic purpose
-    @JsonProperty
-    String getEffect();
-
-    Set<CardTarget> getCanTarget();
-
-    Map<Resource, Integer> getCost();
-
-    CardResolutionReport resolve(Game game, Move move);
-
-    // high priority: resolved first (2 before 1)
-    default int getPriority() {
-        return 1;
-    }
-
-    default boolean isCharacterBound() {
-        return false;
-    }
-
-    default Optional<String> boundToCharacter() {
-        return Optional.empty();
-    }
-
     @AllArgsConstructor
     @Getter
     class CardResolutionReport {
         List<String> selfReport;
         List<String> targetReport;
     }
+
+    enum CardTarget {
+        SELF, OPPONENT
+    }
+
+    String getName();
+
+    String getEffect();
+
+    boolean isCharacterBound();
+
+    Optional<String> boundToCharacter();
+
+    int getPriority();  // higher priority resolved first (2 before 1)
+
+    Set<CardTarget> getCanTarget();
+
+    Map<Resource, Integer> getCost();
+
+    CardResolutionReport resolve(Game game, Move move);
 
 }

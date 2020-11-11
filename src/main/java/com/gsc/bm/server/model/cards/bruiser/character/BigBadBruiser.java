@@ -14,6 +14,7 @@ public class BigBadBruiser extends Character {
     }
 
     @Override
+    // TODO bind this to service
     public Set<Card> getCharacterBoundCards() {
         return Set.of(new LittleSmack());
     }
