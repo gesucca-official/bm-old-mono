@@ -131,7 +131,7 @@ export class DebugClientComponent {
     if (card.canTarget.includes('SELF'))
       targets.push('SELF')
     if (card.canTarget.includes('OPPONENT'))
-      this.gameService.opponents.map(o => o.playerId)
+      this.gameService.opponents.filter(o => !o.character.dead).map(o => o.playerId)
         .forEach(o => targets.push(o))
     return targets;
   }
