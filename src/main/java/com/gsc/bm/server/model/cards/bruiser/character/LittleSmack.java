@@ -1,4 +1,4 @@
-package com.gsc.bm.server.model.cards.bruiser;
+package com.gsc.bm.server.model.cards.bruiser.character;
 
 import com.gsc.bm.server.model.Damage;
 import com.gsc.bm.server.model.cards.CharacterBoundCard;

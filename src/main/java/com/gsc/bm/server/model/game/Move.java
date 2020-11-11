@@ -72,7 +72,7 @@ public class Move implements Serializable {
             return new MoveCheckResult(true, "is empty and you do nothing");
 
         if (game.getCardFromHand(playerId, playedCardName).isCharacterBound()) {
-            if (choices == null)
+            if (choices == null || choices.isEmpty())
                 return new MoveCheckResult(false, "character bound cards should discard something else");
             Card toBeDiscarded = game.getCardFromHand(playerId, choices.get(AdditionalAction.DISCARD_ONE));
             if (toBeDiscarded.isCharacterBound())
