@@ -1,24 +1,23 @@
 package com.gsc.bm.server.model.cards.bruiser.character;
 
 import com.gsc.bm.server.model.Character;
-import com.gsc.bm.server.model.Damage;
+import com.gsc.bm.server.model.Resource;
 import com.gsc.bm.server.model.cards.CharacterBoundCard;
 
 import java.util.List;
 import java.util.Set;
 
-public class LittleSmack extends CharacterBoundCard {
+public class LittleRage extends CharacterBoundCard {
 
-    public LittleSmack() {
+    public LittleRage() {
         super(BigBadBruiser.NAME);
         setCanTarget(Set.of(CardTarget.OPPONENT));
     }
 
     @Override
-    protected List<String> applyEffectOnTarget(Character self, Character target) {
+    protected List<String> applyEffectOnSelf(Character self) {
         return List.of(
-                self.inflictDamage(target, new Damage(Damage.DamageType.HIT, 5))
+                self.gainResource(Resource.VIOLENCE, 5)
         );
     }
-
 }

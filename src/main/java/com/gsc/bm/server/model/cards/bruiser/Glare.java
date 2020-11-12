@@ -20,8 +20,8 @@ public class Glare extends AbstractCard {
     protected List<String> applyEffectOnSelf(Character self) {
         self.getStatuses().add(
                 new Status(
-                        "PAZIENZA FINITA",
-                        "danni subiti x1.5",
+                        "NO PATIENCE",
+                        "damage taken x1.5",
                         Status.StatusType.BAD,
                         Status.StatusFlow.INPUT,
                         Damage.DamageType.HIT,
@@ -29,9 +29,9 @@ public class Glare extends AbstractCard {
                         1
                 ));
         return List.of(
-                "status PAZIENZA FINITA",
-                self.gainResource(Resource.VIOLENCE, 30),
-                self.gainResource(Resource.ALERTNESS, 20)
+                "Gained status: NO PATIENCE",
+                self.gainResource(Resource.VIOLENCE, 15),
+                self.gainResource(Resource.ALERTNESS, 15)
         );
     }
 

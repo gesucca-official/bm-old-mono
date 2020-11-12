@@ -2,20 +2,20 @@ package com.gsc.bm.server.model.cards.bruiser.character;
 
 import com.gsc.bm.server.model.Character;
 import com.gsc.bm.server.model.Resource;
-import com.gsc.bm.server.model.cards.Card;
 
 import java.util.Set;
 
 public class BigBadBruiser extends Character {
 
+    public static final String NAME = "Spazienzio de la Ucciso";
+
     public BigBadBruiser() {
-        super("Spazienzio de la Ucciso", 100, 20);
-        resources.put(Resource.VIOLENCE, 50);
+        super(NAME, 100, 20);
+        resources.put(Resource.VIOLENCE, 25);
     }
 
     @Override
-    // TODO bind this to service
-    public Set<Card> getCharacterBoundCards() {
-        return Set.of(new LittleSmack());
+    public Set<String> getCharacterBoundCards() {
+        return Set.of(LittleSmack.class.getName(), LittleRage.class.getName());
     }
 }

@@ -23,7 +23,7 @@ public class SeagullFly extends AbstractCard {
         return List.of(
                 self.inflictDamage(
                         target,
-                        new Damage(Damage.DamageType.HIT, 20),
+                        new Damage(Damage.DamageType.HIT, 15),
                         Set.of(Status.StatusType.GOOD))
         );
     }

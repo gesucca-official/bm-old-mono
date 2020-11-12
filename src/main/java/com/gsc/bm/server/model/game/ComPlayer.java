@@ -10,8 +10,8 @@ public class ComPlayer extends Player {
 
     // TODO refactor this
 
-    public ComPlayer(Character character, List<Card> deck) {
-        super("ComPlayer_" + (int) (Math.random() * 10000), character, deck);
+    public ComPlayer(Character character, List<Card> characterBoundCards, List<Card> deck) {
+        super("ComPlayer_" + (int) (Math.random() * 10000), character, characterBoundCards, deck);
     }
 
     public Move chooseMove(Game game) {
@@ -48,7 +48,7 @@ public class ComPlayer extends Player {
         Map<Move.AdditionalAction, String> choices = new HashMap<>();
         if (cards.get(index).isCharacterBound())
             choices.put(Move.AdditionalAction.DISCARD_ONE, chooseDiscard(cards)); // TODO this is sketchy
-       return new Move(
+        return new Move(
                 cards.get(index).getName(),
                 getPlayerId(),
                 target,
@@ -60,8 +60,8 @@ public class ComPlayer extends Player {
     private String chooseDiscard(List<Card> cards) {
         for (Card c : cards)
             if (!c.isCharacterBound())
-                return  c.getName();
-            return null; // TODO throw exception here and catch it to return empty move?
+                return c.getName();
+        return null; // TODO throw exception here and catch it to return empty move?
     }
 
 }

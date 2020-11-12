@@ -20,8 +20,8 @@ public class RottenBeer extends AbstractCard {
     protected List<String> applyEffectOnSelf(Character self) {
         self.getStatuses().add(
                 new Status(
-                        "PERONI VUOTA IN MANO",
-                        "danni inflitti x1.5",
+                        "ROTTEN BEER",
+                        "damage to opponents x1.5",
                         Status.StatusType.GOOD,
                         Status.StatusFlow.OUTPUT,
                         Damage.DamageType.HIT,
@@ -29,9 +29,8 @@ public class RottenBeer extends AbstractCard {
                         1
                 ));
         return List.of(
-                "peroni status",
-                self.gainResource(Resource.ALCOHOL, 5),
-                self.gainResource(Resource.VIOLENCE, 5)
+                "Gained status: ROTTEN BEER",
+                self.gainResource(Resource.ALCOHOL, 5)
         );
     }
 

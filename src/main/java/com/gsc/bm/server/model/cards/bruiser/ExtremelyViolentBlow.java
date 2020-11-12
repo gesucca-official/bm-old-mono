@@ -14,7 +14,7 @@ public class ExtremelyViolentBlow extends AbstractCard {
     public ExtremelyViolentBlow() {
         super();
         setCanTarget(Set.of(CardTarget.OPPONENT));
-        setCost(Map.of(Resource.VIOLENCE, 15));
+        setCost(Map.of(Resource.VIOLENCE, 20));
     }
 
     @Override

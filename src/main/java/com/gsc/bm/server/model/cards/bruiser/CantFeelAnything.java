@@ -23,8 +23,8 @@ public class CantFeelAnything extends AbstractCard {
     protected List<String> applyEffectOnSelf(Character self) {
         self.getStatuses().add(
                 new Status(
-                        "MI FAI LE CAREZZE",
-                        "danni subiti x0.5",
+                        "YOU CARESS ME",
+                        "damage taken x0.5",
                         Status.StatusType.GOOD,
                         Status.StatusFlow.INPUT,
                         Damage.DamageType.HIT,
@@ -32,7 +32,7 @@ public class CantFeelAnything extends AbstractCard {
                         0
                 ));
         return List.of(
-                "carezze status",
+                "Gained status: YOU CARESS ME",
                 self.gainResource(Resource.ALERTNESS, 10)
         );
     }

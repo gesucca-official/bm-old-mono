@@ -19,7 +19,7 @@ public abstract class Character implements Serializable {
         this.resources.put(Resource.ALERTNESS, speed);
     }
 
-    public abstract Set<Card> getCharacterBoundCards();
+    public abstract Set<String> getCharacterBoundCards();
 
     public void resolveTimeBasedEffects() {
         // resources based effect

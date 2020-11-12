@@ -14,7 +14,7 @@ public class SickeningBlow extends AbstractCard {
     public SickeningBlow() {
         super();
         setCanTarget(Set.of(CardTarget.OPPONENT));
-        setCost(Map.of(Resource.VIOLENCE, 20));
+        setCost(Map.of(Resource.VIOLENCE, 15));
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.gsc.bm.server.service;
 
+import com.gsc.bm.server.model.Character;
 import com.gsc.bm.server.model.cards.Card;
 import com.gsc.bm.server.model.cards.LoadableCard;
 import com.gsc.bm.server.repo.StarterDeckRepository;
@@ -37,16 +38,28 @@ public class DeckFactoryServiceImpl implements DeckFactoryService {
                     return copies;
                 })
                 .flatMap(Collection::stream)
-                .map(cardClazz -> {
-                    Supplier<LoadableCard> supplier = () -> {
-                        try {
-                            return (LoadableCard) Class.forName(cardClazz).getConstructor().newInstance();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            return null;
-                        }
-                    };
-                    return cardFactoryService.craftCard(supplier);
-                }).collect(Collectors.toList());
+                .map(this::craftCard)
+                .collect(Collectors.toList());
     }
+
+    @Override
+    public List<Card> craftCharacterBoundCards(Character character) {
+        return character.getCharacterBoundCards()
+                .stream()
+                .map(this::craftCard)
+                .collect(Collectors.toList());
+    }
+
+    private Card craftCard(String cardClazz) {
+        Supplier<LoadableCard> supplier = () -> {
+            try {
+                return (LoadableCard) Class.forName(cardClazz).getConstructor().newInstance();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null; // this should really be managed better
+            }
+        };
+        return cardFactoryService.craftCard(supplier);
+    }
+
 }

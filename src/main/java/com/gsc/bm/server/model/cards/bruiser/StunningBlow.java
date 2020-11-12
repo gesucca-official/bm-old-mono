@@ -14,7 +14,7 @@ public class StunningBlow extends AbstractCard {
     public StunningBlow() {
         super();
         setCanTarget(Set.of(CardTarget.OPPONENT));
-        setCost(Map.of(Resource.VIOLENCE, 10));
+        setCost(Map.of(Resource.VIOLENCE, 15));
     }
 
     @Override
@@ -22,7 +22,7 @@ public class StunningBlow extends AbstractCard {
         return List.of(
                 target.loseResource(Resource.ALERTNESS, 10),
                 self.inflictDamage(target,
-                        new Damage(Damage.DamageType.HIT, 15))
+                        new Damage(Damage.DamageType.HIT, 10))
         );
     }
 
