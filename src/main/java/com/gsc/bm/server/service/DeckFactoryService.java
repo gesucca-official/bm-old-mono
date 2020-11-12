@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface DeckFactoryService {
 
-    List<Card> craftCharacterStarterDeck(String characterName);
+    List<Card> craftCharacterStarterDeck(String pgClazz);
 }

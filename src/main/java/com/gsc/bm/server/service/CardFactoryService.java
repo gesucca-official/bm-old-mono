@@ -7,7 +7,8 @@ import java.util.function.Supplier;
 
 public interface CardFactoryService {
 
+    String BASE_CARDS_PKG = "com.gsc.bm.server.model.cards.";
+
     Card craftCard(Supplier<LoadableCard> cardConstructor);
 
-    void loadCard(LoadableCard card);
 }
