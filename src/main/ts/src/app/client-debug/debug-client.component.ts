@@ -77,7 +77,7 @@ export class DebugClientComponent {
         }
       });
 
-      this.websocketService.unsubToGame(this.gameService.gameId);
+      this.websocketService.unsubToGame(this.gameService.gameId, this.gameService.playerId);
       this.gameService.clearGame();
       this.joinClicked = false;
     }

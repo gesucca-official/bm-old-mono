@@ -86,7 +86,8 @@ export class WebsocketService {
     this.stompClient.send('/app/game/' + move.gameId + '/move', {}, JSON.stringify(move));
   }
 
-  public unsubToGame(gameId: string) {
+  public unsubToGame(gameId: string, playerId: string) {
+    this.stompClient.send('/app/game/' + gameId + '/' + playerId + '/leave', {});
     this.subscriptions.get(gameId).forEach(sub => sub.unsubscribe());
     this.subscriptions.delete(gameId);
   }

@@ -80,10 +80,14 @@ public class GameController {
     @MessageMapping("game/{gameId}/{playerId}/view")
     @SendToUser("/queue/game/{gameId}/{playerId}/view")
     public Game getGameView(@DestinationVariable String gameId, @DestinationVariable String playerId) {
-        Game view = games.getGame(gameId).getViewFor(playerId);
-        if (games.getGame(gameId).isOver())
-            games.destroyGame(gameId);
-        return view;
+        return games.getGame(gameId).getViewFor(playerId);
+           }
+
+    @MessageMapping("game/{gameId}/{playerId}/leave")
+    public void leaveGame(@DestinationVariable String gameId, @DestinationVariable String playerId) {
+        // TODO these logs here makes little sense, better log internal game management?
+        log.info("Player " + playerId + " left Game " + gameId);
+        games.userLeaveGame(gameId, playerId);
     }
 
     @MessageExceptionHandler
