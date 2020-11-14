@@ -127,7 +127,10 @@ public class Game implements Serializable {
 
     @JsonIgnore
     public Player getTarget(Move move) {
-        return players.get(move.getTargetId());
+        if (move.getTargetId().equalsIgnoreCase("SELF"))
+            return players.get(move.getPlayerId());
+        else
+            return players.get(move.getTargetId());
     }
 
     private void generateGameId(List<Player> players) {

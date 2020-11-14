@@ -1,39 +1,26 @@
 package com.gsc.bm.server.model.cards.bruiser;
 
+import com.gsc.bm.server.model.Character;
 import com.gsc.bm.server.model.Resource;
 import com.gsc.bm.server.model.cards.AbstractCard;
-import com.gsc.bm.server.model.game.Game;
-import com.gsc.bm.server.model.game.Move;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class CocktailOnTheGround extends AbstractCard {
 
     public CocktailOnTheGround() {
-        super("Negroni trovato per terra", "+5 toxic +10 tasso alcolemico e +20 violenza");
+        super();
+        setCanTarget(Set.of(CardTarget.SELF));
     }
 
     @Override
-    public Set<CardTarget> getCanTarget() {
-        return Set.of(CardTarget.SELF);
-    }
-
-    @Override
-    public Map<Resource, Integer> getCost() {
-        return Map.of();
-    }
-
-    @Override
-    public CardResolutionReport resolve(Game game, Move move) {
-        return new CardResolutionReport(
-                List.of(
-                        game.getSelf(move).getCharacter().gainResource(Resource.VIOLENCE, 20),
-                        game.getSelf(move).getCharacter().gainResource(Resource.ALCOHOL, 10),
-                        game.getSelf(move).getCharacter().gainResource(Resource.TOXICITY, 5)
-                ),
-                null
+    protected List<String> applyEffectOnSelf(Character self) {
+        return List.of(
+                self.gainResource(Resource.VIOLENCE, 20),
+                self.gainResource(Resource.ALCOHOL, 10),
+                self.gainResource(Resource.TOXICITY, 5)
         );
     }
+
 }

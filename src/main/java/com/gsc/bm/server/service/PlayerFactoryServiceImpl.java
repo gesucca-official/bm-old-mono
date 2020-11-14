@@ -20,12 +20,17 @@ public class PlayerFactoryServiceImpl implements PlayerFactoryService {
     @Override
     public Player craftRandomComPlayer() {
         Character chosenChar = new BigBadBruiser();
-        return new ComPlayer(chosenChar, deckFactoryService.craftCharacterStarterDeck(chosenChar.getName()));
+        return new ComPlayer(chosenChar,
+                deckFactoryService.craftCharacterBoundCards(chosenChar),
+                deckFactoryService.craftCharacterStarterDeck(chosenChar.getClass().getName()));
     }
 
     @Override
     public Player craftRandomPlayer(String playerId) {
         Character chosenChar = new BigBadBruiser();
-        return new Player(playerId, chosenChar, deckFactoryService.craftCharacterStarterDeck(chosenChar.getName()));
+        return new Player(playerId,
+                chosenChar,
+                deckFactoryService.craftCharacterBoundCards(chosenChar),
+                deckFactoryService.craftCharacterStarterDeck(chosenChar.getClass().getName()));
     }
 }

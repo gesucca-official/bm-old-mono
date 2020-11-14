@@ -9,20 +9,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class StunningBlow extends AbstractCard {
+public class SuperImpact extends AbstractCard {
 
-    public StunningBlow() {
+    public SuperImpact() {
         super();
         setCanTarget(Set.of(CardTarget.OPPONENT));
-        setCost(Map.of(Resource.VIOLENCE, 15));
+        setCost(Map.of(Resource.VIOLENCE, 25));
+        setPriority(0);
     }
 
     @Override
     protected List<String> applyEffectOnTarget(Character self, Character target) {
         return List.of(
-                target.loseResource(Resource.ALERTNESS, 10),
                 self.inflictDamage(target,
-                        new Damage(Damage.DamageType.HIT, 10))
+                        new Damage(Damage.DamageType.HIT, 40))
         );
     }
 
