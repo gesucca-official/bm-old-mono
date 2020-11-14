@@ -1,6 +1,5 @@
 package com.gsc.bm.server.model;
 
-import com.gsc.bm.server.model.cards.Card;
 import lombok.Getter;
 
 import java.io.Serializable;
@@ -108,8 +107,7 @@ public abstract class Character implements Serializable {
     private int applyStatusToResourceChange(Resource res, int amount, Set<Status.StatusType> toBeApplied) {
         for (Status status : statuses)
             if (status.getImpactedProperty() == res && toBeApplied.contains(status.getType()))
-                // TODO code smell, CODE SMELL
-                return Integer.parseInt(String.valueOf(status.getFunction().apply((float) amount)));
+                return status.getFunction().apply((float) amount).intValue();
         return amount;
     }
 }

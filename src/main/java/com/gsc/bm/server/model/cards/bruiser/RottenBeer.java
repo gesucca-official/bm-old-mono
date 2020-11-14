@@ -18,6 +18,7 @@ public class RottenBeer extends AbstractCard {
 
     @Override
     protected List<String> applyEffectOnSelf(Character self) {
+        // TODO this should add cut damages to next damaging move!
         self.getStatuses().add(
                 new Status(
                         "ROTTEN BEER",

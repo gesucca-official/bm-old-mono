@@ -14,22 +14,24 @@ public class Glare extends AbstractCard {
     public Glare() {
         super();
         setCanTarget(Set.of(CardTarget.SELF));
+        setPriority(0);
     }
 
     @Override
     protected List<String> applyEffectOnSelf(Character self) {
         self.getStatuses().add(
                 new Status(
-                        "NO PATIENCE",
-                        "damage taken x1.5",
+                        "NO PATIENCE - Damage Intake Boost",
+                        "Damage taken: x1.5",
                         Status.StatusType.BAD,
                         Status.StatusFlow.INPUT,
                         Damage.DamageType.HIT,
                         (incomingDamage -> incomingDamage * 1.5f),
                         1
                 ));
+       // TODO you should not lose any alertness or violence while this status lasts...
         return List.of(
-                "Gained status: NO PATIENCE",
+                "Gained statuses: NO PATIENCE",
                 self.gainResource(Resource.VIOLENCE, 15),
                 self.gainResource(Resource.ALERTNESS, 15)
         );

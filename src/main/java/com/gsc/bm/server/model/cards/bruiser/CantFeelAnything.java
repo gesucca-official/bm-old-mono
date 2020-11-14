@@ -24,7 +24,7 @@ public class CantFeelAnything extends AbstractCard {
         self.getStatuses().add(
                 new Status(
                         "YOU CARESS ME",
-                        "damage taken x0.5",
+                        "Damage Taken: x0.5",
                         Status.StatusType.GOOD,
                         Status.StatusFlow.INPUT,
                         Damage.DamageType.HIT,

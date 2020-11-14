@@ -8,24 +8,19 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.io.Serializable;
 
 @Entity
-@Table(name = "CRD001_INFO")
+@Table(name = "CRD002_KEYWORDS")
 
 @NoArgsConstructor
 @Getter
 @EqualsAndHashCode
-public class CardInfoRecord implements Serializable {
+public class CardKeywordsRecord {
 
     @Id
-    @Column(name = "C_REF_CLASS")
-    private String clazz;
+    @Column(name = "C_KEYWORD")
+    private String keyword;
 
-    @Column(name = "T_GUI_NAME")
-    private String guiName;
-
-    @Column(name = "T_GUI_DESCRIPTION")
-    private String guiDescription;
-
+    @Column(name = "T_HTML")
+    private String html;
 }
