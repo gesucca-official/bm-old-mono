@@ -18,6 +18,8 @@ public abstract class Character implements Serializable {
         this.resources.put(Resource.ALERTNESS, speed);
     }
 
+    public abstract Set<String> getCharacterBoundCards();
+
     public void resolveTimeBasedEffects() {
         // resources based effect
         if (resources.get(Resource.TOXICITY) != null)
@@ -105,8 +107,7 @@ public abstract class Character implements Serializable {
     private int applyStatusToResourceChange(Resource res, int amount, Set<Status.StatusType> toBeApplied) {
         for (Status status : statuses)
             if (status.getImpactedProperty() == res && toBeApplied.contains(status.getType()))
-                // TODO code smell, CODE SMELL
-                return Integer.parseInt(String.valueOf(status.getFunction().apply((float) amount)));
+                return status.getFunction().apply((float) amount).intValue();
         return amount;
     }
 }

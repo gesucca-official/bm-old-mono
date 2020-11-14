@@ -48,7 +48,8 @@ export class DebugClientComponent {
       playedCardName: event.cardName,
       playerId: this.gameService.playerId,
       targetId: event.target,
-      gameId: this.gameService.gameId
+      gameId: this.gameService.gameId,
+      choices: event.choices
     });
   }
 
@@ -130,8 +131,12 @@ export class DebugClientComponent {
     if (card.canTarget.includes('SELF'))
       targets.push('SELF')
     if (card.canTarget.includes('OPPONENT'))
-      this.gameService.opponents.map(o => o.playerId)
+      this.gameService.opponents.filter(o => !o.character.dead).map(o => o.playerId)
         .forEach(o => targets.push(o))
     return targets;
+  }
+
+  discardableCards() {
+    return this.gameService.cardsInHand.filter(card => !card.characterBound).map(card => card.name);
   }
 }

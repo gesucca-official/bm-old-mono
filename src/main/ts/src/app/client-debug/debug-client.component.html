@@ -42,5 +42,6 @@
                     [cardData]="card"
                     [targets]="getTargets(card)"
                     [chosenTarget]="getTargets(card)[0]"
+                    [discardableCards]="discardableCards()"
                     (onPlayThis)="playCard($event)"></app-card-in-hand>
 </div>

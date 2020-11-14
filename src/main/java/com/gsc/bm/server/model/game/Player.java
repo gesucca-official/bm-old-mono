@@ -21,9 +21,10 @@ public class Player implements Serializable {
     private final List<Card> cardsInHand = new ArrayList<>();
     private final Stack<Card> deck = new Stack<>();
 
-    public Player(String id, Character character, List<Card> deck) {
+    public Player(String id, Character character, List<Card> characterBoundCards, List<Card> deck) {
         this.playerId = id;
         this.character = character;
+        this.cardsInHand.addAll(characterBoundCards);
 
         this.deck.addAll(deck);
         Collections.shuffle(this.deck);
@@ -41,7 +42,8 @@ public class Player implements Serializable {
     }
 
     public void discardCard(Card card) {
-        cardsInHand.remove(card);
+        if (!card.isCharacterBound())
+            cardsInHand.remove(card);
     }
 
     @JsonIgnore

@@ -1,7 +1,7 @@
 <mat-accordion style="padding: 5px">
   <mat-expansion-panel>
     <mat-expansion-panel-header>
-      <mat-panel-title>
+      <mat-panel-title [ngStyle]="{'color': cardData.characterBound ? 'rgb(255,255,205)' : ''}">
         {{cardData.name}}
       </mat-panel-title>
       <mat-panel-description class="right-aligned">
@@ -22,14 +22,25 @@
 
     <p [innerHTML]="cardData.effect"></p>
 
-    <mat-form-field style="float: left" color="accent">
-      <mat-label>Target</mat-label>
-      <mat-select [(value)]="chosenTarget">
-        <mat-option *ngFor="let target of targets" [value]="target">
-          {{target}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+    <form>
+      <mat-form-field style="float: left; margin-left: 10px;" color="accent">
+        <mat-label>Target</mat-label>
+        <mat-select [(value)]="chosenTarget">
+          <mat-option *ngFor="let target of targets" [value]="target">
+            {{target}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field *ngIf="cardData.characterBound" style="float: left; margin-left: 10px;" color="accent">
+        <mat-label>Discard</mat-label>
+        <mat-select [(value)]="cardToDiscard">
+          <mat-option *ngFor="let discardableCard of discardableCards" [value]="discardableCard">
+            {{discardableCard}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </form>
 
     <button mat-raised-button class="mat-elevation-z2" style="float: right" (click)="logState()">Log Card</button>
   </mat-expansion-panel>
