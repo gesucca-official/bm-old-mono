@@ -133,6 +133,14 @@ public class Game implements Serializable {
             return players.get(move.getTargetId());
     }
 
+    @JsonIgnore
+    public Optional<Move> getPendingMovePlayedBy(String playerId) {
+        for (Move m : pendingMoves)
+            if (m.getPlayerId().equals(playerId))
+                return Optional.of(m);
+        return Optional.empty();
+    }
+
     private void generateGameId(List<Player> players) {
         try {
             final MessageDigest digest = MessageDigest.getInstance("SHA3-256");

@@ -37,10 +37,15 @@ public abstract class AbstractCard implements Card, LoadableCard, Serializable {
 
     @Override
     public CardResolutionReport resolve(Game g, Move m) {
+        applyOtherUnfathomableLogic(g, m);
         return new CardResolutionReport(
                 applyEffectOnSelf(g.getSelf(m).getCharacter()),
                 applyEffectOnTarget(g.getSelf(m).getCharacter(), g.getTarget(m).getCharacter())
         );
+    }
+
+    protected void applyOtherUnfathomableLogic(Game g, Move m) {
+        // TODO this maybe could be auto implemented in a standard card class to make things clearer here
     }
 
     protected List<String> applyEffectOnSelf(Character self) {

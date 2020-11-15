@@ -6,6 +6,7 @@ import com.gsc.bm.server.model.Resource;
 import com.gsc.bm.server.model.cards.Card;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 import java.io.Serializable;
@@ -30,7 +31,8 @@ public class Move implements Serializable {
 
     private final Map<AdditionalAction, String> choices;
 
-    private final boolean isEmpty;
+    @Setter
+    private boolean isVoid;
 
     private List<String> moveEffectToSelf;
     private List<String> moveEffectToTarget;
@@ -47,7 +49,7 @@ public class Move implements Serializable {
         this.targetId = targetId;
         this.gameId = gameId;
         this.choices = choices;
-        this.isEmpty = false;
+        this.isVoid = false;
     }
 
     private Move() {
@@ -56,7 +58,7 @@ public class Move implements Serializable {
         this.targetId = null;
         this.gameId = null;
         this.choices = null;
-        this.isEmpty = true;
+        this.isVoid = true;
     }
 
     @AllArgsConstructor
@@ -68,7 +70,7 @@ public class Move implements Serializable {
 
     @JsonIgnore
     public MoveCheckResult isValidFor(Game game) {
-        if (this.isEmpty)
+        if (this.isVoid)
             return new MoveCheckResult(true, "is empty and you do nothing");
 
         if (game.getCardFromHand(playerId, playedCardName).isCharacterBound()) {
@@ -97,7 +99,7 @@ public class Move implements Serializable {
 
     @JsonIgnore
     public void applyCostTo(Game game) {
-        if (this.isEmpty)
+        if (this.isVoid)
             return;
         game.getCardFromHand(playerId, playedCardName).getCost().forEach(
                 (key, value) -> game.getSelf(this).getCharacter().loseResource(key, value)
@@ -106,8 +108,10 @@ public class Move implements Serializable {
 
     @JsonIgnore
     public void applyEffectTo(Game game) {
-        if (this.isEmpty)
+        if (this.isVoid) {
+            moveEffectToSelf = List.of("Didn't do anything!");
             return;
+        }
         Card.CardResolutionReport report = game.getCardFromHand(playerId, playedCardName).resolve(game, this);
         moveEffectToSelf = report.getSelfReport();
         moveEffectToTarget = report.getTargetReport();
