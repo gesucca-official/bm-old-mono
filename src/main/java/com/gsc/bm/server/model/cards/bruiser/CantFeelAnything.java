@@ -5,6 +5,8 @@ import com.gsc.bm.server.model.Damage;
 import com.gsc.bm.server.model.Resource;
 import com.gsc.bm.server.model.Status;
 import com.gsc.bm.server.model.cards.AbstractCard;
+import com.gsc.bm.server.model.game.Game;
+import com.gsc.bm.server.model.game.Move;
 
 import java.util.List;
 import java.util.Map;
@@ -20,7 +22,11 @@ public class CantFeelAnything extends AbstractCard {
     }
 
     @Override
-    protected List<String> applyEffectOnSelf(Character self) {
+    public void applyOtherUnfathomableLogic(Game g, Move m) {
+    }
+
+    @Override
+    public List<String> applyEffectOnSelf(Character self) {
         self.getStatuses().add(
                 new Status(
                         "YOU CARESS ME",
@@ -35,6 +41,11 @@ public class CantFeelAnything extends AbstractCard {
                 "Gained status: YOU CARESS ME",
                 self.gainResource(Resource.ALERTNESS, 10)
         );
+    }
+
+    @Override
+    public List<String> applyEffectOnTarget(Character self, Character target) {
+        return null;
     }
 
 }

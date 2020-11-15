@@ -44,17 +44,11 @@ public abstract class AbstractCard implements Card, LoadableCard, Serializable {
         );
     }
 
-    protected void applyOtherUnfathomableLogic(Game g, Move m) {
-        // TODO this maybe could be auto implemented in a standard card class to make things clearer here
-    }
+    public abstract void applyOtherUnfathomableLogic(Game g, Move m);
 
-    protected List<String> applyEffectOnSelf(Character self) {
-        return null; // extend this to implement cards
-    }
+    public abstract List<String> applyEffectOnSelf(Character self);
 
-    protected List<String> applyEffectOnTarget(Character self, Character target) {
-        return null; // and this
-    }
+    public abstract List<String> applyEffectOnTarget(Character self, Character target);
 
     public AbstractCard() {
         isCharacterBound = false;

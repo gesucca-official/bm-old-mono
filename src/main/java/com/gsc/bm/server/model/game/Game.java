@@ -6,6 +6,7 @@ import com.gsc.bm.server.model.Resource;
 import com.gsc.bm.server.model.cards.Card;
 import lombok.Getter;
 import lombok.ToString;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.codec.binary.Hex;
 import org.springframework.util.SerializationUtils;
 
@@ -17,6 +18,7 @@ import java.util.*;
 
 @Getter
 @ToString
+@Log4j2
 public class Game implements Serializable {
 
     //TODO extract an interface out of this so the controllers depends on it and not on this implementation
@@ -134,10 +136,20 @@ public class Game implements Serializable {
     }
 
     @JsonIgnore
-    public Optional<Move> getPendingMovePlayedBy(String playerId) {
-        for (Move m : pendingMoves)
-            if (m.getPlayerId().equals(playerId))
-                return Optional.of(m);
+    public Optional<Move> getPendingMoveOfTargetIfMovesAfterPlayer(String playerId, String targetId) {
+        log.info("Player " + playerId + "'s Move has queried for the Successive Move of " + targetId);
+
+        // this is called by cards when they resolves, so pending moves are already sorted in resolution order
+        for (int i = 0; i < pendingMoves.size(); i++) {
+            if (pendingMoves.get(i).getPlayerId().equals(playerId))
+                for (int j = i + 1; j < pendingMoves.size(); j++)
+                    if (pendingMoves.get(j).getPlayerId().equals(targetId)) {
+                        log.info("Successive Move found!");
+                        return Optional.of(pendingMoves.get(j));
+                    }
+            // those nested cycles, those indexes... god that smells bad
+        }
+        log.info("Found nothing...");
         return Optional.empty();
     }
 

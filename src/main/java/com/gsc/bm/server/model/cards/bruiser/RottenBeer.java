@@ -5,6 +5,8 @@ import com.gsc.bm.server.model.Damage;
 import com.gsc.bm.server.model.Resource;
 import com.gsc.bm.server.model.Status;
 import com.gsc.bm.server.model.cards.AbstractCard;
+import com.gsc.bm.server.model.game.Game;
+import com.gsc.bm.server.model.game.Move;
 
 import java.util.List;
 import java.util.Set;
@@ -17,7 +19,11 @@ public class RottenBeer extends AbstractCard {
     }
 
     @Override
-    protected List<String> applyEffectOnSelf(Character self) {
+    public void applyOtherUnfathomableLogic(Game g, Move m) {
+    }
+
+    @Override
+    public List<String> applyEffectOnSelf(Character self) {
         // TODO this should add cut damages to next damaging move!
         self.getStatuses().add(
                 new Status(
@@ -33,6 +39,11 @@ public class RottenBeer extends AbstractCard {
                 "Gained status: ROTTEN BEER",
                 self.gainResource(Resource.ALCOHOL, 5)
         );
+    }
+
+    @Override
+    public List<String> applyEffectOnTarget(Character self, Character target) {
+        return null;
     }
 
 }
