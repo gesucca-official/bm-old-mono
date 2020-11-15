@@ -1,4 +1,4 @@
-package com.gsc.bm.server.service;
+package com.gsc.bm.server.service.factories;
 
 import com.gsc.bm.server.model.game.Game;
 

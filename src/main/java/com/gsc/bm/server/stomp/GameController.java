@@ -3,10 +3,9 @@ package com.gsc.bm.server.stomp;
 import com.gsc.bm.server.model.game.Game;
 import com.gsc.bm.server.model.game.IllegalMoveException;
 import com.gsc.bm.server.model.game.Move;
-import com.gsc.bm.server.others.Games;
-import com.gsc.bm.server.others.Queues;
-import com.gsc.bm.server.service.GameFactoryService;
-import lombok.extern.log4j.Log4j2;
+import com.gsc.bm.server.service.factories.GameFactoryService;
+import com.gsc.bm.server.service.session.GameSessionService;
+import com.gsc.bm.server.service.session.QueueService;
 import org.springframework.messaging.handler.annotation.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
@@ -16,78 +15,73 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-@Log4j2
 public class GameController {
 
     private final SimpMessagingTemplate messagingTemplate;
     private final GameFactoryService gameFactoryService;
+    private final GameSessionService gameSessionService;
+    private final QueueService queueService;
 
-    private final Games games = Games.getInstance();
-
-    public GameController(SimpMessagingTemplate messagingTemplate, GameFactoryService gameFactoryService) {
+    public GameController(SimpMessagingTemplate messagingTemplate,
+                          GameFactoryService gameFactoryService,
+                          GameSessionService gameSessionService,
+                          QueueService queueService) {
         this.messagingTemplate = messagingTemplate;
         this.gameFactoryService = gameFactoryService;
+        this.gameSessionService = gameSessionService;
+        this.queueService = queueService;
     }
 
     @MessageMapping("/game/1vCom/join")
     @SendToUser("/queue/game/1vCom/ready")
     public String queueForQuick1vCom(String playerId) {
-        Game game = gameFactoryService.craftQuick1vComGame(playerId);
-        games.addNewGame(game);
-        return game.getGameId();
+        return gameSessionService.newGame(
+                gameFactoryService.craftQuick1vComGame(playerId)
+        );
     }
 
     @MessageMapping("/game/4ffaCom/join")
     @SendToUser("/queue/game/4ffaCom/ready")
     public String queueForQuick4ffaCom(String playerId) {
-        Game game = gameFactoryService.craftQuick4ffaComGame(playerId);
-        games.addNewGame(game);
-        return game.getGameId();
+        return gameSessionService.newGame(
+                gameFactoryService.craftQuick4ffaComGame(playerId)
+        );
     }
 
     @MessageMapping("/game/1v1/join")
     @SendTo("/topic/game/1v1/ready")
     public synchronized String queueForQuick1v1(String playerId) {
-        log.info("Player " + playerId + " queued for a 1v1 Game");
-        Optional<List<String>> players = Queues.getInstance().join1v1Queue(playerId);
-        if (players.isPresent()) {
-            Game game = gameFactoryService.craftQuickMultiPlayerGame(players.get());
-            games.addNewGame(game);
-            return game.getGameId();
-        }
-        return null;
+        Optional<List<String>> players = queueService.join1v1Queue(playerId);
+        return players.map(playerIds -> gameSessionService.newGame(
+                gameFactoryService.craftQuickMultiPlayerGame(playerIds)
+        )).orElse(null);
     }
 
     @MessageMapping("/game/4ffa/join")
     @SendTo("/topic/game/4ffa/ready")
     public synchronized String queueForQuick4ffa(String playerId) {
-        Optional<List<String>> players = Queues.getInstance().join4ffaQueue(playerId);
-        if (players.isPresent()) {
-            Game game = gameFactoryService.craftQuickMultiPlayerGame(players.get());
-            games.addNewGame(game);
-            return game.getGameId();
-        }
-        return null;
+        Optional<List<String>> players = queueService.join4ffaQueue(playerId);
+        return players.map(playerIds -> gameSessionService.newGame(
+                gameFactoryService.craftQuickMultiPlayerGame(playerIds)
+        )).orElse(null);
     }
 
     @MessageMapping("/game/{gameId}/move")
     @SendTo("/topic/game/{gameId}/move")
     public String makeYourMove(@DestinationVariable String gameId, @Payload Move move) throws IllegalMoveException {
-        games.submitMove(move, () -> messagingTemplate.convertAndSend("/topic/game/" + gameId + "/update", move.getGameId()));
+        gameSessionService.submitMoveToGame(move, () -> messagingTemplate.convertAndSend("/topic/game/" + gameId + "/update", move.getGameId()));
         return move.getPlayerId() + " submitted a Move";
     }
 
     @MessageMapping("game/{gameId}/{playerId}/view")
     @SendToUser("/queue/game/{gameId}/{playerId}/view")
     public Game getGameView(@DestinationVariable String gameId, @DestinationVariable String playerId) {
-        return games.getGame(gameId).getViewFor(playerId);
-           }
+        return gameSessionService.getGame(gameId).getViewFor(playerId);
+    }
 
     @MessageMapping("game/{gameId}/{playerId}/leave")
     public void leaveGame(@DestinationVariable String gameId, @DestinationVariable String playerId) {
-        // TODO these logs here makes little sense, better log internal game management?
-        log.info("Player " + playerId + " left Game " + gameId);
-        games.userLeaveGame(gameId, playerId);
+        gameSessionService.leaveGame(gameId, playerId);
     }
 
     @MessageExceptionHandler

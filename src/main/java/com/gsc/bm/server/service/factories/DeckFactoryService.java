@@ -1,4 +1,4 @@
-package com.gsc.bm.server.service;
+package com.gsc.bm.server.service.factories;
 
 import com.gsc.bm.server.model.cards.Card;
 import com.gsc.bm.server.model.Character;
