@@ -18,4 +18,5 @@ public class BigBadBruiser extends Character {
     public Set<String> getCharacterBoundCards() {
         return Set.of(LittleSmack.class.getName(), LittleRage.class.getName());
     }
+
 }
