@@ -4,6 +4,7 @@ import lombok.Getter;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Getter
 public abstract class Character implements Serializable {
@@ -20,13 +21,19 @@ public abstract class Character implements Serializable {
 
     public abstract Set<String> getCharacterBoundCards();
 
-    public void resolveTimeBasedEffects() {
+    public List<String> resolveTimeBasedEffects() {
+        List<String> effectsReport = new ArrayList<>();
+
         // resources based effect
-        if (resources.get(Resource.TOXICITY) != null)
-            takeDamage(new Damage(Damage.DamageType.POISON, resources.get(Resource.TOXICITY)));
-        if (resources.get(Resource.ALCOHOL) != null) {
-            loseResource(Resource.ALERTNESS, resources.get(Resource.ALCOHOL) / 2);
-            loseResource(Resource.ALCOHOL, resources.get(Resource.ALCOHOL) / 2 + 1);
+        if (resources.get(Resource.TOXICITY) != null && resources.get(Resource.TOXICITY) > 0)
+            effectsReport.add(
+                    takeDamage(new Damage(Damage.DamageType.POISON, resources.get(Resource.TOXICITY))));
+
+        if (resources.get(Resource.ALCOHOL) != null && resources.get(Resource.ALCOHOL) > 0) {
+            effectsReport.add(
+                    loseResource(Resource.ALERTNESS, resources.get(Resource.ALCOHOL) / 2));
+            effectsReport.add(
+                    loseResource(Resource.ALCOHOL, resources.get(Resource.ALCOHOL) / 2 + 1));
         }
 
         // clear statuses
@@ -37,6 +44,9 @@ public abstract class Character implements Serializable {
                 expiredStatuses.add(status);
         }
         statuses.removeAll(expiredStatuses);
+        effectsReport.addAll(expiredStatuses.stream().map(s -> "Cleared out of " + s.getName() + " status").collect(Collectors.toList()));
+
+        return effectsReport;
     }
 
     // by default always apply statuses

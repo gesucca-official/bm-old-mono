@@ -4,14 +4,14 @@ import com.gsc.bm.server.model.Character;
 import com.gsc.bm.server.model.Damage;
 import com.gsc.bm.server.model.Resource;
 import com.gsc.bm.server.model.Status;
-import com.gsc.bm.server.model.cards.CharacterBoundCard;
+import com.gsc.bm.server.model.cards.AbstractCharacterBoundCard;
 import com.gsc.bm.server.model.game.Game;
 import com.gsc.bm.server.model.game.Move;
 
 import java.util.List;
 import java.util.Set;
 
-public class LittleRage extends CharacterBoundCard {
+public class LittleRage extends AbstractCharacterBoundCard {
 
     public LittleRage() {
         super(BigBadBruiser.NAME);

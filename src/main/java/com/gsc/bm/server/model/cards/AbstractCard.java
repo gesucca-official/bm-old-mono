@@ -36,11 +36,13 @@ public abstract class AbstractCard implements Card, LoadableCard, Serializable {
     }
 
     @Override
-    public CardResolutionReport resolve(Game g, Move m) {
+    public Map<CardTarget, List<String>> resolve(Game g, Move m) {
         applyOtherUnfathomableLogic(g, m);
-        return new CardResolutionReport(
-                applyEffectOnSelf(g.getSelf(m).getCharacter()),
-                applyEffectOnTarget(g.getSelf(m).getCharacter(), g.getTarget(m).getCharacter())
+        List<String> selfReport = applyEffectOnSelf(g.getSelf(m).getCharacter());
+        List<String> oppoReport = applyEffectOnTarget(g.getSelf(m).getCharacter(), g.getTarget(m).getCharacter());
+        return Map.of(
+                CardTarget.SELF, selfReport == null ? List.of() : selfReport,
+                CardTarget.OPPONENT, oppoReport == null ? List.of() : oppoReport
         );
     }
 

@@ -10,6 +10,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,8 +35,7 @@ public class Move implements Serializable {
     @Setter
     private boolean isVoid;
 
-    private List<String> moveEffectToSelf;
-    private List<String> moveEffectToTarget;
+    private final Map<Card.CardTarget, List<String>> moveReport = new HashMap<>();
 
     // TODO consider builder pattern for this? dunno the interaction with jackson
     @JsonCreator
@@ -109,12 +109,12 @@ public class Move implements Serializable {
     @JsonIgnore
     public void applyEffectTo(Game game) {
         if (this.isVoid) {
-            moveEffectToSelf = List.of("Didn't do anything!");
+            moveReport.put(Card.CardTarget.SELF, List.of("Didn't do anything!"));
             return;
         }
-        Card.CardResolutionReport report = game.getCardFromHand(playerId, playedCardName).resolve(game, this);
-        moveEffectToSelf = report.getSelfReport();
-        moveEffectToTarget = report.getTargetReport();
+        moveReport.putAll(
+                game.getCardFromHand(playerId, playedCardName).resolve(game, this)
+        );
     }
 
 }

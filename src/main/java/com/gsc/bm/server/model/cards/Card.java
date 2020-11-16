@@ -3,8 +3,6 @@ package com.gsc.bm.server.model.cards;
 import com.gsc.bm.server.model.Resource;
 import com.gsc.bm.server.model.game.Game;
 import com.gsc.bm.server.model.game.Move;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 import java.util.List;
 import java.util.Map;
@@ -12,13 +10,6 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface Card {
-
-    @AllArgsConstructor
-    @Getter
-    class CardResolutionReport {
-        List<String> selfReport;
-        List<String> targetReport;
-    }
 
     enum CardTarget {
         SELF, OPPONENT
@@ -38,6 +29,6 @@ public interface Card {
 
     Map<Resource, Integer> getCost();
 
-    CardResolutionReport resolve(Game game, Move move);
+    Map<CardTarget, List<String>> resolve(Game game, Move move);
 
 }

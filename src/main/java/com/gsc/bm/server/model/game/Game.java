@@ -29,6 +29,7 @@ public class Game implements Serializable {
 
     private final List<Move> pendingMoves = new ArrayList<>();
     private final List<Move> lastResolvedMoves = new ArrayList<>();
+    private final Map<String, List<String>> lastResolvedTimeBasedEffects = new HashMap<>();
 
     public Game(List<Player> players) {
         generateGameId(players);
@@ -138,7 +139,6 @@ public class Game implements Serializable {
     @JsonIgnore
     public Optional<Move> getPendingMoveOfTargetIfMovesAfterPlayer(String playerId, String targetId) {
         log.info("Player " + playerId + "'s Move has queried for the Successive Move of " + targetId);
-
         // this is called by cards when they resolves, so pending moves are already sorted in resolution order
         for (int i = 0; i < pendingMoves.size(); i++) {
             if (pendingMoves.get(i).getPlayerId().equals(playerId))
@@ -166,9 +166,9 @@ public class Game implements Serializable {
     }
 
     private void prepareForNextTurn() {
+        lastResolvedTimeBasedEffects.clear();
         for (String playerId : players.keySet())
-            players.get(playerId).getCharacter().resolveTimeBasedEffects();
-
+            lastResolvedTimeBasedEffects.put(playerId, players.get(playerId).getCharacter().resolveTimeBasedEffects());
         lastResolvedMoves.clear();
         lastResolvedMoves.addAll(pendingMoves);
         pendingMoves.clear();

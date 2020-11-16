@@ -64,7 +64,19 @@ export class DebugClientComponent {
           html: this.getDialogHtml(),
           jsonTextData: this.getDialogRawJsonTest()
         }
-      });
+      }).afterClosed().subscribe(
+        () => {
+          if (this.getDialogTitle() !== 'Begin')
+            this.dialog.open(CodeDialogComponent, {
+              width: 'fit-content',
+              data: {
+                title: 'End of Turn Effects',
+                html: this.getEotHtml(),
+                jsonTextData: this.gameService.gameState.lastResolvedTimeBasedEffects
+              }
+            })
+        }
+      );
     }
 
     if (this.gameService.gameState.over) {
@@ -119,11 +131,20 @@ export class DebugClientComponent {
     return this.gameService.gameState.lastResolvedMoves.map(m => {
       return '<p><b>' + m.playerId + '</b> ---> <b>' + m.targetId + '</b></p>'
         + '<p><b>' + m.playedCardName + '</b></p>'
-        + (!m.moveEffectToSelf ? '' : '<p>SELF: <ul><li>' + m.moveEffectToSelf.reduce((a, b) => a + '</li><li>' + b) + '</li></ul>')
+        + ((!m.moveReport['SELF'] || m.moveReport['SELF'].length == 0) ? ''
+          : '<p>SELF: <ul><li>' + m.moveReport['SELF'].reduce((a, b) => a + '</li><li>' + b) + '</li></ul>')
         + '</p>'
-        + (!m.moveEffectToTarget ? '' : '<p>TARGET: <ul><li>' + m.moveEffectToTarget.reduce((a, b) => a + '</li><li>' + b) + '</li></ul>')
+        + ((!m.moveReport['OPPONENT'] || m.moveReport['OPPONENT'].length == 0) ? ''
+          : '<p>TARGET: <ul><li>' + m.moveReport['OPPONENT'].reduce((a, b) => a + '</li><li>' + b) + '</li></ul>')
         + '</p>';
     }).reduce((a, b) => a + '<br>' + b)
+  }
+
+  // too lazy to properly manage this for now
+  private getEotHtml() {
+    return '<pre>' + JSON.stringify(this.gameService.gameState.lastResolvedTimeBasedEffects, null, 2)
+      .replace(' ', '&nbsp;')
+      .replace('\n', '<br/>') + '</pre>';
   }
 
   getTargets(card: any): string[] {

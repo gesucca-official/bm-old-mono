@@ -3,14 +3,14 @@ package com.gsc.bm.server.model.cards.bruiser.character;
 import com.gsc.bm.server.model.Character;
 import com.gsc.bm.server.model.Damage;
 import com.gsc.bm.server.model.Resource;
-import com.gsc.bm.server.model.cards.CharacterBoundCard;
+import com.gsc.bm.server.model.cards.AbstractCharacterBoundCard;
 import com.gsc.bm.server.model.game.Game;
 import com.gsc.bm.server.model.game.Move;
 
 import java.util.List;
 import java.util.Set;
 
-public class LittleSmack extends CharacterBoundCard {
+public class LittleSmack extends AbstractCharacterBoundCard {
 
     public LittleSmack() {
         super(BigBadBruiser.NAME);
