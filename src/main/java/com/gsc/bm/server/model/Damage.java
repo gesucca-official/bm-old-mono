@@ -17,7 +17,7 @@ public class Damage implements Serializable {
         HIT, CUT, POISON
     }
 
-    private final DamageType type;
+    private DamageType type;
     private int amount;
 
 }

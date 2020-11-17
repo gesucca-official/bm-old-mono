@@ -3,10 +3,11 @@ package com.gsc.bm.server.model.cards.bruiser;
 import com.gsc.bm.server.model.Character;
 import com.gsc.bm.server.model.Damage;
 import com.gsc.bm.server.model.Resource;
-import com.gsc.bm.server.model.Status;
+import com.gsc.bm.server.model.game.status.Status;
 import com.gsc.bm.server.model.cards.AbstractCard;
 import com.gsc.bm.server.model.game.Game;
 import com.gsc.bm.server.model.game.Move;
+import com.gsc.bm.server.model.game.status.StatusType;
 
 import java.util.List;
 import java.util.Map;
@@ -35,7 +36,7 @@ public class SeagullFly extends AbstractCard {
                 self.inflictDamage(
                         target,
                         new Damage(Damage.DamageType.HIT, 15),
-                        Set.of(Status.StatusType.GOOD))
+                        Set.of(StatusType.GOOD))
         );
     }
 

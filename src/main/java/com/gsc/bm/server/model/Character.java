@@ -1,5 +1,8 @@
 package com.gsc.bm.server.model;
 
+import com.gsc.bm.server.model.game.status.Status;
+import com.gsc.bm.server.model.game.status.StatusFlow;
+import com.gsc.bm.server.model.game.status.StatusType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -60,9 +63,9 @@ public abstract class Character implements Serializable {
         return inflictDamage(target, damage, Status.ALL);
     }
 
-    public String inflictDamage(Character target, Damage damage, Set<Status.StatusType> statusToBeApplied) {
+    public String inflictDamage(Character target, Damage damage, Set<StatusType> statusToBeApplied) {
         return target.takeDamage(
-                applyStatusToDamage(damage, statusToBeApplied, Status.StatusFlow.OUTPUT),
+                applyStatusToDamage(damage, statusToBeApplied, StatusFlow.OUTPUT),
                 Status.invertViewPoint(statusToBeApplied)
         );
     }
@@ -71,10 +74,10 @@ public abstract class Character implements Serializable {
         return takeDamage(damage, Status.ALL);
     }
 
-    public String takeDamage(Damage damage, Set<Status.StatusType> statusToBeApplied) {
+    public String takeDamage(Damage damage, Set<StatusType> statusToBeApplied) {
         return loseResource(
                 Resource.HEALTH,
-                applyStatusToDamage(damage, statusToBeApplied, Status.StatusFlow.INPUT).getAmount(),
+                applyStatusToDamage(damage, statusToBeApplied, StatusFlow.INPUT).getAmount(),
                 statusToBeApplied
         );
     }
@@ -87,7 +90,7 @@ public abstract class Character implements Serializable {
         return editResource(res, -Math.abs(amount), Status.ALL);
     }
 
-    public String loseResource(Resource res, int amount, Set<Status.StatusType> toBeApplied) {
+    public String loseResource(Resource res, int amount, Set<StatusType> toBeApplied) {
         return editResource(res, -Math.abs(amount), toBeApplied);
     }
 
@@ -101,29 +104,30 @@ public abstract class Character implements Serializable {
     }
 
     // algebraic sum
-    private String editResource(Resource res, int amount, Set<Status.StatusType> toBeApplied) {
+    private String editResource(Resource res, int amount, Set<StatusType> toBeApplied) {
         resources.putIfAbsent(res, 0);
         int originalAmount = resources.get(res);
         getResources().put(res, resources.get(res) + applyStatusToResourceChange(res, amount, toBeApplied));
         return res + ": " + originalAmount + "->" + resources.get(res) + " (" + (resources.get(res) - originalAmount) + ")";
     }
 
-    private Damage applyStatusToDamage(Damage damage, Set<Status.StatusType> toBeApplied, Status.StatusFlow flow) {
+    private Damage applyStatusToDamage(Damage damage, Set<StatusType> toBeApplied, StatusFlow flow) {
         for (Status s : statuses)
             if (s.getImpactedProperty() instanceof Damage.DamageType
                     && damage.getType() == s.getImpactedProperty()
                     && toBeApplied.contains(s.getType())
                     && flow == s.getFlow()
             ) {
-                damage.setAmount(s.getFunction().apply((float) damage.getAmount()).intValue());
+                damage.setType((Damage.DamageType) s.getTypeFunction().apply(damage.getType()));
+                damage.setAmount(s.getAmountFunction().apply((float) damage.getAmount()).intValue());
             }
         return damage;
     }
 
-    private int applyStatusToResourceChange(Resource res, int amount, Set<Status.StatusType> toBeApplied) {
+    private int applyStatusToResourceChange(Resource res, int amount, Set<StatusType> toBeApplied) {
         for (Status status : statuses)
             if (status.getImpactedProperty() == res && toBeApplied.contains(status.getType()))
-                return status.getFunction().apply((float) amount).intValue();
+                return status.getAmountFunction().apply((float) amount).intValue();
         return amount;
     }
 }

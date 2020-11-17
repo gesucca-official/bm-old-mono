@@ -10,8 +10,8 @@ public class ComPlayer extends Player {
 
     // TODO refactor this
 
-    public ComPlayer(Character character, List<Card> characterBoundCards, List<Card> deck) {
-        super("ComPlayer_" + (int) (Math.random() * 10000), character, characterBoundCards, deck);
+    public ComPlayer(Character character, List<Card> characterBoundCards, Card lastResortCard, List<Card> deck) {
+        super("ComPlayer_" + (int) (Math.random() * 10000), character, characterBoundCards, lastResortCard, deck);
     }
 
     public Move chooseMove(Game game) {

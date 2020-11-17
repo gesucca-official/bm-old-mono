@@ -3,10 +3,12 @@ package com.gsc.bm.server.model.cards.bruiser;
 import com.gsc.bm.server.model.Character;
 import com.gsc.bm.server.model.Damage;
 import com.gsc.bm.server.model.Resource;
-import com.gsc.bm.server.model.Status;
+import com.gsc.bm.server.model.game.status.Status;
 import com.gsc.bm.server.model.cards.AbstractCard;
 import com.gsc.bm.server.model.game.Game;
 import com.gsc.bm.server.model.game.Move;
+import com.gsc.bm.server.model.game.status.StatusFlow;
+import com.gsc.bm.server.model.game.status.StatusType;
 
 import java.util.List;
 import java.util.Map;
@@ -28,15 +30,16 @@ public class CantFeelAnything extends AbstractCard {
     @Override
     public List<String> applyEffectOnSelf(Character self) {
         self.getStatuses().add(
-                new Status(
-                        "YOU CARESS ME",
-                        "Damage Taken: x0.5",
-                        Status.StatusType.GOOD,
-                        Status.StatusFlow.INPUT,
-                        Damage.DamageType.HIT,
-                        (incomingDamage -> incomingDamage * 0.5f),
-                        0
-                ));
+                Status.builder()
+                        .name("YOU CARESS ME")
+                        .description("Damage Taken: x0.35")
+                        .type( StatusType.GOOD)
+                        .flow(StatusFlow.INPUT)
+                        .impactedProperty(Damage.DamageType.HIT)
+                        .amountFunction(incomingDamage -> incomingDamage * 0.35f)
+                        .lastsForTurns(0)
+                        .build()
+        );
         return List.of(
                 "Gained status: YOU CARESS ME",
                 self.gainResource(Resource.ALERTNESS, 10)
