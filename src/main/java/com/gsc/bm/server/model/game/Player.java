@@ -1,10 +1,10 @@
 package com.gsc.bm.server.model.game;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gsc.bm.server.model.Character;
 import com.gsc.bm.server.model.Resource;
 import com.gsc.bm.server.model.cards.Card;
-import com.gsc.bm.server.model.cards.Struggle;
 import lombok.Getter;
 
 import java.io.Serializable;
@@ -13,17 +13,17 @@ import java.util.*;
 @Getter
 public class Player implements Serializable {
 
-    // TODO builder pattern for this?
-
-    // TODO expose public information
-
     private final String playerId;
     private final Character character;
+
     private final List<Card> cardsInHand = new ArrayList<>();
+
+    @JsonIgnore
     private final Stack<Card> deck = new Stack<>();
 
     // TODO: for now don't let the FE know about this, then we can have each character have a slightly different version of this
-    @JsonIgnore private final Card lastResortCard;
+    @JsonIgnore
+    private final Card lastResortCard;
 
     public Player(String id, Character character, List<Card> characterBoundCards, Card lastResortCard, List<Card> deck) {
         this.playerId = id;
@@ -34,6 +34,11 @@ public class Player implements Serializable {
         this.deck.addAll(deck);
         Collections.shuffle(this.deck);
         drawCards(3);
+    }
+
+    @JsonProperty
+    public int getDeckSize() {
+        return deck.size();
     }
 
     public void drawCard() {

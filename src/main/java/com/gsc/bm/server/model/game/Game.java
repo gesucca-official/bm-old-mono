@@ -96,8 +96,8 @@ public class Game implements Serializable {
         byte[] bytes = SerializationUtils.serialize(this);
         Game gameViewForPlayer = (Game) SerializationUtils.deserialize(bytes);
 
+        assert gameViewForPlayer != null;
         for (Player p : gameViewForPlayer.getPlayers().values()) {
-            p.getDeck().clear();
             if (!p.getPlayerId().equals(playerId))
                 p.getCardsInHand().clear();
         }

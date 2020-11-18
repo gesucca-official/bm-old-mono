@@ -2,20 +2,18 @@ package com.gsc.bm.server.model.cards.junkie;
 
 import com.gsc.bm.server.model.Character;
 import com.gsc.bm.server.model.Resource;
-import com.gsc.bm.server.model.cards.AbstractCharacterBoundCard;
-import com.gsc.bm.server.model.cards.bruiser.character.BigBadBruiser;
+import com.gsc.bm.server.model.cards.AbstractCard;
 import com.gsc.bm.server.model.game.Game;
 import com.gsc.bm.server.model.game.Move;
 
 import java.util.List;
 import java.util.Set;
 
-public class RottenSmile extends AbstractCharacterBoundCard {
+public class LethalHeroinDose extends AbstractCard {
 
-    public RottenSmile() {
-        super(ToxicJunkie.NAME);
-        setCanTarget(Set.of(CardTarget.OPPONENT));
-        setPriority(2);
+    public LethalHeroinDose() {
+        super();
+        setCanTarget(Set.of(CardTarget.SELF));
     }
 
     @Override
@@ -25,14 +23,15 @@ public class RottenSmile extends AbstractCharacterBoundCard {
     @Override
     public List<String> applyEffectOnSelf(Character self) {
         return List.of(
-                self.gainResource(Resource.ALERTNESS, 5)
+                self.getResources().get(Resource.TOXICITY) >= 30
+                        ? self.loseResource(Resource.HEALTH, self.getResources().get(Resource.TOXICITY))
+                        : "You didn't die from OverDose",
+                self.gainResource(Resource.TOXICITY, self.getResources().get(Resource.TOXICITY) - 30)
         );
     }
 
     @Override
     public List<String> applyEffectOnTarget(Character self, Character target) {
-        return List.of(
-                target.loseResource(Resource.ALERTNESS, 5)
-        );
+        return null;
     }
 }

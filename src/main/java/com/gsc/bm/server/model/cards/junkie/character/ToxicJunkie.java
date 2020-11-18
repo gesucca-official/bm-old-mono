@@ -1,4 +1,4 @@
-package com.gsc.bm.server.model.cards.junkie;
+package com.gsc.bm.server.model.cards.junkie.character;
 
 import com.gsc.bm.server.model.Character;
 import com.gsc.bm.server.model.Resource;
@@ -17,7 +17,7 @@ public class ToxicJunkie extends Character {
 
     @Override
     public Set<String> getCharacterBoundCards() {
-        return null;
+        return Set.of(PatheticBlade.class.getName(), RottenSmile.class.getName());
     }
 
 }

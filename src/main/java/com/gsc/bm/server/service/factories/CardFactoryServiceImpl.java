@@ -39,25 +39,22 @@ public class CardFactoryServiceImpl implements CardFactoryService {
 
     private String buildHtml(Card c, String d) {
         StringBuilder description = new StringBuilder();
-        // TODO come on you are just lazy now
         if (c.isCharacterBound())
-            description
-                    .append("<p>")
-                    .append(keywordsRepo.findById("fallbackMove").get().getHtml()) // TODO manage this kind of exceptions
-                    .append("</p>");
+            appendHtml(description, "fallbackMove");
         if (c.getPriority() > 1)
-            description
-                    .append("<p>")
-                    .append(keywordsRepo.findById("firstStrike").get().getHtml())
-                    .append("</p>");
+            appendHtml(description, "firstStrike");
         if (c.getPriority() < 1)
-            description
-                    .append("<p>")
-                    .append(keywordsRepo.findById("lastStrike").get().getHtml())
-                    .append("</p>");
+            appendHtml(description, "lastStrike");
 
-        return description
-                .append("<p>").append(d).append("</p>")
-                .toString();
+        return description.append("<p>").append(d).append("</p>").toString();
+    }
+
+    private void appendHtml(StringBuilder description, String fallbackMove) {
+        description
+                .append("<p>")
+                .append(keywordsRepo.findById(fallbackMove)
+                        .orElseThrow(() -> new IllegalArgumentException("No such Keyword in DB: " + fallbackMove))
+                        .getHtml())
+                .append("</p>");
     }
 }
