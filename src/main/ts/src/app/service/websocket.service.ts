@@ -3,35 +3,38 @@ import * as SockJS from 'sockjs-client';
 import * as Stomp from 'stompjs';
 import {environment} from "../../environments/environment";
 import {Move} from "../model/move";
+import {UsersService} from "./users.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class WebsocketService {
-
   private stompClient: any; // dunno which type this is
 
   private connected: boolean;
 
   private subscriptions: Map<string, any[]>;
 
-  constructor() {
+  constructor(protected usersService: UsersService) {
     this.subscriptions = new Map<string, any>();
     this.connected = false;
   }
 
-  public connect(): void {
+  public connect(username: string): void {
     this.stompClient = Stomp.over(new SockJS(environment.websocketServerEndpoint));
     this.stompClient.connect({
-      login: 'prova',
-      passcode: 'passcode'
+      login: username,
+      passcode: 'authYetToBeAdded'
     }, () => {
       this.connected = true;
+      this.stompClient.subscribe('/topic/connections/users',
+        (sdkEvent) => this.usersService.usersConnectedToServer = JSON.parse(sdkEvent.body));
+      this.stompClient.send('/app/connections/users/tell/me', {});
     }, (error) => {
       console.log('Connection Failed! errorCallBack -> ' + error);
       console.log('Reattempting in 3 seconds...');
       setTimeout(() => {
-        this.connect();
+        this.connect(username);
       }, 3000);
     });
   }

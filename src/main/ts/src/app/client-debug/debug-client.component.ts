@@ -4,6 +4,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {CodeDialogComponent} from "./code-dialog/code-dialog.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {GameService} from "../service/game.service";
+import {UsersService} from "../service/users.service";
 
 @Component({
   selector: 'app-debug-client',
@@ -15,13 +16,14 @@ export class DebugClientComponent {
   joinClicked: boolean;
 
   constructor(protected websocketService: WebsocketService,
+              public usersService: UsersService,
               public  gameService: GameService,
               public dialog: MatDialog,
               public snackBar: MatSnackBar) {
   }
 
   connect(): void {
-    this.websocketService.connect();
+    this.websocketService.connect(this.gameService.playerId);
   }
 
   isConnected(): boolean {
@@ -95,10 +97,6 @@ export class DebugClientComponent {
     }
   }
 
-  logGameState(): void {
-    console.log(this.gameService.gameState);
-  }
-
   private getDialogTitle(): string {
     // if there are no last resolved moves, game is just begun
     return this.gameService.gameState.lastResolvedMoves.length == 0 ? 'Begin' : 'Turn Resolution';
@@ -159,5 +157,13 @@ export class DebugClientComponent {
 
   discardableCards() {
     return this.gameService.cardsInHand.filter(card => !card.characterBound).map(card => card.name);
+  }
+
+  logGameState(): void {
+    console.log(this.gameService.gameState);
+  }
+
+  logConnectedUsers() {
+    console.log(this.usersService.usersConnectedToServer);
   }
 }
