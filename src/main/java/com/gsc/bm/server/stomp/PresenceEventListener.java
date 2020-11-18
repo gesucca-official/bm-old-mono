@@ -9,6 +9,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Controller
 @Log4j2
 public class PresenceEventListener {
@@ -21,16 +24,21 @@ public class PresenceEventListener {
     }
 
     @EventListener
-    @SendTo("/topic/connections/")
+    @SendTo("/topic/connections/user/join")
     public String handleSessionConnected(SessionConnectEvent event) {
-        connectionsService.userConnected();
-        log.info("Client Connected! " + event.getMessage().getHeaders().get("nativeHeaders") + "  Total users connected: " + connectionsService.getConnectedUsers());
+        Object rawNativeHeaders = event.getMessage().getHeaders().get("nativeHeaders");
+        if (rawNativeHeaders == null) {
+            log.info("SessionConnectEvent does not have the expected Native Headers!");
+            return null;
+        }
+        Map<String, Object> nativeHeaders = new HashMap<>((Map<? extends String, ?>) rawNativeHeaders);
+        log.info(nativeHeaders.get("login"));
         log.info(event);
         return "";
     }
 
     @EventListener
-    @SendTo("/topic/connections/")
+    @SendTo("/topic/connections/user/leave")
     public String handleSessionDisconnect(SessionDisconnectEvent event) {
         log.info("disconnection event");
         log.info(event);
