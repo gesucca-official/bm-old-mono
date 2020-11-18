@@ -22,7 +22,10 @@ export class WebsocketService {
 
   public connect(): void {
     this.stompClient = Stomp.over(new SockJS(environment.websocketServerEndpoint));
-    this.stompClient.connect({}, () => {
+    this.stompClient.connect({
+      login: 'prova',
+      passcode: 'passcode'
+    }, () => {
       this.connected = true;
     }, (error) => {
       console.log('Connection Failed! errorCallBack -> ' + error);
