@@ -44,7 +44,8 @@ public class Player implements Serializable {
     public void drawCard() {
         if (!deck.isEmpty())
             cardsInHand.add(deck.pop());
-        else cardsInHand.add(lastResortCard);
+        else if (!cardsInHand.contains(lastResortCard))
+            cardsInHand.add(lastResortCard);
     }
 
     public void drawCards(int howMany) {

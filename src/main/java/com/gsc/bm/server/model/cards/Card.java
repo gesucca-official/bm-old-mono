@@ -19,6 +19,8 @@ public interface Card {
 
     String getEffect();
 
+    boolean isLastResort();
+
     boolean isCharacterBound();
 
     Optional<String> boundToCharacter();

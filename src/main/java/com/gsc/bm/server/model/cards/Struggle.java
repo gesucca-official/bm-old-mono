@@ -12,6 +12,7 @@ public class Struggle extends AbstractCard {
 
     public Struggle() {
         super();
+        setLastResort(true);
         setCanTarget(Set.of(CardTarget.OPPONENT));
     }
 

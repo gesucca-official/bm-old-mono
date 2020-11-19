@@ -19,6 +19,7 @@ import java.util.Set;
 @Setter(AccessLevel.PROTECTED)
 public abstract class AbstractCard implements Card, LoadableCard, Serializable {
 
+    private boolean isLastResort;
     private boolean isCharacterBound;
     private Map<Resource, Integer> cost;
     private int priority;
@@ -53,6 +54,7 @@ public abstract class AbstractCard implements Card, LoadableCard, Serializable {
     public abstract List<String> applyEffectOnTarget(Character self, Character target);
 
     public AbstractCard() {
+        isLastResort = false;
         isCharacterBound = false;
         priority = 1;
         cost = Map.of();
@@ -71,5 +73,14 @@ public abstract class AbstractCard implements Card, LoadableCard, Serializable {
     @Override
     public void setGuiEffectDescription(String description) {
         this.effect = description;
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (o instanceof AbstractCard) {
+            AbstractCard e = (AbstractCard) o;
+            return e.name.equals(this.name);
+        } else
+            return false;
     }
 }
