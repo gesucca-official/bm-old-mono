@@ -1,28 +1,31 @@
 package com.gsc.bm.server.service.session;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Log4j2
 public class ConnectionsServiceImpl implements ConnectionsService {
 
-    @AllArgsConstructor
-    @Getter
-    @ToString
-    private static class UserSessionInfo {
-        String userLogin, sessionId;
+    private static final Set<UserSessionInfo> _USERS = new HashSet<>();
+
+    private final SimpMessagingTemplate messagingTemplate;
+
+    @Autowired
+    public ConnectionsServiceImpl(SimpMessagingTemplate messagingTemplate) {
+        this.messagingTemplate = messagingTemplate;
     }
 
-    private static final Set<UserSessionInfo> _USERS = new HashSet<>();
+    @Override
+    public void broadcastUsersInfo() {
+        messagingTemplate.convertAndSend("/topic/connections/users", getConnectedUsers());
+    }
 
     @Override
     public void userConnected(SessionConnectEvent event) {
@@ -34,13 +37,14 @@ public class ConnectionsServiceImpl implements ConnectionsService {
         String sessionId = event.getMessage().getHeaders().get("simpSessionId", String.class);
 
         log.info("User Connected! " + userLoginName + " with simpSessionId " + sessionId);
-        _USERS.add(new UserSessionInfo(userLoginName, sessionId));
+        _USERS.add(new UserSessionInfo(userLoginName, sessionId, UserSessionInfo.Activity.FREE));
     }
 
     @Override
     public void userDisconnected(SessionDisconnectEvent event) {
         String sessionId = event.getMessage().getHeaders().get("simpSessionId", String.class);
         log.info(_USERS);
+        // TODO extract this into private method
         _USERS.stream()
                 .filter(userSessionInfo -> userSessionInfo.getSessionId().equals(sessionId))
                 .findAny()
@@ -54,8 +58,20 @@ public class ConnectionsServiceImpl implements ConnectionsService {
     }
 
     @Override
-    public Set<String> getConnectedUsers() {
-        return _USERS.stream().map(UserSessionInfo::getUserLogin).collect(Collectors.toSet());
+    public Set<UserSessionInfo> getConnectedUsers() {
+        return _USERS;
+    }
+
+    @Override
+    public void changeUserActivity(String userId, UserSessionInfo.Activity activity) {
+        _USERS.stream()
+                .filter(userSessionInfo -> userSessionInfo.getUserLogin().equals(userId))
+                .findAny()
+                .ifPresentOrElse(
+                        userSessionInfo -> userSessionInfo.setActivity(activity),
+                        () -> log.info("An User not known as attempted to change Activity!")
+                );
+        broadcastUsersInfo();
     }
 
 }

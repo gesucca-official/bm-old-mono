@@ -1,20 +1,30 @@
-<!--join game-->
-<mat-card *ngIf="websocketService.isConnected()">
-  <button mat-raised-button color="accent"
-          [disabled]="sessionService.queued || gameService.playerId == null || gameService.gameState != null"
-          [matMenuTriggerFor]="playModes">
-    Quick Play Modes
-  </button>
-  <mat-menu #playModes="matMenu">
-    <button mat-menu-item (click)="joinGame('1vCom')">Join 1vCom Game</button>
-    <button mat-menu-item (click)="joinGame('4ffaCom')">Join 4ffaCom Game</button>
-    <button mat-menu-item (click)="joinGame('1v1')">Join 1v1 Game</button>
-    <button mat-menu-item (click)="joinGame('4ffa')">Join 4ffa Game</button>
-  </mat-menu>
-  <!--users connected to server-->
-  <div style="float: right">
-    <button mat-raised-button class="mat-elevation-z4" (click)="logConnectedUsers()">
-      Log Connected Users ({{sessionService.howManyUsersConnected}})
-    </button>
-  </div>
-</mat-card>
+<mat-accordion *ngIf="websocketService.isConnected()">
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+
+      <mat-panel-title>
+        <button mat-raised-button color="accent"
+                [disabled]="sessionService.queued || gameService.playerId == null || gameService.gameState != null"
+                [matMenuTriggerFor]="playModes"
+                (click)="$event.stopPropagation();">
+          Quick Play Modes
+        </button>
+        <mat-menu #playModes="matMenu">
+          <button mat-menu-item (click)="joinGame('1vCom')">Join 1vCom Game</button>
+          <button mat-menu-item (click)="joinGame('4ffaCom')">Join 4ffaCom Game</button>
+          <button mat-menu-item (click)="joinGame('1v1')">Join 1v1 Game</button>
+          <button mat-menu-item (click)="joinGame('4ffa')">Join 4ffa Game</button>
+        </mat-menu>
+      </mat-panel-title>
+
+      <mat-panel-description class="right-aligned">
+        Users: {{sessionService.howManyUsersConnected}}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <ul>
+      <li *ngFor="let user of sessionService.usersConnected"><b>{{user.userLogin}}</b> ({{user.activity}})</li>
+    </ul>
+
+  </mat-expansion-panel>
+</mat-accordion>

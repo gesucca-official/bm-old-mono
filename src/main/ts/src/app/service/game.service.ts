@@ -10,7 +10,6 @@ export class GameService {
   private _gameState: any;
 
   clearGame(): void {
-    this._playerId = null;
     this._gameId = null;
     this._gameState = null;
   }

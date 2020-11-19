@@ -2,6 +2,7 @@ package com.gsc.bm.server.service.session;
 
 import com.gsc.bm.server.model.game.*;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -15,13 +16,21 @@ public class GameSessionServiceImpl implements GameSessionService {
 
     private static final Map<Game, Set<String>> _GAMES = new ConcurrentHashMap<>();
 
+    private final ConnectionsService connectionsService;
+
+    @Autowired
+    public GameSessionServiceImpl(ConnectionsService connectionsService) {
+        this.connectionsService = connectionsService;
+    }
+
     @Override
     public synchronized String newGame(Game game) {
-        // TODO this is an assumption: what happens if one player queues closes the game?
+        // TODO this is an assumption: what happens if one player queued closes the game?
         Set<String> usersSubscribed = game.getPlayers().values()
                 .stream()
                 .filter(p -> !(p instanceof ComPlayer))
                 .map(Player::getPlayerId)
+                .peek(p -> connectionsService.changeUserActivity(p, UserSessionInfo.Activity.PLAYING))
                 .collect(Collectors.toSet());
         _GAMES.put(game, usersSubscribed);
         log.info("Created Game " + game.getGameId() + " with users subscribed: " + usersSubscribed);
@@ -39,6 +48,7 @@ public class GameSessionServiceImpl implements GameSessionService {
     @Override
     public synchronized void leaveGame(String gameId, String playerId) {
         _GAMES.get(getGame(gameId)).remove(playerId);
+        connectionsService.changeUserActivity(playerId, UserSessionInfo.Activity.FREE);
         log.info("Player " + playerId + " left Game " + gameId);
 
         if (_GAMES.get(getGame(gameId)).isEmpty()) {

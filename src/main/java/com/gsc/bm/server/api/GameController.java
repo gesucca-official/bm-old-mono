@@ -1,4 +1,4 @@
-package com.gsc.bm.server.stomp;
+package com.gsc.bm.server.api;
 
 import com.gsc.bm.server.model.game.Game;
 import com.gsc.bm.server.model.game.IllegalMoveException;

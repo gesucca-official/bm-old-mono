@@ -7,9 +7,13 @@ import java.util.Set;
 
 public interface ConnectionsService {
 
+    void broadcastUsersInfo();
+
     void userConnected(SessionConnectEvent event);
 
     void userDisconnected(SessionDisconnectEvent event);
 
-    Set<String> getConnectedUsers();
+    Set<UserSessionInfo> getConnectedUsers();
+
+    void changeUserActivity(String userId, UserSessionInfo.Activity activity);
 }
