@@ -1,0 +1,20 @@
+<!--join game-->
+<mat-card *ngIf="websocketService.isConnected()">
+  <button mat-raised-button color="accent"
+          [disabled]="sessionService.queued || gameService.playerId == null || gameService.gameState != null"
+          [matMenuTriggerFor]="playModes">
+    Quick Play Modes
+  </button>
+  <mat-menu #playModes="matMenu">
+    <button mat-menu-item (click)="joinGame('1vCom')">Join 1vCom Game</button>
+    <button mat-menu-item (click)="joinGame('4ffaCom')">Join 4ffaCom Game</button>
+    <button mat-menu-item (click)="joinGame('1v1')">Join 1v1 Game</button>
+    <button mat-menu-item (click)="joinGame('4ffa')">Join 4ffa Game</button>
+  </mat-menu>
+  <!--users connected to server-->
+  <div style="float: right">
+    <button mat-raised-button class="mat-elevation-z4" (click)="logConnectedUsers()">
+      Log Connected Users ({{sessionService.howManyUsersConnected}})
+    </button>
+  </div>
+</mat-card>

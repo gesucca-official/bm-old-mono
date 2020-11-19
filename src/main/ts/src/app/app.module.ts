@@ -19,8 +19,10 @@ import {CodeDialogComponent} from './client-debug/code-dialog/code-dialog.compon
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {CharacterCardComponent} from './client-debug/character-card/character-card.component';
 import {FlexLayoutModule} from "@angular/flex-layout";
-import { CardInHandComponent } from './client-debug/card-in-hand/card-in-hand.component';
+import {CardInHandComponent} from './client-debug/card-in-hand/card-in-hand.component';
 import {MatExpansionModule} from "@angular/material/expansion";
+import {ServerConnectionComponent} from './conn/server-connection/server-connection.component';
+import {ChooseGameComponent} from './conn/choose-game/choose-game.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +31,9 @@ import {MatExpansionModule} from "@angular/material/expansion";
     PhaserClientComponent,
     CodeDialogComponent,
     CharacterCardComponent,
-    CardInHandComponent
+    CardInHandComponent,
+    ServerConnectionComponent,
+    ChooseGameComponent
   ],
   imports: [
     CommonModule,

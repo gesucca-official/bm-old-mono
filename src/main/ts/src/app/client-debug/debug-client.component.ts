@@ -4,7 +4,6 @@ import {MatDialog} from "@angular/material/dialog";
 import {CodeDialogComponent} from "./code-dialog/code-dialog.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {GameService} from "../service/game.service";
-import {UsersService} from "../service/users.service";
 
 @Component({
   selector: 'app-debug-client',
@@ -13,10 +12,7 @@ import {UsersService} from "../service/users.service";
 })
 export class DebugClientComponent {
 
-  joinClicked: boolean;
-
   constructor(protected websocketService: WebsocketService,
-              public usersService: UsersService,
               public  gameService: GameService,
               public dialog: MatDialog,
               public snackBar: MatSnackBar) {
@@ -31,7 +27,6 @@ export class DebugClientComponent {
   }
 
   joinGame(whichGame: string) {
-    this.joinClicked = true;
     this.websocketService.joinGame(this.gameService.playerId, whichGame, (sdkEvent => {
       this.gameService.gameId = sdkEvent.body;
       this.websocketService.subToGame(
@@ -93,7 +88,6 @@ export class DebugClientComponent {
 
       this.websocketService.unsubToGame(this.gameService.gameId, this.gameService.playerId);
       this.gameService.clearGame();
-      this.joinClicked = false;
     }
   }
 
@@ -157,13 +151,5 @@ export class DebugClientComponent {
 
   discardableCards() {
     return this.gameService.cardsInHand.filter(card => !card.characterBound).map(card => card.name);
-  }
-
-  logGameState(): void {
-    console.log(this.gameService.gameState);
-  }
-
-  logConnectedUsers() {
-    console.log(this.usersService.usersConnectedToServer);
   }
 }

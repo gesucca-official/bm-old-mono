@@ -3,7 +3,7 @@ import * as SockJS from 'sockjs-client';
 import * as Stomp from 'stompjs';
 import {environment} from "../../environments/environment";
 import {Move} from "../model/move";
-import {UsersService} from "./users.service";
+import {SessionService} from "./session.service";
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +15,7 @@ export class WebsocketService {
 
   private subscriptions: Map<string, any[]>;
 
-  constructor(protected usersService: UsersService) {
+  constructor(protected sessionService: SessionService) {
     this.subscriptions = new Map<string, any>();
     this.connected = false;
   }
@@ -28,7 +28,7 @@ export class WebsocketService {
     }, () => {
       this.connected = true;
       this.stompClient.subscribe('/topic/connections/users',
-        (sdkEvent) => this.usersService.usersConnectedToServer = JSON.parse(sdkEvent.body));
+        (sdkEvent) => this.sessionService.usersConnected = JSON.parse(sdkEvent.body));
       this.stompClient.send('/app/connections/users/tell/me', {});
     }, (error) => {
       console.log('Connection Failed! errorCallBack -> ' + error);
