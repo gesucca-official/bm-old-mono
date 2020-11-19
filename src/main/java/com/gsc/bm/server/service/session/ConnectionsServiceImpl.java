@@ -44,7 +44,6 @@ public class ConnectionsServiceImpl implements ConnectionsService {
     public void userDisconnected(SessionDisconnectEvent event) {
         String sessionId = event.getMessage().getHeaders().get("simpSessionId", String.class);
         log.info(_USERS);
-        // TODO extract this into private method
         _USERS.stream()
                 .filter(userSessionInfo -> userSessionInfo.getSessionId().equals(sessionId))
                 .findAny()

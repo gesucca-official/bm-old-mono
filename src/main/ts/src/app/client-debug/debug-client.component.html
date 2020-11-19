@@ -1,7 +1,7 @@
 <app-server-connection></app-server-connection>
 <br>
 <app-choose-game (joinGameRequest)="joinGame($event)"></app-choose-game>
-
+<br>
 <div *ngIf="gameService.gameState" fxLayout="row wrap" fxLayoutGap="5px grid">
   <app-character-card fxFlex="25%" fxFlex.xs="100%" fxFlex.sm="33%"
                       [isPlayer]="true"
