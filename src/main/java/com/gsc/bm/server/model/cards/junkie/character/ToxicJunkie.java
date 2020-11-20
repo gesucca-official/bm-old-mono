@@ -12,7 +12,7 @@ public class ToxicJunkie extends Character {
     public ToxicJunkie() {
         super(NAME, 100, 35);
         resources.put(Resource.TOXICITY, 10);
-        setToxicImmunity(true);
+        getImmunities().add(Resource.TOXICITY);
     }
 
     @Override

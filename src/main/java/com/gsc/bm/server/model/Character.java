@@ -4,7 +4,6 @@ import com.gsc.bm.server.model.game.status.Status;
 import com.gsc.bm.server.model.game.status.StatusFlow;
 import com.gsc.bm.server.model.game.status.StatusType;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.*;
@@ -16,11 +15,7 @@ public abstract class Character implements Serializable {
     private final String name;
     protected final Map<Resource, Integer> resources = new EnumMap<>(Resource.class);
     private final List<Status> statuses = new ArrayList<>();
-
-    @Setter
-    private boolean alcoholImmunity;
-    @Setter
-    private boolean toxicImmunity;
+    private final Set<Resource> immunities = new HashSet<>();
 
     public Character(String name, int hp, int speed) {
         this.name = name;
@@ -34,11 +29,11 @@ public abstract class Character implements Serializable {
         List<String> effectsReport = new ArrayList<>();
 
         // resources based effect
-        if (!toxicImmunity && resources.get(Resource.TOXICITY) != null && resources.get(Resource.TOXICITY) > 0)
+        if (!immunities.contains(Resource.TOXICITY) && resources.get(Resource.TOXICITY) != null && resources.get(Resource.TOXICITY) > 0)
             effectsReport.add("(TOXICITY effect) " +
                     takeDamage(new Damage(Damage.DamageType.POISON, resources.get(Resource.TOXICITY))));
 
-        if (!alcoholImmunity && resources.get(Resource.ALCOHOL) != null && resources.get(Resource.ALCOHOL) > 0) {
+        if (!immunities.contains(Resource.ALCOHOL) && resources.get(Resource.ALCOHOL) != null && resources.get(Resource.ALCOHOL) > 0) {
             effectsReport.add("(ALCOHOL effect) " +
                     loseResource(Resource.ALERTNESS, resources.get(Resource.ALCOHOL) / 2));
             effectsReport.add("(ALCOHOL effect) " +

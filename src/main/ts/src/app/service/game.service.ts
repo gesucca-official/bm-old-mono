@@ -1,4 +1,7 @@
 import {Injectable} from '@angular/core';
+import {GameState} from "../model/game-state";
+import {Player} from "../model/player";
+import {Card} from "../model/card";
 
 @Injectable({
   providedIn: 'root'
@@ -7,18 +10,18 @@ export class GameService {
 
   private _gameId: string;
   private _playerId: string;
-  private _gameState: any;
+  private _gameState: GameState;
 
   clearGame(): void {
     this._gameId = null;
     this._gameState = null;
   }
 
-  get playerState(): any {
+  get playerState(): Player {
     return JSON.parse(JSON.stringify(this.gameState.players[this.playerId]));
   }
 
-  get opponents(): any[] {
+  get opponents(): Player[] {
     const players = JSON.parse(JSON.stringify(this.gameState.players));
     const opp = [];
     Object.keys(players).forEach(k => {
@@ -28,7 +31,7 @@ export class GameService {
     return opp;
   }
 
-  get cardsInHand(): any[] {
+  get cardsInHand(): Card[] {
     if (this.gameState)
       return this.gameState.players[this.playerId].cardsInHand;
   }
@@ -41,11 +44,11 @@ export class GameService {
     this._playerId = value;
   }
 
-  get gameState(): any {
+  get gameState(): GameState {
     return this._gameState;
   }
 
-  set gameState(value: any) {
+  set gameState(value: GameState) {
     this._gameState = value;
   }
 

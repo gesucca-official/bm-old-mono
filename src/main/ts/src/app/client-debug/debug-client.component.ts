@@ -4,6 +4,9 @@ import {MatDialog} from "@angular/material/dialog";
 import {CodeDialogComponent} from "./code-dialog/code-dialog.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {GameService} from "../service/game.service";
+import {Move} from "../model/move";
+import {GameState} from "../model/game-state";
+import {Card} from "../model/card";
 
 @Component({
   selector: 'app-debug-client',
@@ -34,24 +37,18 @@ export class DebugClientComponent {
         this.gameService.playerId,
         (sdkEvent) => this.snackBar.open(sdkEvent.body, 'ok', {duration: 3000}),
         (sdkEvent) => this.snackBar.open(sdkEvent.body, 'ok', {duration: 1500}),
-        (sdkEvent) => this.onGameUpdate(sdkEvent.body)
+        (sdkEvent) => this.onGameUpdate(JSON.parse(sdkEvent.body))
       );
       this.websocketService.requestGameView(this.gameService.gameId, this.gameService.playerId);
     }));
   }
 
-  playCard(event: any): void {
-    this.websocketService.submitMove({
-      playedCardName: event.cardName,
-      playerId: this.gameService.playerId,
-      targetId: event.target,
-      gameId: this.gameService.gameId,
-      choices: event.choices
-    });
+  playCard(event: Move): void {
+    this.websocketService.submitMove(event);
   }
 
-  onGameUpdate(game: any): void {
-    this.gameService.gameState = JSON.parse(game);
+  onGameUpdate(game: GameState): void {
+    this.gameService.gameState = game;
 
     if (!this.gameService.gameState.over) {
       this.dialog.open(CodeDialogComponent, {
@@ -96,7 +93,7 @@ export class DebugClientComponent {
     return this.gameService.gameState.lastResolvedMoves.length == 0 ? 'Begin' : 'Turn Resolution';
   }
 
-  private getDialogRawJsonTest(): string {
+  private getDialogRawJsonTest(): any {
     return this.gameService.gameState.lastResolvedMoves.length == 0 ?
       this.getPlayersRawJsonText() : this.gameService.gameState.lastResolvedMoves
   }
@@ -139,7 +136,7 @@ export class DebugClientComponent {
       .replace('\n', '<br/>') + '</pre>';
   }
 
-  getTargets(card: any): string[] {
+  getTargets(card: Card): string[] {
     const targets = [];
     if (card.canTarget.includes('SELF'))
       targets.push('SELF')

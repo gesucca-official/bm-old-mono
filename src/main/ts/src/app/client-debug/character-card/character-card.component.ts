@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {Player} from "../../model/player";
 
 @Component({
   selector: 'app-character-card',
@@ -7,7 +8,7 @@ import {Component, Input, OnInit} from '@angular/core';
 })
 export class CharacterCardComponent implements OnInit {
 
-  @Input() playerState: any;
+  @Input() playerState: Player;
   @Input() isPlayer: boolean;
 
   constructor() {
@@ -28,7 +29,7 @@ export class CharacterCardComponent implements OnInit {
     return this.playerState.character.resources['ALERTNESS'];
   }
 
-  get otherResources(): any {
+  get otherResources(): Map<string, number> {
     const res = JSON.parse(JSON.stringify(this.playerState.character.resources));
     delete res['HEALTH']
     delete res['ALERTNESS']
