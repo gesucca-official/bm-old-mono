@@ -28,16 +28,12 @@ export class CardInHandComponent {
   }
 
   playThis() {
-    const choices: Map<string, string> = new Map<string, string>();
-    if (this.cardData.characterBound)
-      choices.set('DISCARD_ONE', this.cardToDiscard);
-
     this.onPlayThis.emit({
       playedCardName: this.cardData.name,
       playerId: this.gameService.playerId,
       targetId: this.chosenTarget,
       gameId: this.gameService.gameId,
-      choices: choices
+      choices: this.cardData.characterBound ? {'DISCARD_ONE': this.cardToDiscard} : null
     })
   }
 }

@@ -3,6 +3,10 @@ export interface Move {
   playerId: string,
   targetId: string,
   gameId: string,
-  choices: Map<string, string>,
+  choices: Choices,
   moveReport?: Map<string, string[]>
+}
+
+export interface Choices {
+  [action: string]: string;
 }

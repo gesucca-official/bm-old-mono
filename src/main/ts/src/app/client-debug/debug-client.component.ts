@@ -5,7 +5,6 @@ import {CodeDialogComponent} from "./code-dialog/code-dialog.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {GameService} from "../service/game.service";
 import {Move} from "../model/move";
-import {GameState} from "../model/game-state";
 import {Card} from "../model/card";
 
 @Component({
@@ -37,7 +36,7 @@ export class DebugClientComponent {
         this.gameService.playerId,
         (sdkEvent) => this.snackBar.open(sdkEvent.body, 'ok', {duration: 3000}),
         (sdkEvent) => this.snackBar.open(sdkEvent.body, 'ok', {duration: 1500}),
-        (sdkEvent) => this.onGameUpdate(JSON.parse(sdkEvent.body))
+        (sdkEvent) => this.onGameUpdate(sdkEvent.body)
       );
       this.websocketService.requestGameView(this.gameService.gameId, this.gameService.playerId);
     }));
@@ -47,8 +46,8 @@ export class DebugClientComponent {
     this.websocketService.submitMove(event);
   }
 
-  onGameUpdate(game: GameState): void {
-    this.gameService.gameState = game;
+  onGameUpdate(gameStateRaw: any): void {
+    this.gameService.gameState = JSON.parse(gameStateRaw);
 
     if (!this.gameService.gameState.over) {
       this.dialog.open(CodeDialogComponent, {
@@ -61,14 +60,7 @@ export class DebugClientComponent {
       }).afterClosed().subscribe(
         () => {
           if (this.getDialogTitle() !== 'Begin')
-            this.dialog.open(CodeDialogComponent, {
-              width: 'fit-content',
-              data: {
-                title: 'End of Turn Effects',
-                html: this.getEotHtml(),
-                jsonTextData: this.gameService.gameState.lastResolvedTimeBasedEffects
-              }
-            })
+            this.showEotEffects()
         }
       );
     }
@@ -81,11 +73,29 @@ export class DebugClientComponent {
           html: this.getDialogHtml(),
           data: this.gameService.gameState.lastResolvedMoves
         }
-      });
-
+      }).afterClosed().subscribe(
+        () => {
+          if (this.getDialogTitle() !== 'Begin')
+            this.showEotEffects()
+        }
+      );
       this.websocketService.unsubToGame(this.gameService.gameId, this.gameService.playerId);
       this.gameService.clearGame();
     }
+  }
+
+  getTargets(card: Card): string[] {
+    const targets = [];
+    if (card.canTarget.includes('SELF'))
+      targets.push('SELF')
+    if (card.canTarget.includes('OPPONENT'))
+      this.gameService.opponents.filter(o => !o.character.dead).map(o => o.playerId)
+        .forEach(o => targets.push(o))
+    return targets;
+  }
+
+  discardableCards() {
+    return this.gameService.cardsInHand.filter(card => !card.characterBound).map(card => card.name);
   }
 
   private getDialogTitle(): string {
@@ -129,24 +139,30 @@ export class DebugClientComponent {
     }).reduce((a, b) => a + '<br>' + b)
   }
 
-  // too lazy to properly manage this for now
   private getEotHtml() {
-    return '<pre>' + JSON.stringify(this.gameService.gameState.lastResolvedTimeBasedEffects, null, 2)
-      .replace(' ', '&nbsp;')
-      .replace('\n', '<br/>') + '</pre>';
+    const eot = this.gameService.gameState.lastResolvedTimeBasedEffects; // shorten this name
+    let html = '';
+    Object.keys(eot).forEach(
+      k => {
+        if ((!eot[k] || eot[k].length == 0))
+          return; // no eot fx for that player
+        html += '<p>';
+        html += '<b>' + k + '</b>';
+        html += '<ul><li>' + eot[k].reduce((a, b) => a + '</li><li>' + b) + '</li></ul>'
+        html += '</p>';
+      }
+    )
+    return html;
   }
 
-  getTargets(card: Card): string[] {
-    const targets = [];
-    if (card.canTarget.includes('SELF'))
-      targets.push('SELF')
-    if (card.canTarget.includes('OPPONENT'))
-      this.gameService.opponents.filter(o => !o.character.dead).map(o => o.playerId)
-        .forEach(o => targets.push(o))
-    return targets;
-  }
-
-  discardableCards() {
-    return this.gameService.cardsInHand.filter(card => !card.characterBound).map(card => card.name);
+  private showEotEffects() {
+    this.dialog.open(CodeDialogComponent, {
+      width: 'fit-content',
+      data: {
+        title: 'End of Turn Effects',
+        html: this.getEotHtml(),
+        jsonTextData: this.gameService.gameState.lastResolvedTimeBasedEffects
+      }
+    })
   }
 }

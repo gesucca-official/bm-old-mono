@@ -3,10 +3,18 @@ import {Player} from "./player";
 
 export interface GameState {
   gameId: string,
-  players: Map<string, Player>,
+  players: Players,
   pendingMoves: Move[]
   lastResolvedMoves: Move[],
-  lastResolvedTimeBasedEffects: Map<string, string[]>,
+  lastResolvedTimeBasedEffects: TimeBasedEffects,
   over: boolean,
   winner: string
+}
+
+export interface Players {
+  [id: string]: Player;
+}
+
+export interface TimeBasedEffects {
+  [player: string]: string[];
 }

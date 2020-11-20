@@ -18,7 +18,7 @@ export class GameService {
   }
 
   get playerState(): Player {
-    return JSON.parse(JSON.stringify(this.gameState.players[this.playerId]));
+    return this.gameState.players[this.playerId];
   }
 
   get opponents(): Player[] {
