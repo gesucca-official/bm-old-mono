@@ -1,4 +1,4 @@
-package com.gsc.bm.server.service.session;
+package com.gsc.bm.server.service.session.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

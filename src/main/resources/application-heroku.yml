@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    internal:
+      url: jdbc:sqlite::resource:cards.sqlite
+      driver-class-name: org.sqlite.JDBC
+    external:
+      url: ${JDBC_DATABASE_URL}
+      username: ${JDBC_DATABASE_USERNAME}
+      password: ${JDBC_DATABASE_PASSWORD}
+      driver-class-name: org.postgresql.Driver

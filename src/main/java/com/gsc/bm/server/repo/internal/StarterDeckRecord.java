@@ -1,4 +1,4 @@
-package com.gsc.bm.server.repo;
+package com.gsc.bm.server.repo.internal;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

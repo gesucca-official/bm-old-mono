@@ -1,6 +1,8 @@
 package com.gsc.bm.server.service.session;
 
 import com.gsc.bm.server.model.game.*;
+import com.gsc.bm.server.service.session.model.ActionLog;
+import com.gsc.bm.server.service.session.model.UserSessionInfo;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,10 +19,12 @@ public class GameSessionServiceImpl implements GameSessionService {
     private static final Map<Game, Set<String>> _GAMES = new ConcurrentHashMap<>();
 
     private final ConnectionsService connectionsService;
+    private final GameLoggingService gameLoggingService;
 
     @Autowired
-    public GameSessionServiceImpl(ConnectionsService connectionsService) {
+    public GameSessionServiceImpl(ConnectionsService connectionsService, GameLoggingService gameLoggingService) {
         this.connectionsService = connectionsService;
+        this.gameLoggingService = gameLoggingService;
     }
 
     @Override
@@ -32,8 +36,11 @@ public class GameSessionServiceImpl implements GameSessionService {
                 .map(Player::getPlayerId)
                 .peek(p -> connectionsService.changeUserActivity(p, UserSessionInfo.Activity.PLAYING))
                 .collect(Collectors.toSet());
+
         _GAMES.put(game, usersSubscribed);
         log.info("Created Game " + game.getGameId() + " with users subscribed: " + usersSubscribed);
+        gameLoggingService.log(game.getGameId(), new ActionLog<>("Created Game", game.getSlimGlobalView()));
+
         return game.getGameId(); // return the id just for convenience
     }
 
@@ -52,8 +59,10 @@ public class GameSessionServiceImpl implements GameSessionService {
         log.info("Player " + playerId + " left Game " + gameId);
 
         if (_GAMES.get(getGame(gameId)).isEmpty()) {
-            _GAMES.remove(getGame(gameId));
+            gameLoggingService.log(gameId, new ActionLog<>("Destroyed Empty Game", null));
+            gameLoggingService.saveAndFlush(getGame(gameId));
             log.info("No one is anymore subscribed to Game " + gameId + " - removed!");
+            _GAMES.remove(getGame(gameId));
         }
     }
 
@@ -61,15 +70,21 @@ public class GameSessionServiceImpl implements GameSessionService {
     public synchronized void submitMoveToGame(Move move, Runnable callback) throws IllegalMoveException {
         Game game = getGame(move.getGameId());
         game.submitMove(move);
+        gameLoggingService.log(move.getGameId(), new ActionLog<>("Move submitted by " + move.getPlayerId(), move));
 
         // is a player is an AI player, automatically submit its move
         for (Player p : game.getPlayers().values())
-            if (p instanceof ComPlayer)
-                game.submitMove(((ComPlayer) p).chooseMove(game));
+            if (p instanceof ComPlayer) {
+                Move comMove = ((ComPlayer) p).chooseMove(game);
+                game.submitMove(comMove);
+                gameLoggingService.log(move.getGameId(), new ActionLog<>("Move submitted by " + comMove.getPlayerId(), comMove));
+            }
 
         if (game.isReadyToResolveMoves()) {
             game.resolveMoves();
+            gameLoggingService.log(game.getGameId(), new ActionLog<>("Game updated after Moves Resolution", game.getSlimGlobalView()));
             callback.run();
         }
     }
+
 }

@@ -6,6 +6,7 @@ import com.gsc.bm.server.model.game.Move;
 import com.gsc.bm.server.service.factories.GameFactoryService;
 import com.gsc.bm.server.service.session.GameSessionService;
 import com.gsc.bm.server.service.session.QueueService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
@@ -22,6 +23,7 @@ public class GameController {
     private final GameSessionService gameSessionService;
     private final QueueService queueService;
 
+    @Autowired
     public GameController(SimpMessagingTemplate messagingTemplate,
                           GameFactoryService gameFactoryService,
                           GameSessionService gameSessionService,

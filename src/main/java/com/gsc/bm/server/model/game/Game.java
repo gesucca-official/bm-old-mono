@@ -3,6 +3,7 @@ package com.gsc.bm.server.model.game;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gsc.bm.server.model.Resource;
+import com.gsc.bm.server.model.cards.AbstractCard;
 import com.gsc.bm.server.model.cards.Card;
 import lombok.Getter;
 import lombok.ToString;
@@ -91,8 +92,24 @@ public class Game implements Serializable {
     }
 
     @JsonIgnore
-    public Game getViewFor(String playerId) {
+    public Game getSlimGlobalView() {
         // this way it should make a clone
+        byte[] bytes = SerializationUtils.serialize(this);
+        Game gameClone = (Game) SerializationUtils.deserialize(bytes);
+
+        // this serves only to save text on the game log, I am not sure this is a good idea
+        assert gameClone != null;
+        for (Player p : gameClone.getPlayers().values()) {
+            for (Card c : p.getDeck())
+                ((AbstractCard) c).setGuiEffectDescription(null);
+            for (Card c : p.getCardsInHand())
+                ((AbstractCard) c).setGuiEffectDescription(null);
+        }
+        return gameClone;
+    }
+
+    @JsonIgnore
+    public Game getViewFor(String playerId) {
         byte[] bytes = SerializationUtils.serialize(this);
         Game gameViewForPlayer = (Game) SerializationUtils.deserialize(bytes);
 

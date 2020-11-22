@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    internal:
+      url: jdbc:sqlite::resource:cards.sqlite
+      driver-class-name: org.sqlite.JDBC
+    external:
+      url: jdbc:postgresql://ec2-3-220-23-212.compute-1.amazonaws.com:5432/d7j02q6qlvr0f9
+      username: ctfgdsuehqynao
+      password: ffc7e7d79bb838e59e2bad99aaaa05850e2dd6d7b160ba4c50dde6389698d871
+      driver-class-name: org.postgresql.Driver

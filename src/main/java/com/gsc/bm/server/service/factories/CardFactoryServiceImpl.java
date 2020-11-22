@@ -2,9 +2,9 @@ package com.gsc.bm.server.service.factories;
 
 import com.gsc.bm.server.model.cards.Card;
 import com.gsc.bm.server.model.cards.LoadableCard;
-import com.gsc.bm.server.repo.CardKeywordsRepository;
-import com.gsc.bm.server.repo.CardsGuiRecord;
-import com.gsc.bm.server.repo.CardsGuiRepository;
+import com.gsc.bm.server.repo.internal.CardKeywordsRepository;
+import com.gsc.bm.server.repo.internal.CardsGuiRecord;
+import com.gsc.bm.server.repo.internal.CardsGuiRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

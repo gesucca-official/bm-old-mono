@@ -1,5 +1,6 @@
 package com.gsc.bm.server.service.session;
 
+import com.gsc.bm.server.service.session.model.UserSessionInfo;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 

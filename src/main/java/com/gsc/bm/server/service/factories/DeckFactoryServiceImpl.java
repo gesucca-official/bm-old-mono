@@ -3,7 +3,7 @@ package com.gsc.bm.server.service.factories;
 import com.gsc.bm.server.model.Character;
 import com.gsc.bm.server.model.cards.Card;
 import com.gsc.bm.server.model.cards.LoadableCard;
-import com.gsc.bm.server.repo.StarterDeckRepository;
+import com.gsc.bm.server.repo.internal.StarterDeckRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
