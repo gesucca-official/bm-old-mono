@@ -2,6 +2,7 @@ package com.gsc.bm.server.service.session.model;
 
 import lombok.Getter;
 import lombok.ToString;
+import org.springframework.util.SerializationUtils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -17,6 +18,6 @@ public class ActionLog<T> {
 
     public ActionLog(String what, T data) {
         this.what = what;
-        this.data = data;
+        this.data = (T) SerializationUtils.deserialize(SerializationUtils.serialize(data));
     }
 }
