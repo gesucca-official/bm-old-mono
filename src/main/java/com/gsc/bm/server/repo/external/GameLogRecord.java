@@ -1,15 +1,26 @@
 package com.gsc.bm.server.repo.external;
 
+import com.gsc.bm.server.service.session.model.ActionLog;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.List;
 
 @Entity
+@TypeDefs({
+        @TypeDef(name = "json", typeClass = JsonStringType.class),
+        @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
+})
 @Table(name = "LOG001_GAMES")
 
 @AllArgsConstructor
@@ -27,7 +38,11 @@ public class GameLogRecord {
     @Column(name = "T_DATE")
     private String date;
 
-    @Column(name = "T_FULL_LOG")
-    private String fullLog;
+    @Column(name = "T_STATUS")
+    private String status;
+
+    @Type(type = "jsonb")
+    @Column(name = "J_FULL_LOG", columnDefinition = "json")
+    private List<ActionLog> fullLog;
 
 }

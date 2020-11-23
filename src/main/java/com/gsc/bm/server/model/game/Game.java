@@ -3,8 +3,9 @@ package com.gsc.bm.server.model.game;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gsc.bm.server.model.Resource;
-import com.gsc.bm.server.model.cards.AbstractCard;
 import com.gsc.bm.server.model.cards.Card;
+import com.gsc.bm.server.view.SlimGameView;
+import com.gsc.bm.server.view.SlimPlayerView;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
@@ -16,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Getter
 @ToString
@@ -92,20 +94,35 @@ public class Game implements Serializable {
     }
 
     @JsonIgnore
-    public Game getSlimGlobalView() {
-        // this way it should make a clone
+    public SlimGameView getSlimGlobalView() {
+        // this way it should make a clone, freezing this at this time instant
         byte[] bytes = SerializationUtils.serialize(this);
         Game gameClone = (Game) SerializationUtils.deserialize(bytes);
 
-        // this serves only to save text on the game log, I am not sure this is a good idea
         assert gameClone != null;
-        for (Player p : gameClone.getPlayers().values()) {
-            for (Card c : p.getDeck())
-                ((AbstractCard) c).setGuiEffectDescription(null);
-            for (Card c : p.getCardsInHand())
-                ((AbstractCard) c).setGuiEffectDescription(null);
-        }
-        return gameClone;
+        List<SlimPlayerView> slimPlayers = gameClone.getPlayers().values()
+                .stream()
+                .map(p -> SlimPlayerView.builder()
+                        .playerId(p.getPlayerId())
+                        .character(p.getCharacter().getSlimView())
+                        .cardsInHand(p.getCardsInHand()
+                                .stream()
+                                .map(Card::getName)
+                                .collect(Collectors.toList())
+                        ).deck(p.getDeck()
+                                .stream()
+                                .map(Card::getName)
+                                .collect(Collectors.toList())
+                        ).build())
+                .collect(Collectors.toList());
+
+        return SlimGameView.builder()
+                .gameId(gameClone.getGameId())
+                .players(slimPlayers)
+                .pendingMoves(gameClone.getPendingMoves())
+                .lastResolvedMoves(gameClone.getLastResolvedMoves())
+                .lastResolvedTimeBasedEffects(gameClone.getLastResolvedTimeBasedEffects())
+                .build();
     }
 
     @JsonIgnore
@@ -114,9 +131,22 @@ public class Game implements Serializable {
         Game gameViewForPlayer = (Game) SerializationUtils.deserialize(bytes);
 
         assert gameViewForPlayer != null;
+        for (Player oppo : gameViewForPlayer.getPlayers().values())
+            if (!oppo.getPlayerId().equals(playerId)) {
+                List<Card> hiddenCards = oppo.getCardsInHand()
+                        .stream()
+                        .map(c -> Card.UNKNOWN_CARD)
+                        .collect(Collectors.toList());
+                oppo.getCardsInHand().clear();
+                oppo.getCardsInHand().addAll(hiddenCards);
+            }
         for (Player p : gameViewForPlayer.getPlayers().values()) {
-            if (!p.getPlayerId().equals(playerId))
-                p.getCardsInHand().clear();
+            List<Card> hiddenCards = p.getDeck()
+                    .stream()
+                    .map(c -> Card.UNKNOWN_CARD)
+                    .collect(Collectors.toList());
+            p.getDeck().clear();
+            p.getDeck().addAll(hiddenCards);
         }
         return gameViewForPlayer;
     }

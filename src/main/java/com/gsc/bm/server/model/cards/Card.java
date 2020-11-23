@@ -11,6 +11,8 @@ import java.util.Set;
 
 public interface Card {
 
+    UnknownCard UNKNOWN_CARD = new UnknownCard();
+
     enum CardTarget {
         SELF, OPPONENT
     }

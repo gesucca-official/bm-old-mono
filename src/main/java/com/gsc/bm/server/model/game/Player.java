@@ -17,13 +17,9 @@ public class Player implements Serializable {
     private final Character character;
 
     private final List<Card> cardsInHand = new ArrayList<>();
-
-    @JsonIgnore
     private final Stack<Card> deck = new Stack<>();
 
-    // TODO: for now don't let the FE know about this, then we can have each character have a slightly different version of this
-    @JsonIgnore
-    private final Card lastResortCard;
+    private final Card lastResortCard; // TODO this should be inside character and build like fallback moves
 
     public Player(String id, Character character, List<Card> characterBoundCards, Card lastResortCard, List<Card> deck) {
         this.playerId = id;

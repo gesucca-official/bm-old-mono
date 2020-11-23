@@ -1,11 +1,11 @@
 package com.gsc.bm.server.service.session;
 
-import com.gsc.bm.server.model.game.Game;
 import com.gsc.bm.server.service.session.model.ActionLog;
+import com.gsc.bm.server.view.SlimGameView;
 
 public interface GameLoggingService {
 
-    void log(String gameId, ActionLog actionLog);
+    void log(SlimGameView game, String status, ActionLog actionLog);
 
-    void flush(Game game);
+    void flush(SlimGameView game);
 }

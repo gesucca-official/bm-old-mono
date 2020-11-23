@@ -1,8 +1,10 @@
 package com.gsc.bm.server.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gsc.bm.server.model.game.status.Status;
 import com.gsc.bm.server.model.game.status.StatusFlow;
 import com.gsc.bm.server.model.game.status.StatusType;
+import com.gsc.bm.server.view.SlimCharacterView;
 import lombok.Getter;
 
 import java.io.Serializable;
@@ -23,6 +25,7 @@ public abstract class Character implements Serializable {
         this.resources.put(Resource.ALERTNESS, speed);
     }
 
+    @JsonIgnore
     public abstract Set<String> getCharacterBoundCards();
 
     public List<String> resolveTimeBasedEffects() {
@@ -96,6 +99,16 @@ public abstract class Character implements Serializable {
 
     public boolean isDead() {
         return resources.get(Resource.HEALTH) <= 0;
+    }
+
+    @JsonIgnore
+    public SlimCharacterView getSlimView() {
+        return SlimCharacterView.builder()
+                .name(name)
+                .resources(resources)
+                .statuses(statuses) // TODO slim view for statuses? are log cluttered because of this?
+                .immunities(immunities)
+                .build();
     }
 
     // algebraic sum
