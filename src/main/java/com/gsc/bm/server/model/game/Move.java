@@ -23,7 +23,7 @@ public class Move implements Serializable {
     }
 
     @JsonIgnore
-    public static Move EMPTY = new Move();
+    public static final Move EMPTY = new Move();
 
     private final String playedCardName;
     private final String playerId;

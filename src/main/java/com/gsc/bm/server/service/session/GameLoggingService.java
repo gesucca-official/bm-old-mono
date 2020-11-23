@@ -5,7 +5,7 @@ import com.gsc.bm.server.service.session.model.ActionLog;
 
 public interface GameLoggingService {
 
-    <T> void log(String gameId, ActionLog<T> actionLog);
+    void log(String gameId, ActionLog actionLog);
 
-    void saveAndFlush(Game game);
+    void flush(Game game);
 }

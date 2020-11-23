@@ -9,15 +9,15 @@ import java.time.format.DateTimeFormatter;
 
 @Getter
 @ToString
-public class ActionLog<T> {
+public class ActionLog {
 
     private final String when = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
     private final String what;
-    private final T data;
+    private final Object data;
 
-    public ActionLog(String what, T data) {
+    public ActionLog(String what, Object data) {
         this.what = what;
-        this.data = (T) SerializationUtils.deserialize(SerializationUtils.serialize(data));
+        this.data = SerializationUtils.deserialize(SerializationUtils.serialize(data));
     }
 }

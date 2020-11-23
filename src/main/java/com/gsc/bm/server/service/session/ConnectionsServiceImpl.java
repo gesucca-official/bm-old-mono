@@ -31,8 +31,10 @@ public class ConnectionsServiceImpl implements ConnectionsService {
     @Override
     public void userConnected(SessionConnectEvent event) {
         Object rawNativeHeaders = event.getMessage().getHeaders().get("nativeHeaders");
-        if (rawNativeHeaders == null)
+        if (rawNativeHeaders == null) {
             log.info("SessionConnectEvent does not have the expected Native Headers!");
+            return;
+        }
 
         String userLoginName = ((List<String>) (new HashMap<>((Map<? extends String, ?>) rawNativeHeaders).get("login"))).get(0);
         String sessionId = event.getMessage().getHeaders().get("simpSessionId", String.class);

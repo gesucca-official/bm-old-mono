@@ -39,7 +39,7 @@ public class GameSessionServiceImpl implements GameSessionService {
 
         _GAMES.put(game, usersSubscribed);
         log.info("Created Game " + game.getGameId() + " with users subscribed: " + usersSubscribed);
-        gameLoggingService.log(game.getGameId(), new ActionLog<>("Created Game", game.getSlimGlobalView()));
+        gameLoggingService.log(game.getGameId(), new ActionLog("Created Game", game.getSlimGlobalView()));
 
         return game.getGameId(); // return the id just for convenience
     }
@@ -59,8 +59,8 @@ public class GameSessionServiceImpl implements GameSessionService {
         log.info("Player " + playerId + " left Game " + gameId);
 
         if (_GAMES.get(getGame(gameId)).isEmpty()) {
-            gameLoggingService.log(gameId, new ActionLog<>("Destroyed Empty Game", null));
-            gameLoggingService.saveAndFlush(getGame(gameId));
+            gameLoggingService.log(gameId, new ActionLog("Destroyed Empty Game", null));
+            gameLoggingService.flush(getGame(gameId));
             log.info("No one is anymore subscribed to Game " + gameId + " - removed!");
             _GAMES.remove(getGame(gameId));
         }
@@ -70,19 +70,19 @@ public class GameSessionServiceImpl implements GameSessionService {
     public synchronized void submitMoveToGame(Move move, Runnable callback) throws IllegalMoveException {
         Game game = getGame(move.getGameId());
         game.submitMove(move);
-        gameLoggingService.log(move.getGameId(), new ActionLog<>("Move submitted by " + move.getPlayerId(), move));
+        gameLoggingService.log(move.getGameId(), new ActionLog("Move submitted by " + move.getPlayerId(), move));
 
         // is a player is an AI player, automatically submit its move
         for (Player p : game.getPlayers().values())
             if (p instanceof ComPlayer) {
                 Move comMove = ((ComPlayer) p).chooseMove(game);
                 game.submitMove(comMove);
-                gameLoggingService.log(move.getGameId(), new ActionLog<>("Move submitted by " + comMove.getPlayerId(), comMove));
+                gameLoggingService.log(move.getGameId(), new ActionLog("Move submitted by " + comMove.getPlayerId(), comMove));
             }
 
         if (game.isReadyToResolveMoves()) {
             game.resolveMoves();
-            gameLoggingService.log(game.getGameId(), new ActionLog<>("Game updated after Moves Resolution", game.getSlimGlobalView()));
+            gameLoggingService.log(game.getGameId(), new ActionLog("Game updated after Moves Resolution", game.getSlimGlobalView()));
             callback.run();
         }
     }

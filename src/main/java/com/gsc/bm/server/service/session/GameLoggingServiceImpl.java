@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Repository
 public class GameLoggingServiceImpl implements GameLoggingService {
 
-    private static final Map<String, List<ActionLog<?>>> _GAMES_LOG = new ConcurrentHashMap<>();
+    private static final Map<String, List<ActionLog>> _GAMES_LOG = new ConcurrentHashMap<>();
 
     private final GameLogRepository repo;
 
@@ -28,13 +28,13 @@ public class GameLoggingServiceImpl implements GameLoggingService {
     }
 
     @Override
-    public <T> void log(String gameId, ActionLog<T> actionLog) {
+    public void log(String gameId, ActionLog actionLog) {
         _GAMES_LOG.computeIfAbsent(gameId, k -> new LinkedList<>());
         _GAMES_LOG.get(gameId).add(actionLog);
     }
 
     @Override
-    public void saveAndFlush(Game game) {
+    public void flush(Game game) {
         String json;
         try {
             json = new ObjectMapper().writer().withDefaultPrettyPrinter().writeValueAsString(_GAMES_LOG.get(game.getGameId()));
