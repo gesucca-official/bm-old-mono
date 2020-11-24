@@ -34,7 +34,7 @@ public class GameSessionServiceImpl implements GameSessionService {
                 .stream()
                 .filter(p -> !(p instanceof ComPlayer))
                 .map(Player::getPlayerId)
-                .peek(p -> connectionsService.changeUserActivity(p, UserSessionInfo.Activity.PLAYING))
+                .peek(p -> connectionsService.userActivityChanged(p, UserSessionInfo.Activity.PLAYING))
                 .collect(Collectors.toSet());
 
         _GAMES.put(game, usersSubscribed);
@@ -55,7 +55,7 @@ public class GameSessionServiceImpl implements GameSessionService {
     @Override
     public synchronized void leaveGame(String gameId, String playerId) {
         _GAMES.get(getGame(gameId)).remove(playerId);
-        connectionsService.changeUserActivity(playerId, UserSessionInfo.Activity.FREE);
+        connectionsService.userActivityChanged(playerId, UserSessionInfo.Activity.FREE);
         log.info("Player " + playerId + " left Game " + gameId);
 
         if (_GAMES.get(getGame(gameId)).isEmpty()) {
@@ -77,7 +77,7 @@ public class GameSessionServiceImpl implements GameSessionService {
 
         // is a player is an AI player, automatically submit its move
         for (Player p : game.getPlayers().values())
-            if (p instanceof ComPlayer) {
+            if (p instanceof ComPlayer && game.getPendingMoves().stream().noneMatch(m -> m.getPlayerId().equals(p.getPlayerId()))) {
                 Move comMove = ((ComPlayer) p).chooseMove(game);
                 game.submitMove(comMove);
                 gameLoggingService.log(

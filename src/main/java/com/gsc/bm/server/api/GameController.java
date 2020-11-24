@@ -6,6 +6,7 @@ import com.gsc.bm.server.model.game.Move;
 import com.gsc.bm.server.service.factories.GameFactoryService;
 import com.gsc.bm.server.service.session.GameSessionService;
 import com.gsc.bm.server.service.session.QueueService;
+import com.gsc.bm.server.service.session.model.QueuedPlayer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -38,34 +39,43 @@ public class GameController {
     @SendToUser("/queue/game/1vCom/ready")
     public String queueForQuick1vCom(String playerId) {
         return gameSessionService.newGame(
-                gameFactoryService.craftQuick1vComGame(playerId)
-        );
-    }
-
-    @MessageMapping("/game/4ffaCom/join")
-    @SendToUser("/queue/game/4ffaCom/ready")
-    public String queueForQuick4ffaCom(String playerId) {
-        return gameSessionService.newGame(
-                gameFactoryService.craftQuick4ffaComGame(playerId)
-        );
+                gameFactoryService.craftQuick1vComGame(playerId));
     }
 
     @MessageMapping("/game/1v1/join")
     @SendTo("/topic/game/1v1/ready")
     public synchronized String queueForQuick1v1(String playerId) {
-        Optional<List<String>> players = queueService.join1v1Queue(playerId);
-        return players.map(playerIds -> gameSessionService.newGame(
-                gameFactoryService.craftQuickMultiPlayerGame(playerIds)
-        )).orElse(null);
+        return queueFor(QueueService.GameQueue.Q_1V1, playerId, true);
     }
 
-    @MessageMapping("/game/4ffa/join")
-    @SendTo("/topic/game/4ffa/ready")
-    public synchronized String queueForQuick4ffa(String playerId) {
-        Optional<List<String>> players = queueService.join4ffaQueue(playerId);
-        return players.map(playerIds -> gameSessionService.newGame(
-                gameFactoryService.craftQuickMultiPlayerGame(playerIds)
-        )).orElse(null);
+    @MessageMapping("/game/ffa/join")
+    @SendTo("/topic/game/ffa/joined")
+    public synchronized List<QueuedPlayer> queueForQuickFfa(String playerId) {
+        String game = queueFor(QueueService.GameQueue.Q_FFA, playerId, true);
+        if (game != null)
+            messagingTemplate.convertAndSend("/topic/game/ffa/ready", game);
+        return queueService.getUsersInQueue(QueueService.GameQueue.Q_FFA);
+    }
+
+    @MessageMapping("/game/ffa/join/com")
+    @SendTo("/topic/game/ffa/joined")
+    public synchronized List<QueuedPlayer> addComPlayerToFfaQueue() {
+        String game = queueFor(QueueService.GameQueue.Q_FFA, "QueuedComPlayer", false);
+        if (game != null)
+            messagingTemplate.convertAndSend("/topic/game/ffa/ready", game);
+        return queueService.getUsersInQueue(QueueService.GameQueue.Q_FFA);
+    }
+
+    @MessageMapping("/game/ffa/start")
+    @SendTo("/topic/game/ffa/ready")
+    public synchronized String forceStartFfaGame() {
+        Optional<List<QueuedPlayer>> queuedPlayers = queueService.flushQueue(QueueService.GameQueue.Q_FFA);
+        if (queuedPlayers.isPresent()) {
+            messagingTemplate.convertAndSend("/topic/game/ffa/joined", queueService.getUsersInQueue(QueueService.GameQueue.Q_FFA));
+            return gameSessionService.newGame(
+                    gameFactoryService.craftQuickMultiPlayerGame(queuedPlayers.get()));
+        }
+        return null;
     }
 
     @MessageMapping("/game/{gameId}/move")
@@ -75,13 +85,13 @@ public class GameController {
         return move.getPlayerId() + " submitted a Move";
     }
 
-    @MessageMapping("game/{gameId}/{playerId}/view")
+    @MessageMapping("/game/{gameId}/{playerId}/view")
     @SendToUser("/queue/game/{gameId}/{playerId}/view")
     public Game getGameView(@DestinationVariable String gameId, @DestinationVariable String playerId) {
         return gameSessionService.getGame(gameId).getViewFor(playerId);
     }
 
-    @MessageMapping("game/{gameId}/{playerId}/leave")
+    @MessageMapping("/game/{gameId}/{playerId}/leave")
     public void leaveGame(@DestinationVariable String gameId, @DestinationVariable String playerId) {
         gameSessionService.leaveGame(gameId, playerId);
     }
@@ -90,6 +100,13 @@ public class GameController {
     @SendToUser(value = "/queue/player/action/illegalMove")
     public String handleException(IllegalMoveException exception) {
         return exception.getWhatHeDid();
+    }
+
+    private String queueFor(QueueService.GameQueue queue, String playerId, boolean human) {
+        Optional<List<QueuedPlayer>> queuedPlayers = queueService.joinQueue(
+                new QueuedPlayer(playerId, human), queue);
+        return queuedPlayers.map(players -> gameSessionService.newGame(
+                gameFactoryService.craftQuickMultiPlayerGame(players))).orElse(null);
     }
 
 }

@@ -11,9 +11,8 @@
         </button>
         <mat-menu #playModes="matMenu">
           <button mat-menu-item (click)="joinGame('1vCom')">Join 1vCom Game</button>
-          <button mat-menu-item (click)="joinGame('4ffaCom')">Join 4ffaCom Game</button>
           <button mat-menu-item (click)="joinGame('1v1')">Join 1v1 Game</button>
-          <button mat-menu-item (click)="joinGame('4ffa')">Join 4ffa Game</button>
+          <button mat-menu-item (click)="joinGame('ffa')">Join FFA Game</button>
         </mat-menu>
       </mat-panel-title>
 
@@ -22,9 +21,32 @@
       </mat-panel-description>
     </mat-expansion-panel-header>
 
+    <h3>Total Users on Server</h3>
     <ul>
       <li *ngFor="let user of sessionService.usersConnected"><b>{{user.userLogin}}</b> ({{user.activity}})</li>
     </ul>
+
+    <div *ngIf="sessionService.queuedFor=='ffa'">
+      <h3>Users in FFA Queue</h3>
+      <ul>
+        <li *ngFor="let user of sessionService.usersInCurrentQueue">
+          <b>{{user.playerId}}</b>
+          ({{user.human ? 'human' : 'computer'}})
+        </li>
+      </ul>
+      <button mat-raised-button
+              style="float: right"
+              *ngIf="sessionService.queuedFor == 'ffa'"
+              (click)="forceStartFfaGame(); $event.stopPropagation();">
+        Start
+      </button>
+      <button mat-raised-button
+              style="float: right"
+              *ngIf="sessionService.queuedFor == 'ffa'"
+              (click)="addComPlayerToFfaGame(); $event.stopPropagation();">
+        Add Com Player
+      </button>
+    </div>
 
   </mat-expansion-panel>
 </mat-accordion>

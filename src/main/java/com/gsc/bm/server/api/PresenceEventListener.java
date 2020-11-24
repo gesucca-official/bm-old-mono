@@ -1,6 +1,8 @@
 package com.gsc.bm.server.api;
 
 import com.gsc.bm.server.service.session.ConnectionsService;
+import com.gsc.bm.server.service.session.QueueService;
+import com.gsc.bm.server.service.session.model.QueuedPlayer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -12,10 +14,12 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 public class PresenceEventListener {
 
     private final ConnectionsService connectionsService;
+    private final QueueService queueService;
 
     @Autowired
-    public PresenceEventListener(ConnectionsService connectionsService) {
+    public PresenceEventListener(ConnectionsService connectionsService, QueueService queueService) {
         this.connectionsService = connectionsService;
+        this.queueService = queueService;
     }
 
     @EventListener
@@ -26,7 +30,8 @@ public class PresenceEventListener {
 
     @EventListener
     public synchronized void handleSessionDisconnect(SessionDisconnectEvent event) {
-        connectionsService.userDisconnected(event);
+        String userId = connectionsService.userDisconnected(event);
+        queueService.leaveAllQueues(new QueuedPlayer(userId, true));
         connectionsService.broadcastUsersInfo();
     }
 

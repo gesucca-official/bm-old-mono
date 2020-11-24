@@ -25,7 +25,7 @@ public class ConnectionsServiceImpl implements ConnectionsService {
 
     @Override
     public void broadcastUsersInfo() {
-        messagingTemplate.convertAndSend("/topic/connections/users", getConnectedUsers());
+        messagingTemplate.convertAndSend("/topic/connections/users", _USERS);
     }
 
     @Override
@@ -33,7 +33,6 @@ public class ConnectionsServiceImpl implements ConnectionsService {
         Object rawNativeHeaders = event.getMessage().getHeaders().get("nativeHeaders");
         if (rawNativeHeaders == null) {
             log.info("SessionConnectEvent does not have the expected Native Headers!");
-            return;
         }
 
         String userLoginName = ((List<String>) (new HashMap<>((Map<? extends String, ?>) rawNativeHeaders).get("login"))).get(0);
@@ -44,9 +43,9 @@ public class ConnectionsServiceImpl implements ConnectionsService {
     }
 
     @Override
-    public void userDisconnected(SessionDisconnectEvent event) {
+    public String userDisconnected(SessionDisconnectEvent event) {
         String sessionId = event.getMessage().getHeaders().get("simpSessionId", String.class);
-        log.info(_USERS);
+        String userLoginName = getUserLoginName(sessionId);
         _USERS.stream()
                 .filter(userSessionInfo -> userSessionInfo.getSessionId().equals(sessionId))
                 .findAny()
@@ -57,15 +56,11 @@ public class ConnectionsServiceImpl implements ConnectionsService {
                         },
                         () -> log.info("An User not known as attempted Disconnection!")
                 );
+        return userLoginName;
     }
 
     @Override
-    public Set<UserSessionInfo> getConnectedUsers() {
-        return _USERS;
-    }
-
-    @Override
-    public void changeUserActivity(String userId, UserSessionInfo.Activity activity) {
+    public void userActivityChanged(String userId, UserSessionInfo.Activity activity) {
         _USERS.stream()
                 .filter(userSessionInfo -> userSessionInfo.getUserLogin().equals(userId))
                 .findAny()
@@ -74,6 +69,14 @@ public class ConnectionsServiceImpl implements ConnectionsService {
                         () -> log.info("An User not known as attempted to change Activity!")
                 );
         broadcastUsersInfo();
+    }
+
+    private String getUserLoginName(String simpSessionId) {
+        return _USERS.stream()
+                .filter(userSessionInfo -> userSessionInfo.getSessionId().equals(simpSessionId))
+                .findAny()
+                .get() // TODO definitely custom exception
+                .getUserLogin();
     }
 
 }

@@ -18,7 +18,15 @@ export class ChooseGameComponent {
   }
 
   joinGame(game: string) {
-    this.joinGameRequest.emit(game);
+    this.joinGameRequest.emit(game); // TODO why am I emitting this event and not directly calling the service
+  }
+
+  addComPlayerToFfaGame() {
+    this.websocketService.addComToGame();
+  }
+
+  forceStartFfaGame() {
+    this.websocketService.forceStartFfaGame();
   }
 
   logConnectedUsers() {
