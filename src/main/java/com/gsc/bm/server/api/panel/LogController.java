@@ -8,7 +8,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -42,7 +41,7 @@ public class LogController {
     }
 
     @ApiOperation("Drain all Game Logs from DB")
-    @PostMapping(value = "/games/drain", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @GetMapping(value = "/games/drain", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public byte[] drainLogs() throws JsonProcessingException {
         List<GameLogRecord> logs = new ArrayList<>((int) gameLogRepo.count());
         Iterable<GameLogRecord> records = gameLogRepo.findAll();
