@@ -71,16 +71,15 @@ export class DebugClientComponent {
         data: {
           title: 'WINNER: ' + this.gameService.gameState.winner,
           html: this.getDialogHtml(),
-          data: this.gameService.gameState.lastResolvedMoves
+          data: this.gameService.gameState.resolvedMoves
         }
       }).afterClosed().subscribe(
         () => {
-          if (this.getDialogTitle() !== 'Begin')
-            this.showEotEffects()
+          this.showEotEffects();
+          this.gameService.clearGame();
         }
       );
       this.websocketService.unsubToGame(this.gameService.gameId, this.gameService.playerId);
-      this.gameService.clearGame();
     }
   }
 
@@ -100,12 +99,12 @@ export class DebugClientComponent {
 
   private getDialogTitle(): string {
     // if there are no last resolved moves, game is just begun
-    return this.gameService.gameState.lastResolvedMoves.length == 0 ? 'Begin' : 'Turn Resolution';
+    return this.gameService.gameState.resolvedMoves.length == 0 ? 'Begin' : 'Turn Resolution';
   }
 
   private getDialogRawJsonTest(): any {
-    return this.gameService.gameState.lastResolvedMoves.length == 0 ?
-      this.getPlayersRawJsonText() : this.gameService.gameState.lastResolvedMoves
+    return this.gameService.gameState.resolvedMoves.length == 0 ?
+      this.getPlayersRawJsonText() : this.gameService.gameState.resolvedMoves
   }
 
   private getPlayersRawJsonText() {
@@ -116,7 +115,7 @@ export class DebugClientComponent {
   }
 
   private getDialogHtml() {
-    return this.gameService.gameState.lastResolvedMoves.length == 0 ?
+    return this.gameService.gameState.resolvedMoves.length == 0 ?
       this.getBeginGameHtml()
       : this.getMovesHtml();
   }
@@ -127,7 +126,7 @@ export class DebugClientComponent {
   }
 
   private getMovesHtml() {
-    return this.gameService.gameState.lastResolvedMoves.map(m => {
+    return this.gameService.gameState.resolvedMoves.map(m => {
       return '<p><b>' + m.playerId + '</b> ---> <b>' + m.targetId + '</b></p>'
         + '<p><b>' + m.playedCardName + '</b></p>'
         + ((!m.moveReport['SELF'] || m.moveReport['SELF'].length == 0) ? ''
@@ -140,7 +139,7 @@ export class DebugClientComponent {
   }
 
   private getEotHtml() {
-    const eot = this.gameService.gameState.lastResolvedTimeBasedEffects; // shorten this name
+    const eot = this.gameService.gameState.timeBasedEffects; // shorten this name
     let html = '';
     Object.keys(eot).forEach(
       k => {
@@ -161,7 +160,7 @@ export class DebugClientComponent {
       data: {
         title: 'End of Turn Effects',
         html: this.getEotHtml(),
-        jsonTextData: this.gameService.gameState.lastResolvedTimeBasedEffects
+        jsonTextData: this.gameService.gameState.timeBasedEffects
       }
     })
   }

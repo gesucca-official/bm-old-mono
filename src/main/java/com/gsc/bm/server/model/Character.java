@@ -106,8 +106,10 @@ public abstract class Character implements Serializable {
         return SlimCharacterView.builder()
                 .name(name)
                 .resources(resources)
-                .statuses(statuses) // TODO slim view for statuses? are log cluttered because of this?
-                .immunities(immunities)
+                .statuses(statuses.stream()
+                        .map(Status::getName)
+                        .collect(Collectors.toList())
+                ).immunities(immunities)
                 .build();
     }
 

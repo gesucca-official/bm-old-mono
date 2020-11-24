@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gsc.bm.server.model.Resource;
 import com.gsc.bm.server.model.cards.Card;
+import com.gsc.bm.server.view.SlimMoveView;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -37,7 +38,6 @@ public class Move implements Serializable {
 
     private final Map<Card.CardTarget, List<String>> moveReport = new HashMap<>();
 
-    // TODO consider builder pattern for this? dunno the interaction with jackson
     @JsonCreator
     public Move(String playedCardName,
                 String playerId,
@@ -115,6 +115,18 @@ public class Move implements Serializable {
         moveReport.putAll(
                 game.getCardFromHand(playerId, playedCardName).resolve(game, this)
         );
+    }
+
+    @JsonIgnore
+    public SlimMoveView getSlimView() {
+        return SlimMoveView.builder()
+                .gameId(gameId)
+                .playerId(playerId)
+                .targetId(targetId)
+                .playedCardName(playedCardName)
+                .choices(choices)
+                .moveReport(moveReport)
+                .build();
     }
 
 }

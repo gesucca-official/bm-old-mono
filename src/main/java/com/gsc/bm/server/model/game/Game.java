@@ -24,23 +24,13 @@ import java.util.stream.Collectors;
 @Log4j2
 public class Game implements Serializable {
 
-    //TODO extract an interface out of this so the controllers depends on it and not on this implementation
-
     private String gameId;
-
     private final Map<String, Player> players;
 
     private final List<Move> pendingMoves = new ArrayList<>();
-    private final List<Move> lastResolvedMoves = new ArrayList<>();
-    private final Map<String, List<String>> lastResolvedTimeBasedEffects = new HashMap<>();
 
-    public Game(List<Player> players) {
-        generateGameId(players);
-        // rearrange players in a map
-        this.players = new HashMap<>(players.size());
-        for (Player p : players)
-            this.players.put(p.getPlayerId(), p);
-    }
+    private final List<Move> resolvedMoves = new ArrayList<>();
+    private final Map<String, List<String>> timeBasedEffects = new HashMap<>();
 
     @JsonProperty
     public boolean isOver() {
@@ -48,16 +38,24 @@ public class Game implements Serializable {
         for (String playerId : players.keySet())
             if (players.get(playerId).getCharacter().isDead())
                 dead++;
-        return dead == players.size() - 1;
+        return dead >= players.size() - 1;
     }
 
     @JsonProperty
-    public String getWinner() {
+    public Optional<String> getWinner() {
         if (isOver())
             for (String playerId : players.keySet())
                 if (!players.get(playerId).getCharacter().isDead())
-                    return players.get(playerId).getPlayerId();
-        return null;
+                    return Optional.of(players.get(playerId).getPlayerId());
+        return Optional.empty();
+    }
+
+    public Game(List<Player> players) {
+        generateGameId(players);
+        // rearrange players in a map
+        this.players = new HashMap<>(players.size());
+        for (Player p : players)
+            this.players.put(p.getPlayerId(), p);
     }
 
     public void submitMove(Move move) throws IllegalMoveException {
@@ -119,9 +117,13 @@ public class Game implements Serializable {
         return SlimGameView.builder()
                 .gameId(gameClone.getGameId())
                 .players(slimPlayers)
-                .pendingMoves(gameClone.getPendingMoves())
-                .lastResolvedMoves(gameClone.getLastResolvedMoves())
-                .lastResolvedTimeBasedEffects(gameClone.getLastResolvedTimeBasedEffects())
+                .resolvedMoves(gameClone.getResolvedMoves()
+                        .stream()
+                        .map(Move::getSlimView)
+                        .collect(Collectors.toList())
+                ).timeBasedEffects(gameClone.getTimeBasedEffects())
+                .over(isOver())
+                .winner(getWinner().orElse("NONE"))
                 .build();
     }
 
@@ -213,11 +215,11 @@ public class Game implements Serializable {
     }
 
     private void prepareForNextTurn() {
-        lastResolvedTimeBasedEffects.clear();
+        timeBasedEffects.clear();
         for (String playerId : players.keySet())
-            lastResolvedTimeBasedEffects.put(playerId, players.get(playerId).getCharacter().resolveTimeBasedEffects());
-        lastResolvedMoves.clear();
-        lastResolvedMoves.addAll(pendingMoves);
+            timeBasedEffects.put(playerId, players.get(playerId).getCharacter().resolveTimeBasedEffects());
+        resolvedMoves.clear();
+        resolvedMoves.addAll(pendingMoves);
         pendingMoves.clear();
     }
 }

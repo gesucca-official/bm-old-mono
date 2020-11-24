@@ -4,9 +4,8 @@ import {Player} from "./player";
 export interface GameState {
   gameId: string,
   players: Players,
-  pendingMoves: Move[]
-  lastResolvedMoves: Move[],
-  lastResolvedTimeBasedEffects: TimeBasedEffects,
+  resolvedMoves: Move[],
+  timeBasedEffects: TimeBasedEffects,
   over: boolean,
   winner: string
 }

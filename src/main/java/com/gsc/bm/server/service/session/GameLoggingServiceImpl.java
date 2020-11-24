@@ -48,7 +48,6 @@ public class GameLoggingServiceImpl implements GameLoggingService {
                 .reduce((p1, p2) -> p1 + ", " + p2)
                 .orElse("Error reducing PlayerIds");
         String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-
         SAVE_QUEUE.submit(() -> repo.save(new GameLogRecord(game.getGameId(), players, date, status, log)));
     }
 

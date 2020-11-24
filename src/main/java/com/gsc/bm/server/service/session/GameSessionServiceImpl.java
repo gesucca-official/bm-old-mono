@@ -71,7 +71,7 @@ public class GameSessionServiceImpl implements GameSessionService {
         game.submitMove(move);
         gameLoggingService.log(
                 game.getSlimGlobalView(),
-                "PROGRESS",
+                "IN_PROGRESS",
                 new ActionLog("Move submitted by " + move.getPlayerId(), move)
         );
 
@@ -82,7 +82,7 @@ public class GameSessionServiceImpl implements GameSessionService {
                 game.submitMove(comMove);
                 gameLoggingService.log(
                         game.getSlimGlobalView(),
-                        "IN PROGRESS",
+                        "IN_PROGRESS",
                         new ActionLog("Move submitted by " + comMove.getPlayerId(), comMove)
                 );
             }
@@ -91,7 +91,7 @@ public class GameSessionServiceImpl implements GameSessionService {
             game.resolveMoves();
             gameLoggingService.log(
                     game.getSlimGlobalView(),
-                    "IN PROGRESS",
+                    "IN_PROGRESS",
                     new ActionLog("Game updated after Moves Resolution", game.getSlimGlobalView())
             );
             callback.run();
