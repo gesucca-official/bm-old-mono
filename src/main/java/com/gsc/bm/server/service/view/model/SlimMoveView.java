@@ -1,4 +1,4 @@
-package com.gsc.bm.server.view;
+package com.gsc.bm.server.service.view.model;
 
 import com.gsc.bm.server.model.cards.Card;
 import com.gsc.bm.server.model.game.Move;

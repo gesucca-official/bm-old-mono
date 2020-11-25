@@ -1,7 +1,7 @@
 package com.gsc.bm.server.service.session;
 
 import com.gsc.bm.server.service.session.model.ActionLog;
-import com.gsc.bm.server.view.SlimGameView;
+import com.gsc.bm.server.service.view.model.SlimGameView;
 
 import java.io.Serializable;
 

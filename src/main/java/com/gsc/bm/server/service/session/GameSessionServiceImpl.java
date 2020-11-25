@@ -3,6 +3,7 @@ package com.gsc.bm.server.service.session;
 import com.gsc.bm.server.model.game.*;
 import com.gsc.bm.server.service.session.model.ActionLog;
 import com.gsc.bm.server.service.session.model.UserSessionInfo;
+import com.gsc.bm.server.service.view.ViewExtractorService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,11 +21,15 @@ public class GameSessionServiceImpl implements GameSessionService {
 
     private final ConnectionsService connectionsService;
     private final GameLoggingService gameLoggingService;
+    private final ViewExtractorService viewExtractorService;
 
     @Autowired
-    public GameSessionServiceImpl(ConnectionsService connectionsService, GameLoggingService gameLoggingService) {
+    public GameSessionServiceImpl(ConnectionsService connectionsService,
+                                  GameLoggingService gameLoggingService,
+                                  ViewExtractorService viewExtractorService) {
         this.connectionsService = connectionsService;
         this.gameLoggingService = gameLoggingService;
+        this.viewExtractorService = viewExtractorService;
     }
 
     @Override
@@ -39,7 +44,10 @@ public class GameSessionServiceImpl implements GameSessionService {
 
         _GAMES.put(game, usersSubscribed);
         log.info("Created Game " + game.getGameId() + " with users subscribed: " + usersSubscribed);
-        gameLoggingService.log(game.getSlimGlobalView(), "STARTED", new ActionLog("Created Game", game.getSlimGlobalView()));
+        gameLoggingService.log(
+                viewExtractorService.extractGlobalSlimView(game),
+                "STARTED",
+                new ActionLog("Created Game", viewExtractorService.extractGlobalSlimView(game)));
 
         return game.getGameId(); // return the id just for convenience
     }
@@ -59,7 +67,7 @@ public class GameSessionServiceImpl implements GameSessionService {
         log.info("Player " + playerId + " left Game " + gameId);
 
         if (_GAMES.get(getGame(gameId)).isEmpty()) {
-            gameLoggingService.flush(getGame(gameId).getSlimGlobalView());
+            gameLoggingService.flush(viewExtractorService.extractGlobalSlimView(getGame(gameId)));
             log.info("No one is anymore subscribed to Game " + gameId + " - removed!");
             _GAMES.remove(getGame(gameId));
         }
@@ -67,21 +75,22 @@ public class GameSessionServiceImpl implements GameSessionService {
 
     @Override
     public synchronized void submitMoveToGame(Move move, Runnable callback) throws IllegalMoveException {
-        Game game = getGame(move.getGameId());
         gameLoggingService.log(
-                game.getSlimGlobalView(),
+                viewExtractorService.extractGlobalSlimView(getGame(move.getGameId())),
                 "IN_PROGRESS",
                 new ActionLog("Move submitted by " + move.getPlayerId(), move)
         );
-        game.submitMove(move);
+        getGame(move.getGameId()).submitMove(move);
 
-        if (game.isReadyToResolveMoves()) {
-            game.resolveMoves(() -> gameLoggingService.log(
-                    game.getSlimGlobalView(),
-                    "IN_PROGRESS",
-                    new ActionLog("Game updated after Moves Resolution", game.getSlimGlobalView())
-            ));
-            callback.run();
+        if (getGame(move.getGameId()).isReadyToResolveMoves()) {
+            getGame(move.getGameId()).resolveMoves((game) -> {
+                gameLoggingService.log(
+                        viewExtractorService.extractGlobalSlimView(game),
+                        "IN_PROGRESS",
+                        new ActionLog("Game updated after Moves Resolution", viewExtractorService.extractGlobalSlimView(game))
+                );
+                callback.run();
+            });
         }
     }
 

@@ -1,12 +1,13 @@
 package com.gsc.bm.server.api;
 
-import com.gsc.bm.server.model.game.Game;
 import com.gsc.bm.server.model.game.IllegalMoveException;
 import com.gsc.bm.server.model.game.Move;
 import com.gsc.bm.server.service.factories.GameFactoryService;
 import com.gsc.bm.server.service.session.GameSessionService;
 import com.gsc.bm.server.service.session.QueueService;
 import com.gsc.bm.server.service.session.model.QueuedPlayer;
+import com.gsc.bm.server.service.view.ViewExtractorService;
+import com.gsc.bm.server.service.view.model.PlayerGameView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -24,15 +25,19 @@ public class GameController {
     private final GameSessionService gameSessionService;
     private final QueueService queueService;
 
+    private final ViewExtractorService viewExtractorService;
+
     @Autowired
     public GameController(SimpMessagingTemplate messagingTemplate,
                           GameFactoryService gameFactoryService,
                           GameSessionService gameSessionService,
-                          QueueService queueService) {
+                          QueueService queueService,
+                          ViewExtractorService viewExtractorService) {
         this.messagingTemplate = messagingTemplate;
         this.gameFactoryService = gameFactoryService;
         this.gameSessionService = gameSessionService;
         this.queueService = queueService;
+        this.viewExtractorService = viewExtractorService;
     }
 
     @MessageMapping("/game/1vCom/join")
@@ -87,8 +92,9 @@ public class GameController {
 
     @MessageMapping("/game/{gameId}/{playerId}/view")
     @SendToUser("/queue/game/{gameId}/{playerId}/view")
-    public Game getGameView(@DestinationVariable String gameId, @DestinationVariable String playerId) {
-        return gameSessionService.getGame(gameId).getViewFor(playerId);
+    public PlayerGameView getGameView(@DestinationVariable String gameId, @DestinationVariable String playerId) {
+        return viewExtractorService.extractViewFor(gameSessionService.getGame(gameId), playerId);
+
     }
 
     @MessageMapping("/game/{gameId}/{playerId}/leave")

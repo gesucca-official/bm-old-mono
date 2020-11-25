@@ -1,4 +1,4 @@
-package com.gsc.bm.server.view;
+package com.gsc.bm.server.service.view.model;
 
 import lombok.Builder;
 import lombok.Getter;

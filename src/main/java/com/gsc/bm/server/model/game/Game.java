@@ -4,19 +4,17 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gsc.bm.server.model.Resource;
 import com.gsc.bm.server.model.cards.Card;
-import com.gsc.bm.server.view.SlimGameView;
-import com.gsc.bm.server.view.SlimPlayerView;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.codec.binary.Hex;
-import org.springframework.util.SerializationUtils;
 
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @Getter
@@ -31,6 +29,8 @@ public class Game implements Serializable {
 
     private final List<Move> resolvedMoves = new ArrayList<>();
     private final Map<String, List<String>> timeBasedEffects = new HashMap<>();
+
+    private int turn = 0;
 
     @JsonProperty
     public boolean isOver() {
@@ -59,6 +59,7 @@ public class Game implements Serializable {
     }
 
     public void submitMove(Move move) throws IllegalMoveException {
+        log.info("Player " + move.getPlayerId() + " submitted this Move: " + move);
         Move.MoveCheckResult moveCheckResult = move.isValidFor(this);
         if (moveCheckResult.isValid())
             pendingMoves.add(move);
@@ -72,7 +73,7 @@ public class Game implements Serializable {
         return !isOver() && pendingMoves.size() == players.size();
     }
 
-    public void resolveMoves(Runnable callback) {
+    public void resolveMoves(Consumer<Game> callback) {
         if (!isReadyToResolveMoves())
             throw new RuntimeException("Trying to Resolve Moves when Game is not Ready!");
 
@@ -107,74 +108,12 @@ public class Game implements Serializable {
         for (String playerId : players.keySet())
             timeBasedEffects.put(playerId, players.get(playerId).getCharacter().resolveTimeBasedEffects());
 
-        log.info("Current Turn has been resolved");
+        log.info("Current Turn has been resolved: " + turn);
+        turn++;
 
-        if (isReadyToResolveMoves() && !isOver())
+        if (!isOver() && isReadyToResolveMoves())
             resolveMoves(callback);
-        else callback.run();
-    }
-
-    @JsonIgnore
-    public SlimGameView getSlimGlobalView() {
-        // this way it should make a clone, freezing this at this time instant
-        byte[] bytes = SerializationUtils.serialize(this);
-        Game gameClone = (Game) SerializationUtils.deserialize(bytes);
-
-        assert gameClone != null;
-        List<SlimPlayerView> slimPlayers = gameClone.getPlayers().values()
-                .stream()
-                .map(p -> SlimPlayerView.builder()
-                        .playerId(p.getPlayerId())
-                        .character(p.getCharacter().getSlimView())
-                        .cardsInHand(p.getCardsInHand()
-                                .stream()
-                                .map(Card::getName)
-                                .collect(Collectors.toList())
-                        ).deck(p.getDeck()
-                                .stream()
-                                .map(Card::getName)
-                                .collect(Collectors.toList())
-                        ).build())
-                .collect(Collectors.toList());
-
-        return SlimGameView.builder()
-                .gameId(gameClone.getGameId())
-                .players(slimPlayers)
-                .resolvedMoves(gameClone.getResolvedMoves()
-                        .stream()
-                        .map(Move::getSlimView)
-                        .collect(Collectors.toList())
-                ).timeBasedEffects(gameClone.getTimeBasedEffects())
-                .over(isOver())
-                .winner(getWinner().orElse("NONE"))
-                .build();
-    }
-
-    @JsonIgnore
-    public Game getViewFor(String playerId) {
-        byte[] bytes = SerializationUtils.serialize(this);
-        Game gameViewForPlayer = (Game) SerializationUtils.deserialize(bytes);
-
-        assert gameViewForPlayer != null;
-        for (Player oppo : gameViewForPlayer.getPlayers().values())
-            if (!oppo.getPlayerId().equals(playerId)) {
-                List<Card> hiddenCards = oppo.getCardsInHand()
-                        .stream()
-                        .map(c -> Card.UNKNOWN_CARD)
-                        .collect(Collectors.toList());
-                oppo.getCardsInHand().clear();
-                oppo.getCardsInHand().addAll(hiddenCards);
-            }
-        for (Player p : gameViewForPlayer.getPlayers().values()) {
-            List<Card> hiddenCards = p.getDeck()
-                    .stream()
-                    .map(c -> Card.UNKNOWN_CARD)
-                    .collect(Collectors.toList());
-            p.getDeck().clear();
-            p.getDeck().addAll(hiddenCards);
-        }
-        gameViewForPlayer.getPendingMoves().clear();
-        return gameViewForPlayer;
+        else callback.accept(this);
     }
 
     @JsonIgnore
@@ -252,7 +191,6 @@ public class Game implements Serializable {
     }
 
     private void autoSubmitDeadPlayersMove() {
-
         // dead players do nothing by default
         players.values().forEach(p -> {
             if (p.getCharacter().isDead() && pendingMoves.stream().noneMatch(m -> m.getPlayerId().equals(p.getPlayerId()))) {

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gsc.bm.server.model.Resource;
 import com.gsc.bm.server.model.cards.Card;
-import com.gsc.bm.server.view.SlimMoveView;
+import com.gsc.bm.server.service.view.model.SlimMoveView;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

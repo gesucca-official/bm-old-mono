@@ -3,8 +3,8 @@ package com.gsc.bm.server.service.session;
 import com.gsc.bm.server.repo.external.GameLogRecord;
 import com.gsc.bm.server.repo.external.GameLogRepository;
 import com.gsc.bm.server.service.session.model.ActionLog;
-import com.gsc.bm.server.view.SlimGameView;
-import com.gsc.bm.server.view.SlimPlayerView;
+import com.gsc.bm.server.service.view.model.SlimGameView;
+import com.gsc.bm.server.service.view.model.SlimPlayerView;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gsc.bm.server.model.game.status.Status;
 import com.gsc.bm.server.model.game.status.StatusFlow;
 import com.gsc.bm.server.model.game.status.StatusType;
-import com.gsc.bm.server.view.SlimCharacterView;
+import com.gsc.bm.server.service.view.model.SlimCharacterView;
 import lombok.Getter;
 
 import java.io.Serializable;
