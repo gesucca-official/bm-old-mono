@@ -32,7 +32,7 @@ public class QueueServiceImpl implements QueueService {
 
     @Override
     public Optional<List<QueuedPlayer>> joinQueue(QueuedPlayer player, GameQueue queue) {
-        log.info(player.getPlayerId() + " is joining the " + queue + " queue");
+        log.info(player.getPlayerId() + " is joining queue: " + queue);
         QUEUES.get(queue).add(player);
         if (player.isHuman())
             connectionsService.userActivityChanged(player.getPlayerId(), UserSessionInfo.Activity.QUEUED);

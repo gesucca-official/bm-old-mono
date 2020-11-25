@@ -15,9 +15,6 @@ public class ComPlayer extends Player {
     }
 
     public Move chooseMove(Game game) {
-        if (game.getPlayers().get(getPlayerId()).getCharacter().isDead())
-            return Move.EMPTY;
-
         // for now this fabulous AI is just random choice
         List<Card> availableCards = new ArrayList<>(getCardsInHand());
         Collections.shuffle(availableCards);

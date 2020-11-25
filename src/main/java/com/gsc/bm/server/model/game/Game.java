@@ -65,11 +65,21 @@ public class Game implements Serializable {
         else throw new IllegalMoveException(move.getPlayerId(), moveCheckResult.getComment());
     }
 
+    @JsonIgnore
     public boolean isReadyToResolveMoves() {
-        return pendingMoves.size() == players.size();
+        autoSubmitDeadPlayersMove();
+        autoSubmitComPlayersMove();
+        return !isOver() && pendingMoves.size() == players.size();
     }
 
-    public void resolveMoves() {
+    public void resolveMoves(Runnable callback) {
+        if (!isReadyToResolveMoves())
+            throw new RuntimeException("Trying to Resolve Moves when Game is not Ready!");
+
+        pendingMoves.removeAll(
+                pendingMoves.stream().filter(Move::isVoid).collect(Collectors.toList())
+        );
+
         for (Move m : pendingMoves)
             m.applyCostTo(this);
 
@@ -88,7 +98,20 @@ public class Game implements Serializable {
             getSelf(m).discardCard(getCardFromHand(m.getPlayerId(), m.getPlayedCardName()));
             getSelf(m).drawCard();
         }
-        prepareForNextTurn();
+
+        resolvedMoves.clear();
+        resolvedMoves.addAll(pendingMoves);
+        pendingMoves.clear();
+
+        timeBasedEffects.clear();
+        for (String playerId : players.keySet())
+            timeBasedEffects.put(playerId, players.get(playerId).getCharacter().resolveTimeBasedEffects());
+
+        log.info("Current Turn has been resolved");
+
+        if (isReadyToResolveMoves() && !isOver())
+            resolveMoves(callback);
+        else callback.run();
     }
 
     @JsonIgnore
@@ -150,6 +173,7 @@ public class Game implements Serializable {
             p.getDeck().clear();
             p.getDeck().addAll(hiddenCards);
         }
+        gameViewForPlayer.getPendingMoves().clear();
         return gameViewForPlayer;
     }
 
@@ -157,7 +181,7 @@ public class Game implements Serializable {
     public List<Player> getOpponents(String playerId) {
         List<Player> opponents = new ArrayList<>(players.size());
         players.values().forEach(p -> {
-            if (!p.getPlayerId().equals(playerId))
+            if (!p.getPlayerId().equals(playerId) && !p.getCharacter().isDead())
                 opponents.add(p);
         });
         return opponents;
@@ -169,7 +193,10 @@ public class Game implements Serializable {
         return players.get(playerId).getCardsInHand().stream()
                 .filter(c -> c.getName().equalsIgnoreCase(cardName))
                 .findAny()
-                .orElseThrow(() -> new IllegalMoveException(playerId, "don't have that card in hand"));
+                .orElseThrow(() -> {
+                    log.info("Player " + playerId + " is trying to get an Illegal Card from Hand: " + cardName);
+                    return new IllegalMoveException(playerId, "don't have that card in hand");
+                });
     }
 
     @JsonIgnore
@@ -193,7 +220,7 @@ public class Game implements Serializable {
             if (pendingMoves.get(i).getPlayerId().equals(playerId))
                 for (int j = i + 1; j < pendingMoves.size(); j++)
                     if (pendingMoves.get(j).getPlayerId().equals(targetId)) {
-                        log.info("Successive Move found!");
+                        log.info("Successive Move found: " + pendingMoves.get(j));
                         return Optional.of(pendingMoves.get(j));
                     }
             // those nested cycles, those indexes... god that smells bad
@@ -214,12 +241,24 @@ public class Game implements Serializable {
         }
     }
 
-    private void prepareForNextTurn() {
-        timeBasedEffects.clear();
-        for (String playerId : players.keySet())
-            timeBasedEffects.put(playerId, players.get(playerId).getCharacter().resolveTimeBasedEffects());
-        resolvedMoves.clear();
-        resolvedMoves.addAll(pendingMoves);
-        pendingMoves.clear();
+    private void autoSubmitComPlayersMove() {
+        // is a player is an AI player, automatically submit its move
+        for (Player p : getPlayers().values())
+            if (p instanceof ComPlayer && pendingMoves.stream().noneMatch(m -> m.getPlayerId().equals(p.getPlayerId()))) {
+                Move comMove = ((ComPlayer) p).chooseMove(this);
+                log.info("Player " + p.getPlayerId() + " auto submit Move: " + comMove);
+                submitMove(comMove);
+            }
+    }
+
+    private void autoSubmitDeadPlayersMove() {
+
+        // dead players do nothing by default
+        players.values().forEach(p -> {
+            if (p.getCharacter().isDead() && pendingMoves.stream().noneMatch(m -> m.getPlayerId().equals(p.getPlayerId()))) {
+                log.info("Player " + p.getPlayerId() + " is dead and is auto submitting an Empty Move");
+                submitMove(Move.voidMove(p.getPlayerId()));
+            }
+        });
     }
 }

@@ -24,7 +24,9 @@ public class Move implements Serializable {
     }
 
     @JsonIgnore
-    public static final Move EMPTY = new Move();
+    public static Move voidMove(String playerId) {
+        return new Move(playerId);
+    }
 
     private final String playedCardName;
     private final String playerId;
@@ -52,9 +54,9 @@ public class Move implements Serializable {
         this.isVoid = false;
     }
 
-    private Move() {
+    private Move(String playerId) {
         this.playedCardName = null;
-        this.playerId = null;
+        this.playerId = playerId;
         this.targetId = null;
         this.gameId = null;
         this.choices = null;

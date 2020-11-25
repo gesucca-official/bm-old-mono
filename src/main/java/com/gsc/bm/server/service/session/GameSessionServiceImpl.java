@@ -68,32 +68,19 @@ public class GameSessionServiceImpl implements GameSessionService {
     @Override
     public synchronized void submitMoveToGame(Move move, Runnable callback) throws IllegalMoveException {
         Game game = getGame(move.getGameId());
-        game.submitMove(move);
         gameLoggingService.log(
                 game.getSlimGlobalView(),
                 "IN_PROGRESS",
                 new ActionLog("Move submitted by " + move.getPlayerId(), move)
         );
-
-        // is a player is an AI player, automatically submit its move
-        for (Player p : game.getPlayers().values())
-            if (p instanceof ComPlayer && game.getPendingMoves().stream().noneMatch(m -> m.getPlayerId().equals(p.getPlayerId()))) {
-                Move comMove = ((ComPlayer) p).chooseMove(game);
-                game.submitMove(comMove);
-                gameLoggingService.log(
-                        game.getSlimGlobalView(),
-                        "IN_PROGRESS",
-                        new ActionLog("Move submitted by " + comMove.getPlayerId(), comMove)
-                );
-            }
+        game.submitMove(move);
 
         if (game.isReadyToResolveMoves()) {
-            game.resolveMoves();
-            gameLoggingService.log(
+            game.resolveMoves(() -> gameLoggingService.log(
                     game.getSlimGlobalView(),
                     "IN_PROGRESS",
                     new ActionLog("Game updated after Moves Resolution", game.getSlimGlobalView())
-            );
+            ));
             callback.run();
         }
     }
