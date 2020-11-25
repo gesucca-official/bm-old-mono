@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gsc.bm.server.repo.external.GameLogRecord;
 import com.gsc.bm.server.repo.external.GameLogRepository;
+import com.gsc.bm.server.service.session.GameLoggingService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -35,8 +36,8 @@ public class LogController {
     @GetMapping(value = "/games/open", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<GameLogRecord> getOpenedGames() {
         List<GameLogRecord> openGames = new ArrayList<>();
-        openGames.addAll(gameLogRepo.findAllByStatus("STARTED"));
-        openGames.addAll(gameLogRepo.findAllByStatus("IN_PROGRESS"));
+        openGames.addAll(gameLogRepo.findAllByStatus(GameLoggingService.STARTED));
+        openGames.addAll(gameLogRepo.findAllByStatus(GameLoggingService.IN_PROGRESS));
         return openGames;
     }
 

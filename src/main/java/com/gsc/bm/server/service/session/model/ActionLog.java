@@ -18,6 +18,6 @@ public class ActionLog {
 
     public ActionLog(String what, Object data) {
         this.what = what;
-        this.data = SerializationUtils.deserialize(SerializationUtils.serialize(data));
+        this.data = SerializationUtils.deserialize(SerializationUtils.serialize(data)); // is this really necessary?
     }
 }

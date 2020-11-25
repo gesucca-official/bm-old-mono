@@ -1,10 +1,10 @@
 package com.gsc.bm.server.service.session;
 
+import com.gsc.bm.server.model.game.Game;
+import com.gsc.bm.server.model.game.Player;
 import com.gsc.bm.server.repo.external.GameLogRecord;
 import com.gsc.bm.server.repo.external.GameLogRepository;
 import com.gsc.bm.server.service.session.model.ActionLog;
-import com.gsc.bm.server.service.view.model.SlimGameView;
-import com.gsc.bm.server.service.view.model.SlimPlayerView;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -29,22 +29,22 @@ public class GameLoggingServiceImpl implements GameLoggingService {
     }
 
     @Override
-    public void log(SlimGameView game, String status, ActionLog actionLog) {
+    public void log(Game game, String status, ActionLog actionLog) {
         GAMES_LOG.computeIfAbsent(game.getGameId(), k -> new LinkedList<>());
         GAMES_LOG.get(game.getGameId()).add(actionLog);
         updateLogTable(game, status, GAMES_LOG.get(game.getGameId()));
     }
 
     @Override
-    public void flush(SlimGameView game) {
-        updateLogTable(game, "ENDED", GAMES_LOG.get(game.getGameId()));
+    public void flush(Game game) {
+        updateLogTable(game, GameLoggingService.ENDED, GAMES_LOG.get(game.getGameId()));
         GAMES_LOG.remove(game.getGameId());
     }
 
-    private void updateLogTable(SlimGameView game, String status, List<ActionLog> log) {
-        String players = game.getPlayers()
+    private void updateLogTable(Game game, String status, List<ActionLog> log) {
+        String players = game.getPlayers().values()
                 .stream()
-                .map(SlimPlayerView::getPlayerId)
+                .map(Player::getPlayerId)
                 .reduce((p1, p2) -> p1 + ", " + p2)
                 .orElse("Error reducing PlayerIds");
         String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));

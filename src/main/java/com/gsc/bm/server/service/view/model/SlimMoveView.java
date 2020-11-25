@@ -15,7 +15,6 @@ public class SlimMoveView implements Serializable {
     private final String playedCardName;
     private final String playerId;
     private final String targetId;
-    private final String gameId;
     private final Map<Move.AdditionalAction, String> choices;
     private final Map<Card.CardTarget, List<String>> moveReport;
 }

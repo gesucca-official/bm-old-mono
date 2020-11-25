@@ -83,7 +83,7 @@ public class Move implements Serializable {
                 throw new IllegalMoveException(game.getSelf(this).getPlayerId(), "can't discard character bound card");
         }
 
-        // check is player has already submitted a move
+        // check if player has already submitted a move
         if (game.getPendingMoves().stream().anyMatch(m -> m.getPlayerId().equalsIgnoreCase(playerId)))
             return new MoveCheckResult(false, "already submitted a move");
         // getting this card also checks if it is in that player's hand
@@ -122,7 +122,6 @@ public class Move implements Serializable {
     @JsonIgnore
     public SlimMoveView getSlimView() {
         return SlimMoveView.builder()
-                .gameId(gameId)
                 .playerId(playerId)
                 .targetId(targetId)
                 .playedCardName(playedCardName)

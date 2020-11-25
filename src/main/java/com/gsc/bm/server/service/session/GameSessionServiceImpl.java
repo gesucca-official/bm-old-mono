@@ -45,8 +45,7 @@ public class GameSessionServiceImpl implements GameSessionService {
         _GAMES.put(game, usersSubscribed);
         log.info("Created Game " + game.getGameId() + " with users subscribed: " + usersSubscribed);
         gameLoggingService.log(
-                viewExtractorService.extractGlobalSlimView(game),
-                "STARTED",
+                game, GameLoggingService.STARTED,
                 new ActionLog("Created Game", viewExtractorService.extractGlobalSlimView(game)));
 
         return game.getGameId(); // return the id just for convenience
@@ -67,7 +66,7 @@ public class GameSessionServiceImpl implements GameSessionService {
         log.info("Player " + playerId + " left Game " + gameId);
 
         if (_GAMES.get(getGame(gameId)).isEmpty()) {
-            gameLoggingService.flush(viewExtractorService.extractGlobalSlimView(getGame(gameId)));
+            gameLoggingService.flush(getGame(gameId));
             log.info("No one is anymore subscribed to Game " + gameId + " - removed!");
             _GAMES.remove(getGame(gameId));
         }
@@ -76,21 +75,28 @@ public class GameSessionServiceImpl implements GameSessionService {
     @Override
     public synchronized void submitMoveToGame(Move move, Runnable callback) throws IllegalMoveException {
         gameLoggingService.log(
-                viewExtractorService.extractGlobalSlimView(getGame(move.getGameId())),
-                "IN_PROGRESS",
-                new ActionLog("Move submitted by " + move.getPlayerId(), move)
+                getGame(move.getGameId()), GameLoggingService.IN_PROGRESS,
+                new ActionLog("Human Player " + move.getPlayerId() + " submitted a Move", move)
         );
         getGame(move.getGameId()).submitMove(move);
 
         if (getGame(move.getGameId()).isReadyToResolveMoves()) {
-            getGame(move.getGameId()).resolveMoves((game) -> {
-                gameLoggingService.log(
-                        viewExtractorService.extractGlobalSlimView(game),
-                        "IN_PROGRESS",
-                        new ActionLog("Game updated after Moves Resolution", viewExtractorService.extractGlobalSlimView(game))
-                );
-                callback.run();
-            });
+            getGame(move.getGameId()).resolveMoves(
+                    (game) -> {
+                        gameLoggingService.log(
+                                getGame(move.getGameId()), GameLoggingService.IN_PROGRESS,
+                                new ActionLog("Game Updated after Moves Resolutions Chain",
+                                        viewExtractorService.extractGlobalSlimView(game))
+                        );
+                        callback.run();
+                    },
+                    (turn, loggedEventsList) -> {
+                        gameLoggingService.log(
+                                getGame(move.getGameId()), GameLoggingService.IN_PROGRESS,
+                                new ActionLog("Turn " + turn + " internal Game Logs", loggedEventsList)
+                        );
+                        loggedEventsList.clear();
+                    });
         }
     }
 

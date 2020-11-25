@@ -6,7 +6,6 @@ import com.gsc.bm.server.model.Resource;
 import com.gsc.bm.server.model.cards.Card;
 import lombok.Getter;
 import lombok.ToString;
-import lombok.extern.log4j.Log4j2;
 import org.apache.commons.codec.binary.Hex;
 
 import java.io.Serializable;
@@ -14,12 +13,12 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @Getter
 @ToString
-@Log4j2
 public class Game implements Serializable {
 
     private String gameId;
@@ -30,7 +29,9 @@ public class Game implements Serializable {
     private final List<Move> resolvedMoves = new ArrayList<>();
     private final Map<String, List<String>> timeBasedEffects = new HashMap<>();
 
-    private int turn = 0;
+    private int turn = 0; // why keeping it here? client could use it
+    @JsonIgnore
+    private final List<String> loggedTurnEvents = new ArrayList<>();
 
     @JsonProperty
     public boolean isOver() {
@@ -59,11 +60,13 @@ public class Game implements Serializable {
     }
 
     public void submitMove(Move move) throws IllegalMoveException {
-        log.info("Player " + move.getPlayerId() + " submitted this Move: " + move);
         Move.MoveCheckResult moveCheckResult = move.isValidFor(this);
         if (moveCheckResult.isValid())
             pendingMoves.add(move);
-        else throw new IllegalMoveException(move.getPlayerId(), moveCheckResult.getComment());
+        else {
+            loggedTurnEvents.add("An Invalid Move has been Submitted: " + move);
+            throw new IllegalMoveException(move.getPlayerId(), moveCheckResult.getComment());
+        }
     }
 
     @JsonIgnore
@@ -73,7 +76,7 @@ public class Game implements Serializable {
         return !isOver() && pendingMoves.size() == players.size();
     }
 
-    public void resolveMoves(Consumer<Game> callback) {
+    public void resolveMoves(Consumer<Game> endChainCallback, BiConsumer<Integer, List<String>> turnEventsLogDrain) {
         if (!isReadyToResolveMoves())
             throw new RuntimeException("Trying to Resolve Moves when Game is not Ready!");
 
@@ -108,12 +111,13 @@ public class Game implements Serializable {
         for (String playerId : players.keySet())
             timeBasedEffects.put(playerId, players.get(playerId).getCharacter().resolveTimeBasedEffects());
 
-        log.info("Current Turn has been resolved: " + turn);
+        loggedTurnEvents.add("Turn " + turn + " has been Resolved.");
+        turnEventsLogDrain.accept(turn, loggedTurnEvents);
         turn++;
 
         if (!isOver() && isReadyToResolveMoves())
-            resolveMoves(callback);
-        else callback.accept(this);
+            resolveMoves(endChainCallback, turnEventsLogDrain);
+        else endChainCallback.accept(this);
     }
 
     @JsonIgnore
@@ -133,7 +137,7 @@ public class Game implements Serializable {
                 .filter(c -> c.getName().equalsIgnoreCase(cardName))
                 .findAny()
                 .orElseThrow(() -> {
-                    log.info("Player " + playerId + " is trying to get an Illegal Card from Hand: " + cardName);
+                    loggedTurnEvents.add("Player " + playerId + " is trying to get an Illegal Card from Hand: " + cardName);
                     return new IllegalMoveException(playerId, "don't have that card in hand");
                 });
     }
@@ -153,18 +157,18 @@ public class Game implements Serializable {
 
     @JsonIgnore
     public Optional<Move> getPendingMoveOfTargetIfMovesAfterPlayer(String playerId, String targetId) {
-        log.info("Player " + playerId + "'s Move has queried for the Successive Move of " + targetId);
+        loggedTurnEvents.add("Player " + playerId + "'s Move has queried for the Successive Move of " + targetId);
         // this is called by cards when they resolves, so pending moves are already sorted in resolution order
         for (int i = 0; i < pendingMoves.size(); i++) {
             if (pendingMoves.get(i).getPlayerId().equals(playerId))
                 for (int j = i + 1; j < pendingMoves.size(); j++)
                     if (pendingMoves.get(j).getPlayerId().equals(targetId)) {
-                        log.info("Successive Move found: " + pendingMoves.get(j));
+                        loggedTurnEvents.add("Successive Move found: " + pendingMoves.get(j));
                         return Optional.of(pendingMoves.get(j));
                     }
             // those nested cycles, those indexes... god that smells bad
         }
-        log.info("Found nothing...");
+        loggedTurnEvents.add("Found nothing! This should not have happened.");
         return Optional.empty();
     }
 
@@ -185,7 +189,7 @@ public class Game implements Serializable {
         for (Player p : getPlayers().values())
             if (p instanceof ComPlayer && pendingMoves.stream().noneMatch(m -> m.getPlayerId().equals(p.getPlayerId()))) {
                 Move comMove = ((ComPlayer) p).chooseMove(this);
-                log.info("Player " + p.getPlayerId() + " auto submit Move: " + comMove);
+                loggedTurnEvents.add("Player " + p.getPlayerId() + " auto submit Move: " + comMove);
                 submitMove(comMove);
             }
     }
@@ -194,7 +198,7 @@ public class Game implements Serializable {
         // dead players do nothing by default
         players.values().forEach(p -> {
             if (p.getCharacter().isDead() && pendingMoves.stream().noneMatch(m -> m.getPlayerId().equals(p.getPlayerId()))) {
-                log.info("Player " + p.getPlayerId() + " is dead and is auto submitting an Empty Move");
+                loggedTurnEvents.add("Player " + p.getPlayerId() + " is dead and is auto submitting an Empty Move");
                 submitMove(Move.voidMove(p.getPlayerId()));
             }
         });
