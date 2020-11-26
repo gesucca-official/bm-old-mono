@@ -1,7 +1,6 @@
 package com.gsc.bm.server.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.gsc.bm.server.model.cards.Card;
 import com.gsc.bm.server.model.game.status.Status;
 import com.gsc.bm.server.model.game.status.StatusFlow;
 import com.gsc.bm.server.model.game.status.StatusType;
@@ -18,7 +17,6 @@ public abstract class Character implements Serializable {
     private final String name;
 
     private final int objSize;
-    //private final Queue<Card> objects;
 
     private final Map<Resource, Integer> resources = new EnumMap<>(Resource.class);
 
@@ -28,13 +26,15 @@ public abstract class Character implements Serializable {
     public Character(String name, int hp, int speed, int objSize) {
         this.name = name;
         this.objSize = objSize;
-       // this.objects = new Circul
         this.resources.put(Resource.HEALTH, hp);
         this.resources.put(Resource.ALERTNESS, speed);
     }
 
     @JsonIgnore
-    public abstract Set<String> getCharacterBoundCards();
+    public abstract Set<Class<?>> getCharacterBoundCards();
+
+    @JsonIgnore
+    public abstract Class<?> getLastResortCard();
 
     public List<String> resolveTimeBasedEffects() {
         List<String> effectsReport = new ArrayList<>();

@@ -46,6 +46,7 @@ public class DeckFactoryServiceImpl implements DeckFactoryService {
     public List<Card> craftCharacterBoundCards(Character character) {
         return character.getCharacterBoundCards()
                 .stream()
+                .map(Class::getName)
                 .map(this::craftCard)
                 .collect(Collectors.toList());
     }
