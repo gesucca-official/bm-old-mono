@@ -10,7 +10,7 @@ public class BigBadBruiser extends Character {
     public static final String NAME = "Spazienzio de la Ucciso";
 
     public BigBadBruiser() {
-        super(NAME, 100, 20);
+        super(NAME, 100, 20, attentionSpan);
         resources.put(Resource.VIOLENCE, 25);
     }
 

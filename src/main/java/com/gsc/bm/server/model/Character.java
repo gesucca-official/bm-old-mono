@@ -1,6 +1,7 @@
 package com.gsc.bm.server.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.gsc.bm.server.model.cards.Card;
 import com.gsc.bm.server.model.game.status.Status;
 import com.gsc.bm.server.model.game.status.StatusFlow;
 import com.gsc.bm.server.model.game.status.StatusType;
@@ -15,12 +16,19 @@ import java.util.stream.Collectors;
 public abstract class Character implements Serializable {
 
     private final String name;
-    protected final Map<Resource, Integer> resources = new EnumMap<>(Resource.class);
+
+    private final int objSize;
+    //private final Queue<Card> objects;
+
+    private final Map<Resource, Integer> resources = new EnumMap<>(Resource.class);
+
     private final List<Status> statuses = new ArrayList<>();
     private final Set<Resource> immunities = new HashSet<>();
 
-    public Character(String name, int hp, int speed) {
+    public Character(String name, int hp, int speed, int objSize) {
         this.name = name;
+        this.objSize = objSize;
+       // this.objects = new Circul
         this.resources.put(Resource.HEALTH, hp);
         this.resources.put(Resource.ALERTNESS, speed);
     }

@@ -75,6 +75,7 @@ public class Move implements Serializable {
         if (this.isVoid)
             return new MoveCheckResult(true, "is empty and you do nothing");
 
+        // check if the discarded card is valid if character bound move
         if (game.getCardFromHand(playerId, playedCardName).isCharacterBound()) {
             if (choices == null || choices.isEmpty())
                 return new MoveCheckResult(false, "character bound cards should discard something else");
@@ -82,6 +83,8 @@ public class Move implements Serializable {
             if (toBeDiscarded.isCharacterBound())
                 throw new IllegalMoveException(game.getSelf(this).getPlayerId(), "can't discard character bound card");
         }
+
+        // TODO check if target object is valid
 
         // check if player has already submitted a move
         if (game.getPendingMoves().stream().anyMatch(m -> m.getPlayerId().equalsIgnoreCase(playerId)))

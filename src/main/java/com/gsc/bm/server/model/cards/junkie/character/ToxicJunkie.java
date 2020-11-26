@@ -10,7 +10,7 @@ public class ToxicJunkie extends Character {
     public static final String NAME = "Tossico del Serraglio";
 
     public ToxicJunkie() {
-        super(NAME, 100, 35);
+        super(NAME, 100, 35, attentionSpan);
         resources.put(Resource.TOXICITY, 10);
         getImmunities().add(Resource.TOXICITY);
     }

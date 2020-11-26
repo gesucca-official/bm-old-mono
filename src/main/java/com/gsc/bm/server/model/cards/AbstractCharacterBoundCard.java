@@ -12,6 +12,7 @@ public abstract class AbstractCharacterBoundCard extends AbstractCard {
         super();
         setCharacterBound(true);
         setBoundToCharacter(boundTo);
+        setCost(Map.of());
     }
 
     @Override
