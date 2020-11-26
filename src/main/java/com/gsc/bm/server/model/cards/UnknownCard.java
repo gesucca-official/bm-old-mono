@@ -27,7 +27,7 @@ public final class UnknownCard implements Card {
     }
 
     @Override
-    public boolean isObject() {
+    public boolean isItem() {
         return false;
     }
 

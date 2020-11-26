@@ -20,7 +20,8 @@ import java.util.Map;
 public class Move implements Serializable {
 
     public enum AdditionalAction {
-        DISCARD_ONE
+        DISCARD_ONE,
+        TARGET_ITEM
     }
 
     @JsonIgnore

@@ -1,8 +1,8 @@
 package com.gsc.bm.server.service.factories;
 
 import com.gsc.bm.server.model.Character;
-import com.gsc.bm.server.model.cards.Struggle;
 import com.gsc.bm.server.model.cards.bruiser.character.BigBadBruiser;
+import com.gsc.bm.server.model.cards.com.Struggle;
 import com.gsc.bm.server.model.cards.junkie.character.ToxicJunkie;
 import com.gsc.bm.server.model.game.ComPlayer;
 import com.gsc.bm.server.model.game.Player;

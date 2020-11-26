@@ -1,11 +1,13 @@
 package com.gsc.bm.server.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.gsc.bm.server.model.cards.Card;
 import com.gsc.bm.server.model.game.status.Status;
 import com.gsc.bm.server.model.game.status.StatusFlow;
 import com.gsc.bm.server.model.game.status.StatusType;
 import com.gsc.bm.server.service.view.model.SlimCharacterView;
 import lombok.Getter;
+import org.apache.commons.collections4.queue.CircularFifoQueue;
 
 import java.io.Serializable;
 import java.util.*;
@@ -16,16 +18,17 @@ public abstract class Character implements Serializable {
 
     private final String name;
 
-    private final int objSize;
+    private final int itemsSize;
+    private final Queue<Card> items;
 
     private final Map<Resource, Integer> resources = new EnumMap<>(Resource.class);
-
     private final List<Status> statuses = new ArrayList<>();
     private final Set<Resource> immunities = new HashSet<>();
 
-    public Character(String name, int hp, int speed, int objSize) {
+    public Character(String name, int hp, int speed, int itemsSize) {
         this.name = name;
-        this.objSize = objSize;
+        this.itemsSize = itemsSize;
+        this.items = new CircularFifoQueue<>(itemsSize);
         this.resources.put(Resource.HEALTH, hp);
         this.resources.put(Resource.ALERTNESS, speed);
     }
@@ -35,6 +38,16 @@ public abstract class Character implements Serializable {
 
     @JsonIgnore
     public abstract Class<?> getLastResortCard();
+
+    @JsonIgnore
+    public Card getItem(String name) {
+        for (Card item : items)
+            if (item.getName().equals(name)) {
+                items.remove(item);
+                return item;
+            }
+        return null;
+    }
 
     public List<String> resolveTimeBasedEffects() {
         List<String> effectsReport = new ArrayList<>();
@@ -109,10 +122,14 @@ public abstract class Character implements Serializable {
         return resources.get(Resource.HEALTH) <= 0;
     }
 
+    // TODO move this to service
     @JsonIgnore
     public SlimCharacterView getSlimView() {
         return SlimCharacterView.builder()
                 .name(name)
+                .items(items.stream()
+                        .map(Card::getName)
+                        .collect(Collectors.toList()))
                 .resources(resources)
                 .statuses(statuses.stream()
                         .map(Status::getName)

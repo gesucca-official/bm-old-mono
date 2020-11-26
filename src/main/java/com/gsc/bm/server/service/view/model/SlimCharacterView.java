@@ -13,7 +13,8 @@ import java.util.Set;
 @Getter
 public class SlimCharacterView implements Serializable {
     private final String name;
-    protected final Map<Resource, Integer> resources;
+    private final List<String> items;
+    private final Map<Resource, Integer> resources;
     private final List<String> statuses;
     private final Set<Resource> immunities;
 }

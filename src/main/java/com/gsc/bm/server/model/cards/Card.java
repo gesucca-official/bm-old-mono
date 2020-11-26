@@ -14,14 +14,14 @@ public interface Card {
     UnknownCard UNKNOWN_CARD = new UnknownCard();
 
     enum CardTarget {
-        SELF, OPPONENT, NEAR_OBJECT, FAR_OBJECT
+        SELF, OPPONENT, NEAR_ITEM, FAR_ITEM
     }
 
     String getName();
 
     String getEffect();
 
-    boolean isObject();
+    boolean isItem();
 
     boolean isLastResort();
 

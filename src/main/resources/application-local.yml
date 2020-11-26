@@ -8,3 +8,5 @@ spring:
       username: ctfgdsuehqynao
       password: ffc7e7d79bb838e59e2bad99aaaa05850e2dd6d7b160ba4c50dde6389698d871
       driver-class-name: org.postgresql.Driver
+log:
+  db: N

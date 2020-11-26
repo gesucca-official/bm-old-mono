@@ -5,6 +5,7 @@ import com.gsc.bm.server.model.game.Player;
 import com.gsc.bm.server.repo.external.GameLogRecord;
 import com.gsc.bm.server.repo.external.GameLogRepository;
 import com.gsc.bm.server.service.session.model.ActionLog;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -12,6 +13,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -22,9 +24,11 @@ public class GameLoggingServiceImpl implements GameLoggingService {
     private static final Map<String, List<ActionLog>> GAMES_LOG = new ConcurrentHashMap<>();
     private static final ExecutorService SAVE_QUEUE = Executors.newSingleThreadExecutor();
 
+    private final Environment environment;
     private final GameLogRepository repo;
 
-    public GameLoggingServiceImpl(GameLogRepository repo) {
+    public GameLoggingServiceImpl(Environment environment, GameLogRepository repo) {
+        this.environment = environment;
         this.repo = repo;
     }
 
@@ -48,7 +52,8 @@ public class GameLoggingServiceImpl implements GameLoggingService {
                 .reduce((p1, p2) -> p1 + ", " + p2)
                 .orElse("Error reducing PlayerIds");
         String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        SAVE_QUEUE.submit(() -> repo.save(new GameLogRecord(game.getGameId(), players, date, status, log)));
+        if (Objects.equals(environment.getProperty("log.db"), "Y"))
+            SAVE_QUEUE.submit(() -> repo.save(new GameLogRecord(game.getGameId(), players, date, status, log)));
     }
 
 }

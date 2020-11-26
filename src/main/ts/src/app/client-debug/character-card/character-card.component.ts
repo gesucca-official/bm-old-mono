@@ -1,5 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Player} from "../../model/player";
+import {MatDialog} from "@angular/material/dialog";
+import {CodeDialogComponent} from "../code-dialog/code-dialog.component";
+import {Card} from "../../model/card";
 
 @Component({
   selector: 'app-character-card',
@@ -11,7 +14,7 @@ export class CharacterCardComponent implements OnInit {
   @Input() playerState: Player;
   @Input() isPlayer: boolean;
 
-  constructor() {
+  constructor(public dialog: MatDialog) {
   }
 
   ngOnInit(): void {
@@ -36,4 +39,14 @@ export class CharacterCardComponent implements OnInit {
     return res;
   }
 
+  logItem(item: Card) {
+    this.dialog.open(CodeDialogComponent, {
+      width: 'fit-content',
+      data: {
+        title: item.name,
+        html: item.effect,
+        jsonTextData: item
+      }
+    })
+  }
 }

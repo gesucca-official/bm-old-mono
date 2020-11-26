@@ -6,7 +6,6 @@ import com.gsc.bm.server.model.Character;
 import com.gsc.bm.server.model.Resource;
 import com.gsc.bm.server.model.cards.Card;
 import lombok.Getter;
-import org.apache.commons.collections4.queue.CircularFifoQueue;
 
 import java.io.Serializable;
 import java.util.*;
@@ -17,7 +16,6 @@ public class Player implements Serializable {
     private final String playerId;
     private final Character character;
 
-    private final Queue<Card> objects;
     private final List<Card> cardsInHand = new ArrayList<>();
     private final Stack<Card> deck = new Stack<>();
 
@@ -26,8 +24,6 @@ public class Player implements Serializable {
     public Player(String id, Character character, List<Card> characterBoundCards, Card lastResortCard, List<Card> deck) {
         this.playerId = id;
         this.character = character;
-
-        this.objects = new CircularFifoQueue<>(character.getObjSize());
 
         this.cardsInHand.addAll(characterBoundCards);
         this.lastResortCard = lastResortCard;
@@ -45,8 +41,8 @@ public class Player implements Serializable {
     public void drawCard() {
         if (!deck.isEmpty()) {
             Card card = deck.pop();
-            if (card.isObject()) {
-                objects.add(card);
+            if (card.isItem()) {
+                character.getItems().add(card);
                 drawCard();
             } else
                 cardsInHand.add(card);
