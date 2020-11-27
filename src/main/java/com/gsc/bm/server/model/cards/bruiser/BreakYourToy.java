@@ -1,4 +1,4 @@
-package com.gsc.bm.server.model.cards.com;
+package com.gsc.bm.server.model.cards.bruiser;
 
 import com.gsc.bm.server.model.Character;
 import com.gsc.bm.server.model.Resource;
@@ -12,39 +12,36 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class Steal extends AbstractCard {
+public class BreakYourToy extends AbstractCard {
 
-    private String message;
-    private Card targetItem;
+    Card targetItem;
 
-    public Steal() {
+    public BreakYourToy() {
         super();
         setCanTarget(Set.of(CardTarget.FAR_ITEM));
-        setCost(Map.of(Resource.ALERTNESS, 10));
-        setPriority(0);
+        setCost(Map.of(Resource.VIOLENCE, 10));
     }
 
     @Override
     public void applyOtherUnfathomableLogic(Game g, Move m) {
         try {
             targetItem = g.getItem(m.getTargetId(), m.getChoices().get(Move.AdditionalAction.TARGET_ITEM));
-            message = "Stolen " + targetItem.getName() + " from " + m.getTargetId();
         } catch (IllegalMoveException e) {
             targetItem = null;
-            message = "Couldn't Steal anything!";
-            return;
         }
-        g.getTarget(m).getCharacter().getItems().remove(targetItem);
-        g.getSelf(m).getCharacter().getItems().add(targetItem);
     }
 
     @Override
     public List<String> applyEffectOnSelf(Character self) {
-        return List.of(message);
+        return null;
     }
 
     @Override
     public List<String> applyEffectOnTarget(Character self, Character target) {
-        return null;
+        if (targetItem != null) {
+            target.getItems().remove(targetItem);
+            return List.of("Destroyed " + targetItem.getName());
+        } else
+            return List.of("You were too slow and didn't break anything");
     }
 }

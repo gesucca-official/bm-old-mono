@@ -129,7 +129,8 @@ public class Game implements Serializable {
 
         timeBasedEffects.clear();
         for (String playerId : players.keySet())
-            timeBasedEffects.put(playerId, players.get(playerId).getCharacter().resolveTimeBasedEffects());
+            if (!players.get(playerId).getCharacter().isDead())
+                timeBasedEffects.put(playerId, players.get(playerId).getCharacter().resolveTimeBasedEffects());
 
         loggedTurnEvents.add("Turn " + turn + " has been Resolved.");
         turnEventsLogDrain.accept(turn, loggedTurnEvents);
@@ -198,6 +199,7 @@ public class Game implements Serializable {
             // those nested cycles, those indexes... god that smells bad
         }
         loggedTurnEvents.add("Found nothing! This should not have happened.");
+        loggedTurnEvents.add(pendingMoves.toString());
         return Optional.empty();
     }
 

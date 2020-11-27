@@ -3,10 +3,10 @@ package com.gsc.bm.server.model.cards.bruiser.character;
 import com.gsc.bm.server.model.Character;
 import com.gsc.bm.server.model.Damage;
 import com.gsc.bm.server.model.Resource;
-import com.gsc.bm.server.model.game.status.Status;
 import com.gsc.bm.server.model.cards.AbstractCharacterBoundCard;
 import com.gsc.bm.server.model.game.Game;
 import com.gsc.bm.server.model.game.Move;
+import com.gsc.bm.server.model.game.status.Status;
 import com.gsc.bm.server.model.game.status.StatusFlow;
 import com.gsc.bm.server.model.game.status.StatusType;
 
@@ -31,7 +31,7 @@ public class LittleRage extends AbstractCharacterBoundCard {
                 Status.builder()
                         .name("ONLY A LITTLE DISCOMFORT")
                         .description("Hit Damage taken: x0.75")
-                        .type( StatusType.GOOD)
+                        .type(StatusType.GOOD)
                         .flow(StatusFlow.INPUT)
                         .impactedProperty(Damage.DamageType.HIT)
                         .amountFunction(incomingDamage -> incomingDamage * 0.75f)

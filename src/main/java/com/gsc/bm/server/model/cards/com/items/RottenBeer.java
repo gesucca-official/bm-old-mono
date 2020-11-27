@@ -1,4 +1,4 @@
-package com.gsc.bm.server.model.cards.bruiser;
+package com.gsc.bm.server.model.cards.com.items;
 
 import com.gsc.bm.server.model.Character;
 import com.gsc.bm.server.model.Damage;
@@ -36,11 +36,6 @@ public class RottenBeer extends AbstractItemCard {
                 "Gained status: ROTTEN BEER",
                 self.gainResource(Resource.ALCOHOL, 5)
         );
-    }
-
-    @Override
-    public List<String> applyEffectOnTarget(Character self, Character target) {
-        return null;
     }
 
 }

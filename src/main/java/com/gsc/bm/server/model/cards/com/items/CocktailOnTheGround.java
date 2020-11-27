@@ -1,4 +1,4 @@
-package com.gsc.bm.server.model.cards.bruiser;
+package com.gsc.bm.server.model.cards.com.items;
 
 import com.gsc.bm.server.model.Character;
 import com.gsc.bm.server.model.Resource;
@@ -21,11 +21,6 @@ public class CocktailOnTheGround extends AbstractItemCard {
                 self.gainResource(Resource.ALCOHOL, 10),
                 self.gainResource(Resource.TOXICITY, 5)
         );
-    }
-
-    @Override
-    public List<String> applyEffectOnTarget(Character self, Character target) {
-        return null;
     }
 
 }
