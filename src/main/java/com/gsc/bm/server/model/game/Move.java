@@ -76,29 +76,45 @@ public class Move implements Serializable {
         if (this.isVoid)
             return new MoveCheckResult(true, "is empty and you do nothing");
 
-        // check if the discarded card is valid if character bound move
-        if (game.getCardFromHand(playerId, playedCardName).isCharacterBound()) {
-            if (choices == null || choices.isEmpty())
-                return new MoveCheckResult(false, "character bound cards should discard something else");
-            Card toBeDiscarded = game.getCardFromHand(playerId, choices.get(AdditionalAction.DISCARD_ONE));
-            if (toBeDiscarded.isCharacterBound())
-                throw new IllegalMoveException(game.getSelf(this).getPlayerId(), "can't discard character bound card");
-        }
+        try { // TODO for the love of god...
+            // check if the discarded card is valid if character bound move
+            if (game.getCardFromHand(playerId, playedCardName).isCharacterBound()) {
+                if (choices == null || choices.isEmpty())
+                    return new MoveCheckResult(false, "character bound cards should discard something else");
+                Card toBeDiscarded = game.getCardFromHand(playerId, choices.get(AdditionalAction.DISCARD_ONE));
+                if (toBeDiscarded.isCharacterBound())
+                    return new MoveCheckResult(false, "can't discard character bound card");
+            }
 
-        // TODO check if target object is valid
+            // check if target object is valid
+            if (game.getCardFromHand(playerId, playedCardName).getCanTarget().contains(Card.CardTarget.NEAR_ITEM)) {
+                if (choices == null || choices.isEmpty())
+                    return new MoveCheckResult(false, "cards that use items should explicit which one is targeted");
+                // this already throws IllegalMoveException if item is not present
+                game.getItem(playerId, choices.get(AdditionalAction.TARGET_ITEM));
+            }
+            if (game.getCardFromHand(playerId, playedCardName).getCanTarget().contains(Card.CardTarget.FAR_ITEM)) {
+                if (choices == null || choices.isEmpty())
+                    return new MoveCheckResult(false, "cards that use items should explicit which one is targeted");
+                // as above
+                game.getItem(targetId, choices.get(AdditionalAction.TARGET_ITEM));
+            }
 
-        // check if player has already submitted a move
-        if (game.getPendingMoves().stream().anyMatch(m -> m.getPlayerId().equalsIgnoreCase(playerId)))
-            return new MoveCheckResult(false, "already submitted a move");
-        // getting this card also checks if it is in that player's hand
-        Card playedCard = game.getCardFromHand(playerId, playedCardName);
-        Map<Resource, Integer> playerResources = game.getPlayers().get(playerId).getCharacter().getResources();
+            // check if player has already submitted a move
+            if (game.getPendingMoves().stream().anyMatch(m -> m.getPlayerId().equalsIgnoreCase(playerId)))
+                return new MoveCheckResult(false, "already submitted a move");
+            // getting this card also checks if it is in that player's hand
+            Card playedCard = game.getCardFromHand(playerId, playedCardName);
+            Map<Resource, Integer> playerResources = game.getPlayers().get(playerId).getCharacter().getResources();
 
-        // check if costs can be satisfied
-        for (Map.Entry<Resource, Integer> cost : playedCard.getCost().entrySet()) {
-            int availableResource = playerResources.get(cost.getKey());
-            if (availableResource < cost.getValue())
-                return new MoveCheckResult(false, "cant be cast with current resources");
+            // check if costs can be satisfied
+            for (Map.Entry<Resource, Integer> cost : playedCard.getCost().entrySet()) {
+                int availableResource = playerResources.get(cost.getKey());
+                if (availableResource < cost.getValue())
+                    return new MoveCheckResult(false, "cant be cast with current resources");
+            }
+        } catch (IllegalMoveException e) {
+            return new MoveCheckResult(false, e.getWhatHeDid());
         }
         return new MoveCheckResult(true, "good, cast it");
     }

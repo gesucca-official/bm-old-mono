@@ -6,6 +6,7 @@ import com.gsc.bm.server.model.Resource;
 import com.gsc.bm.server.model.cards.Card;
 import lombok.Getter;
 import lombok.ToString;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.codec.binary.Hex;
 
 import java.io.Serializable;
@@ -17,9 +18,26 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+@Log4j2
 @Getter
 @ToString
 public class Game implements Serializable {
+
+    private static class LoggingList extends ArrayList<String> implements Serializable {
+
+        private final boolean printLogs;
+
+        public LoggingList(boolean printLogs) {
+            this.printLogs = printLogs;
+        }
+
+        @Override
+        public boolean add(String s) {
+            if (printLogs)
+                log.info(s);
+            return super.add(s);
+        }
+    }
 
     private String gameId;
     private final Map<String, Player> players;
@@ -31,7 +49,7 @@ public class Game implements Serializable {
 
     private int turn = 0; // why keeping it here? client could use it
     @JsonIgnore
-    private final List<String> loggedTurnEvents = new ArrayList<>();
+    private final LoggingList loggedTurnEvents;
 
     @JsonProperty
     public boolean isOver() {
@@ -51,12 +69,14 @@ public class Game implements Serializable {
         return Optional.empty();
     }
 
-    public Game(List<Player> players) {
+    public Game(List<Player> players, boolean printLogs) {
         generateGameId(players);
         // rearrange players in a map
         this.players = new HashMap<>(players.size());
         for (Player p : players)
             this.players.put(p.getPlayerId(), p);
+
+        loggedTurnEvents = new LoggingList(printLogs);
     }
 
     public void submitMove(Move move) throws IllegalMoveException {
@@ -140,6 +160,15 @@ public class Game implements Serializable {
                     loggedTurnEvents.add("Player " + playerId + " is trying to get an Illegal Card from Hand: " + cardName);
                     return new IllegalMoveException(playerId, "don't have that card in hand");
                 });
+    }
+
+    @JsonIgnore
+    public Card getItem(String playerId, String itemCardName) {
+        for (Card item : players.get(playerId).getCharacter().getItems())
+            if (item.getName().equals(itemCardName))
+                return item;
+        loggedTurnEvents.add("Someone is trying to get an Illegal Item Card from " + playerId + " Items: " + itemCardName);
+        throw new IllegalMoveException(playerId, "don't have that item");
     }
 
     @JsonIgnore

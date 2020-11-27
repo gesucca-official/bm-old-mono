@@ -39,16 +39,6 @@ public abstract class Character implements Serializable {
     @JsonIgnore
     public abstract Class<?> getLastResortCard();
 
-    @JsonIgnore
-    public Card getItem(String name) {
-        for (Card item : items)
-            if (item.getName().equals(name)) {
-                items.remove(item);
-                return item;
-            }
-        return null;
-    }
-
     public List<String> resolveTimeBasedEffects() {
         List<String> effectsReport = new ArrayList<>();
 
