@@ -1,24 +1,18 @@
-package com.gsc.bm.server.model.cards.bruiser;
+package com.gsc.bm.server.model.cards.com.items;
 
 import com.gsc.bm.server.model.Character;
 import com.gsc.bm.server.model.Damage;
 import com.gsc.bm.server.model.Resource;
-import com.gsc.bm.server.model.game.status.Status;
-import com.gsc.bm.server.model.cards.AbstractCard;
+import com.gsc.bm.server.model.cards.AbstractItemCard;
 import com.gsc.bm.server.model.game.Game;
 import com.gsc.bm.server.model.game.Move;
+import com.gsc.bm.server.model.game.status.Status;
 import com.gsc.bm.server.model.game.status.StatusFlow;
 import com.gsc.bm.server.model.game.status.StatusType;
 
 import java.util.List;
-import java.util.Set;
 
-public class RottenBeer extends AbstractCard {
-
-    public RottenBeer() {
-        super();
-        setCanTarget(Set.of(CardTarget.SELF));
-    }
+public class RottenBeer extends AbstractItemCard {
 
     @Override
     public void applyOtherUnfathomableLogic(Game g, Move m) {
@@ -30,7 +24,7 @@ public class RottenBeer extends AbstractCard {
                 Status.builder()
                         .name("ROTTEN BEER")
                         .description("Hit Damage dealt x1.5 and turned to Cut Damage")
-                        .type( StatusType.GOOD)
+                        .type(StatusType.GOOD)
                         .flow(StatusFlow.OUTPUT)
                         .impactedProperty(Damage.DamageType.HIT)
                         .amountFunction(damageDone -> damageDone * 1.5f)
@@ -42,11 +36,6 @@ public class RottenBeer extends AbstractCard {
                 "Gained status: ROTTEN BEER",
                 self.gainResource(Resource.ALCOHOL, 5)
         );
-    }
-
-    @Override
-    public List<String> applyEffectOnTarget(Character self, Character target) {
-        return null;
     }
 
 }

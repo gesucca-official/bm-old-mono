@@ -71,7 +71,7 @@ export class DebugClientComponent {
         data: {
           title: 'WINNER: ' + this.gameService.gameState.winner,
           html: this.getDialogHtml(),
-          data: this.gameService.gameState.resolvedMoves
+          jsonTextData: this.gameService.gameState.resolvedMoves
         }
       }).afterClosed().subscribe(
         () => {
@@ -90,6 +90,14 @@ export class DebugClientComponent {
     if (card.canTarget.includes('OPPONENT'))
       this.gameService.opponents.filter(o => !o.character.dead).map(o => o.playerId)
         .forEach(o => targets.push(o))
+    if (JSON.stringify(card.canTarget).includes('NEAR_ITEM'))
+      this.gameService.playerState.character.items.map(i => 'SELF.' + i.name)
+        .forEach(o => targets.push(o))
+    if (JSON.stringify(card.canTarget).includes('FAR_ITEM'))
+      this.gameService.opponents.forEach(
+        o => o.character.items.map(i => o.playerId + '.' + i.name)
+          .forEach(o => targets.push(o))
+      )
     return targets;
   }
 

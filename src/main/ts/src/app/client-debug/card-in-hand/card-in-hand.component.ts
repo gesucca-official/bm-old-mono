@@ -31,9 +31,11 @@ export class CardInHandComponent {
     this.onPlayThis.emit({
       playedCardName: this.cardData.name,
       playerId: this.gameService.playerId,
-      targetId: this.chosenTarget,
+      targetId: this.chosenTarget.split('.')[0],
       gameId: this.gameService.gameId,
-      choices: this.cardData.characterBound ? {'DISCARD_ONE': this.cardToDiscard} : null
+      choices: this.cardData.characterBound ? {'DISCARD_ONE': this.cardToDiscard} :
+        this.cardData.canTarget.includes('NEAR_ITEM') || this.cardData.canTarget.includes('FAR_ITEM') ?
+          {'TARGET_ITEM': this.chosenTarget.split('.')[1]} : null
     })
   }
 }

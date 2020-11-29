@@ -25,8 +25,15 @@
       STATUS: <b>{{status.name}}</b> <br> ({{status.description}})
     </p>
 
+    <div style="width: 90%">
+      <button class="mat-button mat-elevation-z2"
+              *ngFor="let item of playerState.character.items"
+              (click)="logItem(item)">ITEM: <b>{{item.name}}</b>
+      </button>
+    </div>
+
   </mat-card-content>
   <mat-card-actions>
-    <button mat-raised-button class="mat-elevation-z2" (click)="logState()">Log State</button>
+    <button class="mat-button mat-elevation-z2" (click)="logState()">Log State</button>
   </mat-card-actions>
 </mat-card>

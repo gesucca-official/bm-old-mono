@@ -19,6 +19,7 @@ import java.util.Set;
 @Setter(AccessLevel.PROTECTED)
 public abstract class AbstractCard implements Card, LoadableCard, Serializable {
 
+    private boolean isItem;
     private boolean isLastResort;
     private boolean isCharacterBound;
     private Map<Resource, Integer> cost;
