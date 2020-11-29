@@ -5,7 +5,6 @@ import {CodeDialogComponent} from "./code-dialog/code-dialog.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {GameService} from "../service/game.service";
 import {Move} from "../model/move";
-import {Card} from "../model/card";
 
 @Component({
   selector: 'app-debug-client',
@@ -81,24 +80,6 @@ export class DebugClientComponent {
       );
       this.websocketService.unsubToGame(this.gameService.gameId, this.gameService.playerId);
     }
-  }
-
-  getTargets(card: Card): string[] {
-    const targets = [];
-    if (card.canTarget.includes('SELF'))
-      targets.push('SELF')
-    if (card.canTarget.includes('OPPONENT'))
-      this.gameService.opponents.filter(o => !o.character.dead).map(o => o.playerId)
-        .forEach(o => targets.push(o))
-    if (JSON.stringify(card.canTarget).includes('NEAR_ITEM'))
-      this.gameService.playerState.character.items.map(i => 'SELF.' + i.name)
-        .forEach(o => targets.push(o))
-    if (JSON.stringify(card.canTarget).includes('FAR_ITEM'))
-      this.gameService.opponents.forEach(
-        o => o.character.items.map(i => o.playerId + '.' + i.name)
-          .forEach(o => targets.push(o))
-      )
-    return targets;
   }
 
   discardableCards() {

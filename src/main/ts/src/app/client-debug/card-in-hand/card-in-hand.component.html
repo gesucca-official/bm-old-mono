@@ -8,6 +8,7 @@
         <button mat-raised-button
                 color="accent"
                 style="height: fit-content"
+                [disabled]="!gameService.isPlayable(cardData, character)"
                 (click)="playThis(); $event.stopPropagation();">
           Play
         </button>

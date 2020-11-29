@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {Card} from "../../model/card";
 import {Move} from "../../model/move";
 import {GameService} from "../../service/game.service";
+import {Character} from "../../model/character";
 
 @Component({
   selector: 'app-card-in-hand',
@@ -17,10 +18,12 @@ export class CardInHandComponent {
   @Input() discardableCards: string[];
   cardToDiscard: string;
 
+  @Input() character: Character;
+
   @Output()
   onPlayThis: EventEmitter<Move> = new EventEmitter<Move>();
 
-  constructor(protected gameService: GameService) {
+  constructor(public gameService: GameService) {
   }
 
   logState() {

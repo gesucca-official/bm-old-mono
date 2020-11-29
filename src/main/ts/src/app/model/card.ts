@@ -1,6 +1,8 @@
+import {Resources} from "./character";
+
 export interface Card {
   name: string,
-  cost: Map<string, number>,
+  cost: Resources,
   effect: string,
   priority: number
   canTarget: string[],
