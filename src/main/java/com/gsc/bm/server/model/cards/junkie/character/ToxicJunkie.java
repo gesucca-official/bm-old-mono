@@ -2,7 +2,8 @@ package com.gsc.bm.server.model.cards.junkie.character;
 
 import com.gsc.bm.server.model.Character;
 import com.gsc.bm.server.model.Resource;
-import com.gsc.bm.server.model.cards.com.Struggle;
+import com.gsc.bm.server.model.cards.com.basic.ShuffleFeet;
+import com.gsc.bm.server.model.cards.com.last.Struggle;
 
 import java.util.Set;
 
@@ -14,6 +15,11 @@ public class ToxicJunkie extends Character {
         super(NAME, 100, 35, 3);
         getResources().put(Resource.TOXICITY, 10);
         getImmunities().add(Resource.TOXICITY);
+    }
+
+    @Override
+    public Class<?> getBasicActionCard() {
+        return ShuffleFeet.class;
     }
 
     @Override

@@ -84,6 +84,8 @@ public class Move implements Serializable {
                 Card toBeDiscarded = game.getCardFromHand(playerId, choices.get(AdditionalAction.DISCARD_ONE));
                 if (toBeDiscarded.isCharacterBound())
                     return new MoveCheckResult(false, "can't discard character bound card");
+                if (toBeDiscarded.isBasicAction())
+                    return new MoveCheckResult(false, "can't discard basic action card");
             }
 
             // check if target object is valid

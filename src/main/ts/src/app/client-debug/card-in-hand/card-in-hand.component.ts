@@ -41,4 +41,13 @@ export class CardInHandComponent {
           {'TARGET_ITEM': this.chosenTarget.split('.')[1]} : null
     })
   }
+
+  getColor() {
+    if (this.cardData.characterBound)
+      return 'rgb(255,255,205)';
+    if (this.cardData.basicAction)
+      return 'rgb(100,195,255)';
+    if (this.cardData.lastResort)
+      return 'rgb(225,105,105)';
+  }
 }

@@ -39,6 +39,8 @@ public class CardFactoryServiceImpl implements CardFactoryService {
 
     private String buildHtml(Card c, String d) {
         StringBuilder description = new StringBuilder();
+        if (c.isBasicAction())
+            appendHtml(description, "basicAction");
         if (c.isCharacterBound())
             appendHtml(description, "fallbackMove");
         if (c.getPriority() > 1)

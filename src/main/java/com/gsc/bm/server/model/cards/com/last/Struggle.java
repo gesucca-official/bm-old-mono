@@ -1,4 +1,4 @@
-package com.gsc.bm.server.model.cards.com;
+package com.gsc.bm.server.model.cards.com.last;
 
 import com.gsc.bm.server.model.Character;
 import com.gsc.bm.server.model.Damage;

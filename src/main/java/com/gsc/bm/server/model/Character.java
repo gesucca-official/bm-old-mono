@@ -34,6 +34,9 @@ public abstract class Character implements Serializable {
     }
 
     @JsonIgnore
+    public abstract Class<?> getBasicActionCard();
+
+    @JsonIgnore
     public abstract Set<Class<?>> getCharacterBoundCards();
 
     @JsonIgnore

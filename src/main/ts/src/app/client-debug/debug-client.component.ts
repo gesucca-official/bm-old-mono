@@ -83,7 +83,7 @@ export class DebugClientComponent {
   }
 
   discardableCards() {
-    return this.gameService.cardsInHand.filter(card => !card.characterBound).map(card => card.name);
+    return this.gameService.cardsInHand.filter(card => !card.characterBound && !card.basicAction).map(card => card.name);
   }
 
   private getDialogTitle(): string {

@@ -43,12 +43,26 @@ public class DeckFactoryServiceImpl implements DeckFactoryService {
     }
 
     @Override
+    public Card craftBasicActionCard(Character character) {
+        return craftCard(
+                character.getBasicActionCard().getName()
+        );
+    }
+
+    @Override
     public List<Card> craftCharacterBoundCards(Character character) {
         return character.getCharacterBoundCards()
                 .stream()
                 .map(Class::getName)
                 .map(this::craftCard)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Card craftLastResortCard(Character character) {
+        return craftCard(
+                character.getLastResortCard().getName()
+        );
     }
 
     private Card craftCard(String cardClazz) {

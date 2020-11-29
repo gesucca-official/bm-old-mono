@@ -18,7 +18,7 @@ public class CocktailOnTheGround extends AbstractItemCard {
     public List<String> applyEffectOnSelf(Character self) {
         return List.of(
                 self.gainResource(Resource.VIOLENCE, 20),
-                self.gainResource(Resource.ALCOHOL, 10),
+                self.gainResource(Resource.ALCOHOL, 15),
                 self.gainResource(Resource.TOXICITY, 5)
         );
     }

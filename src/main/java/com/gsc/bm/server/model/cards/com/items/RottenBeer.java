@@ -16,11 +16,7 @@ public class RottenBeer extends AbstractItemCard {
 
     @Override
     public void applyOtherUnfathomableLogic(Game g, Move m) {
-    }
-
-    @Override
-    public List<String> applyEffectOnSelf(Character self) {
-        self.getStatuses().add(
+        g.getSelf(m).getCharacter().getStatuses().add(
                 Status.builder()
                         .name("ROTTEN BEER")
                         .description("Hit Damage dealt x1.5 and turned to Cut Damage")
@@ -32,6 +28,10 @@ public class RottenBeer extends AbstractItemCard {
                         .lastsForTurns(1)
                         .build()
         );
+    }
+
+    @Override
+    public List<String> applyEffectOnSelf(Character self) {
         return List.of(
                 "Gained status: ROTTEN BEER",
                 self.gainResource(Resource.ALCOHOL, 5)

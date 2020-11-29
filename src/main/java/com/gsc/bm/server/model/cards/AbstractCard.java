@@ -20,6 +20,7 @@ import java.util.Set;
 public abstract class AbstractCard implements Card, LoadableCard, Serializable {
 
     private boolean isItem;
+    private boolean isBasicAction;
     private boolean isLastResort;
     private boolean isCharacterBound;
     private Map<Resource, Integer> cost;

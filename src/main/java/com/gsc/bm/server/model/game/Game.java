@@ -120,7 +120,8 @@ public class Game implements Serializable {
         for (Move m : pendingMoves) {
             m.applyEffectTo(this);
             getSelf(m).discardCard(getCardFromHand(m.getPlayerId(), m.getPlayedCardName()));
-            getSelf(m).drawCard();
+            if (getSelf(m).getCardsInHand().size() < Player.CARDS_IN_HAND)
+                getSelf(m).drawCard();
         }
 
         resolvedMoves.clear();
