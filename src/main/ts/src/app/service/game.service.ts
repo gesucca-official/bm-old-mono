@@ -28,7 +28,7 @@ export class GameService {
       if (k != this.playerId)
         opp.push(players[k])
     });
-    return opp;
+    return opp.filter(o => !o.character.dead);
   }
 
   get cardsInHand(): Card[] {
@@ -74,7 +74,7 @@ export class GameService {
     if (card.canTarget.includes('SELF'))
       targets.push('SELF')
     if (card.canTarget.includes('OPPONENT'))
-      this.opponents.filter(o => !o.character.dead).map(o => o.playerId)
+      this.opponents.map(o => o.playerId)
         .forEach(o => targets.push(o))
     if (JSON.stringify(card.canTarget).includes('NEAR_ITEM'))
       this.playerState.character.items.map(i => 'SELF.' + i.name)
