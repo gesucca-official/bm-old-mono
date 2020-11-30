@@ -11,6 +11,7 @@ public abstract class AbstractItemCard extends AbstractCard {
     public AbstractItemCard() {
         super();
         setItem(true);
+        setPriority(1);
         setCanTarget(Set.of(CardTarget.SELF));
         setCost(Map.of());
     }

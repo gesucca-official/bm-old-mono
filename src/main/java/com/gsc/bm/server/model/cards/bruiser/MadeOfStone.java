@@ -13,13 +13,23 @@ import com.gsc.bm.server.model.game.status.StatusType;
 import java.util.List;
 import java.util.Set;
 
-public class Glare extends AbstractCard {
+public class MadeOfStone extends AbstractCard {
 
-    public Glare() {
+    public MadeOfStone() {
         super();
-        setCanTarget(Set.of(CardTarget.SELF));
         setPriority(0);
+        setCanTarget(Set.of(CardTarget.SELF));
     }
+
+    static Status MADE_OF_STONE = Status.builder()
+            .name("MADE OF STONE")
+            .description("Cut Damage Taken: x0.5")
+            .type(StatusType.GOOD)
+            .flow(StatusFlow.INPUT)
+            .impactedProperty(Damage.DamageType.CUT)
+            .amountFunction(incomingDamage -> incomingDamage * 0.5f)
+            .lastsForTurns(3)
+            .build();
 
     @Override
     public void applyOtherUnfathomableLogic(Game g, Move m) {
@@ -27,22 +37,10 @@ public class Glare extends AbstractCard {
 
     @Override
     public List<String> applyEffectOnSelf(Character self) {
-        self.getStatuses().add(
-                Status.builder()
-                        .name("NO PATIENCE - Damage Intake Boost")
-                        .description("Hit Damage taken: x1.5")
-                        .type(StatusType.BAD)
-                        .flow(StatusFlow.INPUT)
-                        .impactedProperty(Damage.DamageType.HIT)
-                        .amountFunction(incomingDamage -> incomingDamage * 1.5f)
-                        .lastsForTurns(1)
-                        .build()
-        );
-
+        self.getStatuses().add(MADE_OF_STONE);
         return List.of(
-                "Gained statuses: NO PATIENCE",
-                self.gainResource(Resource.VIOLENCE, 15),
-                self.gainResource(Resource.ALERTNESS, 15)
+                "Gained Status: MADE OF STONE",
+                self.gainResource(Resource.VIOLENCE, 10)
         );
     }
 
@@ -50,5 +48,4 @@ public class Glare extends AbstractCard {
     public List<String> applyEffectOnTarget(Character self, Character target) {
         return null;
     }
-
 }

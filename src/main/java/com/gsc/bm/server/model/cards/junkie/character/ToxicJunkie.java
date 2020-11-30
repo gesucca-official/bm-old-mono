@@ -2,7 +2,7 @@ package com.gsc.bm.server.model.cards.junkie.character;
 
 import com.gsc.bm.server.model.Character;
 import com.gsc.bm.server.model.Resource;
-import com.gsc.bm.server.model.cards.com.basic.ShuffleFeet;
+import com.gsc.bm.server.model.cards.com.basic.ToxicGrab;
 import com.gsc.bm.server.model.cards.com.last.Struggle;
 
 import java.util.Set;
@@ -19,7 +19,7 @@ public class ToxicJunkie extends Character {
 
     @Override
     public Class<?> getBasicActionCard() {
-        return ShuffleFeet.class;
+        return ToxicGrab.class;
     }
 
     @Override

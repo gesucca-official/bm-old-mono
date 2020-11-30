@@ -3,10 +3,10 @@ package com.gsc.bm.server.model.cards.bruiser;
 import com.gsc.bm.server.model.Character;
 import com.gsc.bm.server.model.Damage;
 import com.gsc.bm.server.model.Resource;
-import com.gsc.bm.server.model.game.status.Status;
 import com.gsc.bm.server.model.cards.AbstractCard;
 import com.gsc.bm.server.model.game.Game;
 import com.gsc.bm.server.model.game.Move;
+import com.gsc.bm.server.model.game.status.Status;
 import com.gsc.bm.server.model.game.status.StatusFlow;
 import com.gsc.bm.server.model.game.status.StatusType;
 
@@ -32,8 +32,8 @@ public class CantFeelAnything extends AbstractCard {
         self.getStatuses().add(
                 Status.builder()
                         .name("YOU CARESS ME")
-                        .description("Damage Taken: x0.35")
-                        .type( StatusType.GOOD)
+                        .description("Hit Damage Taken: x0.35")
+                        .type(StatusType.GOOD)
                         .flow(StatusFlow.INPUT)
                         .impactedProperty(Damage.DamageType.HIT)
                         .amountFunction(incomingDamage -> incomingDamage * 0.35f)

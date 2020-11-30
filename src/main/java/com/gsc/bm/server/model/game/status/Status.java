@@ -20,14 +20,24 @@ public class Status implements Serializable {
     private final StatusFlow flow;
     private final Statistic impactedProperty;
     private final StatusAmountFunction amountFunction;
+
     @Builder.Default
     private final StatusAmountTypeFunction typeFunction = (type) -> type; // identity if not changed by builder
+    @Builder.Default
+    private final boolean singleUse = false;
+    @Builder.Default
+    private final boolean equip = false;
 
-    private Integer lastsForTurns; // boxing allows null value
+    @Builder.Default
+    private Integer lastsForTurns = null; // boxing allows null value
 
     public void aTurnIsPassed() {
         if (lastsForTurns != null)
             this.lastsForTurns--;
+    }
+
+    public void expended() {
+        this.lastsForTurns = 0; // character clears this out at the end of turn
     }
 
     public static Set<StatusType> invertViewPoint(Set<StatusType> s) {

@@ -1,4 +1,4 @@
-package com.gsc.bm.server.model.cards.com.basic;
+package com.gsc.bm.server.model.cards.com;
 
 import com.gsc.bm.server.model.Character;
 import com.gsc.bm.server.model.cards.AbstractCard;
@@ -14,7 +14,6 @@ import java.util.Set;
 public class ShuffleFeet extends AbstractCard {
 
     public ShuffleFeet() {
-        setBasicAction(true);
         setCanTarget(Set.of(CardTarget.OPPONENT));
         setPriority(-1);
     }

@@ -61,7 +61,7 @@ public abstract class Character implements Serializable {
         List<Status> expiredStatuses = new ArrayList<>();  // concurrent access problem with foreach
         for (Status status : statuses) {
             status.aTurnIsPassed();
-            if (status.getLastsForTurns() < 0)
+            if (status.getLastsForTurns() != null && status.getLastsForTurns() < 0)
                 expiredStatuses.add(status);
         }
         statuses.removeAll(expiredStatuses);
@@ -148,14 +148,19 @@ public abstract class Character implements Serializable {
             ) {
                 damage.setType((Damage.DamageType) s.getTypeFunction().apply(damage.getType()));
                 damage.setAmount(s.getAmountFunction().apply((float) damage.getAmount()).intValue());
+                if (s.isSingleUse())
+                    s.expended();
             }
         return damage;
     }
 
     private int applyStatusToResourceChange(Resource res, int amount, Set<StatusType> toBeApplied) {
         for (Status status : statuses)
-            if (status.getImpactedProperty() == res && toBeApplied.contains(status.getType()))
+            if (status.getImpactedProperty() == res && toBeApplied.contains(status.getType())) {
+                if (status.isSingleUse())
+                    status.expended();
                 return status.getAmountFunction().apply((float) amount).intValue();
+            }
         return amount;
     }
 }
