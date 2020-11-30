@@ -8,7 +8,6 @@ import com.gsc.bm.server.model.game.Game;
 import com.gsc.bm.server.model.game.IllegalMoveException;
 import com.gsc.bm.server.model.game.Move;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -47,12 +46,5 @@ public class Grab extends AbstractCard {
         if (targetItem != null)
             return ((AbstractItemCard) targetItem).applyEffectOnTarget(self, target);
         else return null;
-    }
-
-    private <T> List<T> mergeList(List<T> list1, List<T> list2) {
-        List<T> mergedList = new ArrayList<>(list1.size() + list2.size());
-        mergedList.addAll(list1);
-        mergedList.addAll(list2);
-        return mergedList;
     }
 }

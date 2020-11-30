@@ -10,8 +10,8 @@ public class ComPlayer extends Player {
 
     // for now this fabulous AI is just random choices
 
-    public ComPlayer(Character character, List<Card> characterBoundCards, Card lastResortCard, List<Card> deck) {
-        super("ComPlayer_" + (int) (Math.random() * 10000), character, characterBoundCards, lastResortCard, deck);
+    public ComPlayer(Character character, Card basicActionCard, List<Card> characterBoundCards, Card lastResortCard, List<Card> deck) {
+        super("ComPlayer_" + (int) (Math.random() * 10000), character, basicActionCard, characterBoundCards, lastResortCard, deck);
     }
 
     public Move chooseMove(Game game) {
@@ -78,7 +78,7 @@ public class ComPlayer extends Player {
     private String chooseDiscard(List<Card> cards) {
         Collections.shuffle(cards);
         for (Card c : cards)
-            if (!c.isCharacterBound())
+            if (!c.isCharacterBound() && !c.isBasicAction())
                 return c.getName();
         return null;
     }

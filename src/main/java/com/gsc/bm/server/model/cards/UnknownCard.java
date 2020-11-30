@@ -32,6 +32,11 @@ public final class UnknownCard implements Card {
     }
 
     @Override
+    public boolean isBasicAction() {
+        return false;
+    }
+
+    @Override
     @JsonIgnore
     public boolean isLastResort() {
         return false;

@@ -13,6 +13,8 @@ import java.util.*;
 @Getter
 public class Player implements Serializable {
 
+    public static final int CARDS_IN_HAND = 6;
+
     private final String playerId;
     private final Character character;
 
@@ -21,16 +23,19 @@ public class Player implements Serializable {
 
     private final Card lastResortCard;
 
-    public Player(String id, Character character, List<Card> characterBoundCards, Card lastResortCard, List<Card> deck) {
+    public Player(String id, Character character,
+                  Card basicActionCard, List<Card> characterBoundCards, Card lastResortCard,
+                  List<Card> deck) {
         this.playerId = id;
         this.character = character;
 
+        this.cardsInHand.add(basicActionCard);
         this.cardsInHand.addAll(characterBoundCards);
         this.lastResortCard = lastResortCard;
 
         this.deck.addAll(deck);
         Collections.shuffle(this.deck);
-        drawCards(3);
+        drawCards(CARDS_IN_HAND - cardsInHand.size());
     }
 
     @JsonProperty
@@ -56,7 +61,7 @@ public class Player implements Serializable {
     }
 
     public void discardCard(Card card) {
-        if (!card.isCharacterBound())
+        if (!card.isCharacterBound() && !card.isBasicAction())
             cardsInHand.remove(card);
     }
 

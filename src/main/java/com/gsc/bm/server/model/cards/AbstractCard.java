@@ -10,16 +10,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 @Setter(AccessLevel.PROTECTED)
 public abstract class AbstractCard implements Card, LoadableCard, Serializable {
 
     private boolean isItem;
+    private boolean isBasicAction;
     private boolean isLastResort;
     private boolean isCharacterBound;
     private Map<Resource, Integer> cost;
@@ -83,5 +81,12 @@ public abstract class AbstractCard implements Card, LoadableCard, Serializable {
             return e.name.equals(this.name);
         } else
             return false;
+    }
+
+    protected <T> List<T> mergeList(List<T> list1, List<T> list2) {
+        List<T> mergedList = new ArrayList<>(list1.size() + list2.size());
+        mergedList.addAll(list1);
+        mergedList.addAll(list2);
+        return mergedList;
     }
 }

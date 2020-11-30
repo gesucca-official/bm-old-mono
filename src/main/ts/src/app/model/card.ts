@@ -6,6 +6,7 @@ export interface Card {
   effect: string,
   priority: number
   canTarget: string[],
-  characterBound: true,
+  basicAction: boolean;
+  characterBound: boolean,
   lastResort: boolean
 }

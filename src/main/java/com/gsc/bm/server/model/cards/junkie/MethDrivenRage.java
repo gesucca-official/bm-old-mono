@@ -1,19 +1,21 @@
-package com.gsc.bm.server.model.cards.com;
+package com.gsc.bm.server.model.cards.junkie;
 
 import com.gsc.bm.server.model.Character;
 import com.gsc.bm.server.model.Damage;
+import com.gsc.bm.server.model.Resource;
 import com.gsc.bm.server.model.cards.AbstractCard;
 import com.gsc.bm.server.model.game.Game;
 import com.gsc.bm.server.model.game.Move;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-public class Struggle extends AbstractCard {
+public class MethDrivenRage extends AbstractCard {
 
-    public Struggle() {
+    public MethDrivenRage() {
         super();
-        setLastResort(true);
+        setCost(Map.of(Resource.TOXICITY, 5));
         setCanTarget(Set.of(CardTarget.OPPONENT));
     }
 
@@ -31,7 +33,7 @@ public class Struggle extends AbstractCard {
     @Override
     public List<String> applyEffectOnTarget(Character self, Character target) {
         return List.of(
-                self.inflictDamage(target, new Damage(Damage.DamageType.HIT, 10))
+                self.inflictDamage(target, new Damage(Damage.DamageType.HIT, 15))
         );
     }
 }

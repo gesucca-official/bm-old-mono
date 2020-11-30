@@ -23,6 +23,8 @@ public interface Card {
 
     boolean isItem();
 
+    boolean isBasicAction();
+
     boolean isLastResort();
 
     boolean isCharacterBound();

@@ -2,7 +2,6 @@ package com.gsc.bm.server.service.factories;
 
 import com.gsc.bm.server.model.Character;
 import com.gsc.bm.server.model.cards.bruiser.character.BigBadBruiser;
-import com.gsc.bm.server.model.cards.com.Struggle;
 import com.gsc.bm.server.model.cards.junkie.character.ToxicJunkie;
 import com.gsc.bm.server.model.game.ComPlayer;
 import com.gsc.bm.server.model.game.Player;
@@ -13,20 +12,19 @@ import org.springframework.stereotype.Service;
 public class PlayerFactoryServiceImpl implements PlayerFactoryService {
 
     private final DeckFactoryService deckFactoryService;
-    private final CardFactoryService cardFactoryService;
 
     @Autowired
-    public PlayerFactoryServiceImpl(DeckFactoryService deckFactoryService, CardFactoryService cardFactoryService) {
+    public PlayerFactoryServiceImpl(DeckFactoryService deckFactoryService) {
         this.deckFactoryService = deckFactoryService;
-        this.cardFactoryService = cardFactoryService;
     }
 
     @Override
     public Player craftRandomComPlayer() {
         Character chosenChar = randomPlayer();
         return new ComPlayer(chosenChar,
+                deckFactoryService.craftBasicActionCard(chosenChar),
                 deckFactoryService.craftCharacterBoundCards(chosenChar),
-                cardFactoryService.craftCard(Struggle::new),
+                deckFactoryService.craftLastResortCard(chosenChar),
                 deckFactoryService.craftCharacterStarterDeck(chosenChar.getClass().getName()));
     }
 
@@ -35,8 +33,9 @@ public class PlayerFactoryServiceImpl implements PlayerFactoryService {
         Character chosenChar = randomPlayer();
         return new Player(playerId,
                 chosenChar,
+                deckFactoryService.craftBasicActionCard(chosenChar),
                 deckFactoryService.craftCharacterBoundCards(chosenChar),
-                cardFactoryService.craftCard(Struggle::new),
+                deckFactoryService.craftLastResortCard(chosenChar),
                 deckFactoryService.craftCharacterStarterDeck(chosenChar.getClass().getName()));
     }
 
