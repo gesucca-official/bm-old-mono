@@ -1,1 +1,2 @@
-<app-server-connection class="overlay"></app-server-connection>
+<app-server-connection *ngIf="!battleScene"></app-server-connection>
+<app-choose-game (joinGameRequest)="joinGame($event)" *ngIf="!battleScene"></app-choose-game>

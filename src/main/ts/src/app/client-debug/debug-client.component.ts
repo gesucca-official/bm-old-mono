@@ -19,14 +19,6 @@ export class DebugClientComponent {
               public snackBar: MatSnackBar) {
   }
 
-  connect(): void {
-    this.websocketService.connect(this.gameService.playerId);
-  }
-
-  isConnected(): boolean {
-    return this.websocketService.isConnected();
-  }
-
   joinGame(whichGame: string) {
     this.websocketService.joinGame(this.gameService.playerId, whichGame, (sdkEvent => {
       this.gameService.gameId = sdkEvent.body;
