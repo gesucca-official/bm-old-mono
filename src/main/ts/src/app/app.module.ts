@@ -23,6 +23,7 @@ import {CardInHandComponent} from './client-debug/card-in-hand/card-in-hand.comp
 import {MatExpansionModule} from "@angular/material/expansion";
 import {ServerConnectionComponent} from './conn/server-connection/server-connection.component';
 import {ChooseGameComponent} from './conn/choose-game/choose-game.component';
+import {TestBattleSceneComponent} from './client-phaser/scnenes/battle/test-battle-scene/test-battle-scene.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import {ChooseGameComponent} from './conn/choose-game/choose-game.component';
     CharacterCardComponent,
     CardInHandComponent,
     ServerConnectionComponent,
-    ChooseGameComponent
+    ChooseGameComponent,
+    TestBattleSceneComponent
   ],
   imports: [
     CommonModule,
@@ -43,6 +45,7 @@ import {ChooseGameComponent} from './conn/choose-game/choose-game.component';
       {path: '', component: AppComponent},
       {path: 'client/debug', component: DebugClientComponent},
       {path: 'client/phaser', component: PhaserClientComponent},
+      {path: 'client/phaser/test/battle', component: TestBattleSceneComponent},
       {path: '**', redirectTo: '', component: AppComponent}
     ]),
     FormsModule,

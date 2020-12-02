@@ -19,12 +19,14 @@ export class PhaserClientComponent {
 
   constructor(
     protected websocketService: WebsocketService,
-    protected gameService: GameService
+    protected gameService: GameService,
+    protected settingsService: PhaserSettingsService
   ) {
   }
 
   joinGame(whichGame: string) {
     window['gameService'] = this.gameService; // if this hack works its huge
+    window['settingsService'] = this.settingsService;
 
     this.websocketService.joinGame(this.gameService.playerId, whichGame, (sdkEvent => {
       this.gameService.gameId = sdkEvent.body;
@@ -54,8 +56,8 @@ export class PhaserClientComponent {
         mode: Phaser.Scale.FIT,
         parent: 'phaserContainer',
         autoCenter: Phaser.Scale.CENTER_BOTH,
-        width: PhaserSettingsService.instance.getScreenWidth(),
-        height: PhaserSettingsService.instance.getScreenHeight()
+        width: this.settingsService.getScreenWidth(),
+        height: this.settingsService.getScreenHeight()
       },
       scene: [BattleScene]
     }

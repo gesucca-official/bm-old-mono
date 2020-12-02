@@ -1,13 +1,9 @@
+import {Injectable} from "@angular/core";
+
+@Injectable({
+  providedIn: 'root'
+})
 export class PhaserSettingsService {
-
-  // here I am subverting Angular dep injection pattern and
-  static get instance(): PhaserSettingsService {
-    if (this._instance == null)
-      this._instance = new PhaserSettingsService();
-    return this._instance;
-  }
-
-  private static _instance: PhaserSettingsService;
 
   getScreenWidth(): number {
     return window.innerWidth * window.devicePixelRatio;

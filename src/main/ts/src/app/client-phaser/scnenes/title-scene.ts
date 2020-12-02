@@ -1,14 +1,14 @@
-import {PhaserSettingsService} from "../phaser-settings.service";
-
 export class TitleScene extends Phaser.Scene {
 
   public static KEY = 'titleScene';
 
   title: Phaser.GameObjects.Text;
   browseText: Phaser.GameObjects.Text;
+  private settingsService: any;
 
   constructor() {
     super({key: TitleScene.KEY});
+    this.settingsService = window['settingsService'];
   }
 
   preload() {
@@ -16,19 +16,19 @@ export class TitleScene extends Phaser.Scene {
 
   create() {
     this.title = this.add.text(
-      PhaserSettingsService.instance.getScreenWidth() / 2,
-      PhaserSettingsService.instance.getScreenHeight() / 2,
+      this.settingsService.getScreenWidth() / 2,
+      this.settingsService.getScreenHeight() / 2,
       ['BOTTE MICIDIALI'])
       .setOrigin(0.5, 0.5)
-      .setFontSize(PhaserSettingsService.instance.scaleForMin(72) * window.devicePixelRatio)
+      .setFontSize(this.settingsService.scaleForMin(72) * window.devicePixelRatio)
       .setFontFamily('Trebuchet MS')
       .setColor('#00ffff');
 
     this.browseText = this.add.text(
-      PhaserSettingsService.instance.getScreenWidth() * (12 / 16),
-      PhaserSettingsService.instance.getScreenHeight() * (14 / 16),
+      this.settingsService.getScreenWidth() * (12 / 16),
+      this.settingsService.getScreenHeight() * (14 / 16),
       ['BROWSE CARDS'])
-      .setFontSize(PhaserSettingsService.instance.scaleForMin(24) * window.devicePixelRatio)
+      .setFontSize(this.settingsService.scaleForMin(24) * window.devicePixelRatio)
       .setFontFamily('Trebuchet MS')
       .setColor('#00ffff')
       .on('pointerdown', () => alert('clicked'))
