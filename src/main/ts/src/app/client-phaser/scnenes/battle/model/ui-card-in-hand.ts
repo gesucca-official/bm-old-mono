@@ -5,7 +5,6 @@ import {GameService} from "../../../../service/game.service";
 export class UI_CardInHand {
 
   private readonly container: Phaser.GameObjects.Container;
-  private containerAnimation: Phaser.Tweens.Tween;
 
   private settingsService: PhaserSettingsService;
   private gameService: GameService;
@@ -14,20 +13,14 @@ export class UI_CardInHand {
     this.settingsService = window['settingsService'];
     this.gameService = window['gameService'];
 
-    const template =
-      scene.add.image(0, 0, 'card')
-        .setScale(this.settingsService.scaleForMin(1));
-
-    const text =
-      scene.add.text(this.getTextX(template.displayWidth), this.getTextY(template.displayHeight), [model.name])
-        .setFontSize(this.settingsService.scaleForMin(36))
-        .setFontFamily('Trebuchet MS')
-        .setColor('#000000');
+    const template = this.renderTemplate(scene);
+    const text = this.renderName(scene, template, model);
 
     this.container = scene.add.container(
       this.getCardX(template.displayWidth, index),
       this.getCardY(template.displayHeight),
       [template, text]);
+
     this.container.setSize(template.displayWidth, template.displayHeight);
     this.container.setDepth(index);
     this.container.setInteractive();
@@ -36,38 +29,73 @@ export class UI_CardInHand {
     if (!this.gameService.isPlayable(model, this.gameService.playerState.character))
       template.setTint(0xd3d3d3);
 
-    this.container.on('pointerover', () => {
-      template.setTint(0x44ff44);
-      this.container.setDepth(this.container.depth + 10);
-
-      this.containerAnimation = scene.tweens.add({
-        targets: this.container,
-        ease: 'Sine.easeInOut',
-        delay: 250,
-        duration: 500,
-        scale: 1.25,
-        yoyo: true,
-        repeat: -1
-      });
-    });
-
-    this.container.on('pointerout', () => {
-      template.clearTint();
-      this.container.setDepth(this.container.depth - 10);
-      this.containerAnimation.stop();
-      this.containerAnimation = scene.tweens.add({
-        targets: this.container,
-        ease: 'Sine.easeInOut',
-        delay: 250,
-        duration: 500,
-        scale: 1,
-      });
-    });
-
+    this.setHighlightEffect(template, scene);
+    this.resetHighlightEffects(template, scene, index);
   }
 
   getContainer(): Phaser.GameObjects.Container {
     return this.container;
+  }
+
+  private setHighlightEffect(template: Phaser.GameObjects.Image, scene: Phaser.Scene) {
+    this.container.on('pointerover', () => {
+
+      this.container.setDepth(this.container.depth + 10);
+      template.setTint(0x44ff44);
+
+      scene.tweens.add({
+        targets: this.container,
+        ease: 'Sine.easeInOut',
+        delay: 100,
+        duration: 250,
+        y: this.container.y - this.settingsService.scaleForHeight(20)
+      });
+      scene.tweens.add({
+        targets: this.container,
+        ease: 'Sine.easeInOut',
+        delay: 250,
+        duration: 500,
+        scale: 1.05,
+        yoyo: true,
+        repeat: -1
+      });
+    });
+  }
+
+  private resetHighlightEffects(template: Phaser.GameObjects.Image, scene: Phaser.Scene, index: number) {
+    this.container.on('pointerout', () => {
+      template.clearTint();
+      this.container.setDepth(this.container.depth - 10);
+
+      scene.tweens.killAll();
+      scene.tweens.add({
+        targets: this.container,
+        ease: 'Sine.easeInOut',
+        delay: 100,
+        duration: 250,
+        x: this.getCardX(template.displayWidth, index),
+        y: this.getCardY(template.displayHeight)
+      });
+      scene.tweens.add({
+        targets: this.container,
+        ease: 'Sine.easeInOut',
+        delay: 100,
+        duration: 250,
+        scale: 1,
+      });
+    });
+  }
+
+  private renderName(scene: Phaser.Scene, template: Phaser.GameObjects.Image, model: Card) {
+    return scene.add.text(this.getTextX(template.displayWidth), this.getTextY(template.displayHeight), [model.name])
+      .setFontSize(this.settingsService.scaleForMin(36))
+      .setFontFamily('Trebuchet MS')
+      .setColor('#000000');
+  }
+
+  private renderTemplate(scene: Phaser.Scene) {
+    return scene.add.image(0, 0, 'card')
+      .setScale(this.settingsService.scaleForMin(1));
   }
 
   private getCardX(templateWidth: number, index: number): number {
