@@ -26,7 +26,7 @@ export class BattleScene extends Phaser.Scene {
 
   create() {
     for (let i = 0; i < this.gameService.opponents.length; i++) {
-      this.opponents.push(new UI_Opponent(this, this.gameService.opponents[i], i).getContainer())
+      this.opponents.push(new UI_Opponent(this, this.gameService.opponents[i], i, this.gameService.opponents.length).getContainer())
     }
     for (let i = 0; i < this.gameService.playerState.cardsInHand.length; i++) {
       this.cards.push(new UI_CardInHand(this, this.gameService.playerState.cardsInHand[i], i).getContainer());

@@ -13,7 +13,7 @@ export class UI_Opponent {
   private settingsService: PhaserSettingsService;
   private gameService: GameService;
 
-  constructor(scene: Phaser.Scene, model: Player, index: number) {
+  constructor(scene: Phaser.Scene, model: Player, index: number, totalOpponents: number) {
     this.settingsService = window['settingsService'];
     this.gameService = window['gameService'];
 
@@ -21,7 +21,7 @@ export class UI_Opponent {
     const character = scene.add.image(0, 0, model.character.name = 'Spazienzio de la Ucciso' ? 'spazienzio' : 'tossico')
       .setDisplaySize(this.getOppoW(), this.getOppoH());
     this.container = scene.add.container(
-      this.getOppoX(character.displayWidth, index), this.getOppoY(character.displayHeight),
+      this.getOppoX(character.displayWidth, index, totalOpponents), this.getOppoY(character.displayHeight),
       [character]);
 
     this.container.setSize(character.displayWidth, character.displayHeight);
@@ -38,8 +38,9 @@ export class UI_Opponent {
       .setData(model.playerId);
   }
 
-  private getOppoX(templateWidth: number, index: number): number {
-    return (this.settingsService.getScreenWidth() * 0.05) + (index * this.settingsService.scaleForMin(130)) + (templateWidth / 2);
+  private getOppoX(templateWidth: number, index: number, totalOpponents: number): number {
+    return this.settingsService.scaleForWidth(75)
+      + ((this.settingsService.getScreenWidth() / totalOpponents) * index) + (templateWidth / 2);
   }
 
   private getOppoY(templateHeight: number): number {
