@@ -1,12 +1,1 @@
-<!--
-if Phaser games are renderer through Router, mobile inputs do not work for reasons
-a good old ngIf cascade will do
--->
-<app-home (showDebugClient)="showDebugClient()"
-          (showGraphicClient)="showGraphicClient()"
-          (showTestBattle)="showTestBattle()"
-          *ngIf="!isShowingSomethingElse()"></app-home>
-
-<app-debug-client *ngIf="isShowingDebugClient"></app-debug-client>
-<app-phaser-client *ngIf="isShowingGraphicClient"></app-phaser-client>
-<app-test-battle-scene *ngIf="isShowingTestBattle"></app-test-battle-scene>
+<router-outlet></router-outlet>

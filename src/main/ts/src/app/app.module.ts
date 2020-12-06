@@ -24,6 +24,7 @@ import {ServerConnectionComponent} from './conn/server-connection/server-connect
 import {ChooseGameComponent} from './conn/choose-game/choose-game.component';
 import {TestBattleSceneComponent} from './client-phaser/scnenes/battle/test-battle-scene/test-battle-scene.component';
 import {HomeComponent} from './home/home.component';
+import {RouterModule} from "@angular/router";
 
 @NgModule({
   declarations: [
@@ -43,6 +44,13 @@ import {HomeComponent} from './home/home.component';
     BrowserModule,
     BrowserAnimationsModule,
     FormsModule,
+    RouterModule.forRoot([
+      {path: '', component: HomeComponent},
+      {path: 'client/debug', component: DebugClientComponent},
+      {path: 'client/graphic', component: PhaserClientComponent},
+      {path: 'client/graphic/test/battle', component: TestBattleSceneComponent},
+      {path: '**', redirectTo: '', component: HomeComponent}
+    ]),
     FlexLayoutModule,
     MatToolbarModule,
     MatButtonModule,

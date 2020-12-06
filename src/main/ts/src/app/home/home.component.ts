@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Output} from '@angular/core';
+import {Component} from '@angular/core';
 
 @Component({
   selector: 'app-home',
@@ -7,8 +7,5 @@ import {Component, EventEmitter, Output} from '@angular/core';
 })
 export class HomeComponent {
 
-  @Output() showTestBattle: EventEmitter<boolean> = new EventEmitter<boolean>();
-  @Output() showDebugClient: EventEmitter<boolean> = new EventEmitter<boolean>();
-  @Output() showGraphicClient: EventEmitter<boolean> = new EventEmitter<boolean>();
 }
 
