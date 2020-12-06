@@ -1,7 +1,6 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 
-import {RouterModule} from '@angular/router';
 import {AppComponent} from './app.component';
 import {CommonModule} from '@angular/common';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -24,6 +23,7 @@ import {MatExpansionModule} from "@angular/material/expansion";
 import {ServerConnectionComponent} from './conn/server-connection/server-connection.component';
 import {ChooseGameComponent} from './conn/choose-game/choose-game.component';
 import {TestBattleSceneComponent} from './client-phaser/scnenes/battle/test-battle-scene/test-battle-scene.component';
+import {HomeComponent} from './home/home.component';
 
 @NgModule({
   declarations: [
@@ -35,19 +35,13 @@ import {TestBattleSceneComponent} from './client-phaser/scnenes/battle/test-batt
     CardInHandComponent,
     ServerConnectionComponent,
     ChooseGameComponent,
-    TestBattleSceneComponent
+    TestBattleSceneComponent,
+    HomeComponent,
   ],
   imports: [
     CommonModule,
     BrowserModule,
     BrowserAnimationsModule,
-    RouterModule.forRoot([
-      {path: '', component: AppComponent},
-      {path: 'client/debug', component: DebugClientComponent},
-      {path: 'client/phaser', component: PhaserClientComponent},
-      {path: 'client/phaser/test/battle', component: TestBattleSceneComponent},
-      {path: '**', redirectTo: '', component: AppComponent}
-    ]),
     FormsModule,
     FlexLayoutModule,
     MatToolbarModule,

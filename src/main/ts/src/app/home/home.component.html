@@ -1,0 +1,77 @@
+<mat-toolbar>
+  <span>BOTTE MICIDIALI</span>
+  <span style="flex: 1 1 auto;"></span>
+  <span>-alpha-</span>
+</mat-toolbar>
+
+<mat-card class="presentation-card">
+  <mat-card-header>
+    <mat-card-title>What's This?</mat-card-title>
+    <mat-card-subtitle>About this Project</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <p>Hi everyone. I am gesucca and I made this - among others countless things.</p>
+    <p>
+      Someday I will write something meaningful about this project. Until that day, here's a porcamadonna for you.
+    </p>
+    <p>
+      You know what? I don't pay for words, so here's another porcamadonna. You're welcome.
+    </p>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button onClick="window.location.href = 'mailto:gesucca.official@gmail.com'">
+      Send me a Mail
+    </button>
+    <button mat-raised-button color="accent" onClick="window.open('https://www.paypal.com/paypalme/gesucca/')">
+      Support This
+    </button>
+  </mat-card-actions>
+</mat-card>
+
+<mat-card class="presentation-card">
+  <mat-card-header>
+    <mat-card-title>How do I play?</mat-card-title>
+    <mat-card-subtitle>About this Game</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <p>
+      And here I should write the game's rules. Once I've invented them, you know.
+    </p>
+  </mat-card-content>
+</mat-card>
+
+<div fxLayout="row wrap" fxLayoutGap="5px grid">
+  <mat-card class="chooser-card">
+    <mat-card-header>
+      <mat-card-title class="smaller-title">
+        Chose a Client
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <button mat-raised-button color="accent" class="choice-button"
+              (click)="showDebugClient.emit(true)">
+        Debug Client
+      </button>
+      <button mat-raised-button color="accent" class="choice-button"
+              (click)="showGraphicClient.emit(true)">
+        Graphic Client
+      </button>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="chooser-card">
+    <mat-card-header>
+      <mat-card-title class="smaller-title">Development Shortcuts</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <button mat-raised-button class="choice-button mat-elevation-z4"
+              (click)="showTestBattle.emit(true)">
+        Test Battle
+      </button>
+      <a mat-raised-button class="choice-button mat-elevation-z4"
+         href="https://botte-micidiali.herokuapp.com/swagger-ui.html" target="_blank">
+        Control Panel
+      </a>
+    </mat-card-content>
+  </mat-card>
+</div>
