@@ -50,7 +50,7 @@ import {RouterModule} from "@angular/router";
       {path: 'client/graphic', component: PhaserClientComponent},
       {path: 'client/graphic/test/battle', component: TestBattleSceneComponent},
       {path: '**', redirectTo: '', component: HomeComponent}
-    ]),
+    ], {onSameUrlNavigation: 'reload'}),
     FlexLayoutModule,
     MatToolbarModule,
     MatButtonModule,
