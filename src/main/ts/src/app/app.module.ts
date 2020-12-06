@@ -1,7 +1,6 @@
 import {BrowserModule} from '@angular/platform-browser';
-import {NgModule} from '@angular/core';
+import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 
-import {RouterModule} from '@angular/router';
 import {AppComponent} from './app.component';
 import {CommonModule} from '@angular/common';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -23,6 +22,9 @@ import {CardInHandComponent} from './client-debug/card-in-hand/card-in-hand.comp
 import {MatExpansionModule} from "@angular/material/expansion";
 import {ServerConnectionComponent} from './conn/server-connection/server-connection.component';
 import {ChooseGameComponent} from './conn/choose-game/choose-game.component';
+import {TestBattleSceneComponent} from './client-phaser/scnenes/battle/test-battle-scene/test-battle-scene.component';
+import {HomeComponent} from './home/home.component';
+import {RouterModule} from "@angular/router";
 
 @NgModule({
   declarations: [
@@ -33,19 +35,22 @@ import {ChooseGameComponent} from './conn/choose-game/choose-game.component';
     CharacterCardComponent,
     CardInHandComponent,
     ServerConnectionComponent,
-    ChooseGameComponent
+    ChooseGameComponent,
+    TestBattleSceneComponent,
+    HomeComponent,
   ],
   imports: [
     CommonModule,
     BrowserModule,
     BrowserAnimationsModule,
-    RouterModule.forRoot([
-      {path: '', component: AppComponent},
-      {path: 'client/debug', component: DebugClientComponent},
-      {path: 'client/phaser', component: PhaserClientComponent},
-      {path: '**', redirectTo: '', component: AppComponent}
-    ]),
     FormsModule,
+    RouterModule.forRoot([
+      {path: '', component: HomeComponent},
+      {path: 'client/debug', component: DebugClientComponent},
+      {path: 'client/graphic', component: PhaserClientComponent},
+      {path: 'client/graphic/test/battle', component: TestBattleSceneComponent},
+      {path: '**', redirectTo: '', component: HomeComponent}
+    ], {onSameUrlNavigation: 'reload'}),
     FlexLayoutModule,
     MatToolbarModule,
     MatButtonModule,
@@ -59,6 +64,9 @@ import {ChooseGameComponent} from './conn/choose-game/choose-game.component';
   ],
   providers: [
     MatSnackBarModule
+  ],
+  schemas: [
+    CUSTOM_ELEMENTS_SCHEMA
   ],
   bootstrap: [
     AppComponent

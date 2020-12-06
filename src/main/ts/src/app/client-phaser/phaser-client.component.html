@@ -1,1 +1,3 @@
-<p>phaser-client works!</p>
+<app-server-connection *ngIf="!battleScene"></app-server-connection>
+<app-choose-game (joinGameRequest)="joinGame($event)" *ngIf="!battleScene"></app-choose-game>
+<ion-phaser [game]="config" [initialize]="true"></ion-phaser>

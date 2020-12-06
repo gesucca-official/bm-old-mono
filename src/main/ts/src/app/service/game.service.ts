@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {GameState} from "../model/game-state";
 import {Player} from "../model/player";
 import {Card} from "../model/card";
+import {Character} from "../model/character";
 
 @Injectable({
   providedIn: 'root'
@@ -60,7 +61,7 @@ export class GameService {
     this._gameId = value;
   }
 
-  isPlayable(card: Card, character): boolean {
+  isPlayable(card: Card, character: Character): boolean {
     if (this.getTargets(card).length <= 0)
       return false;
     for (let key in card.cost)
