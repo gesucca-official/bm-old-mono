@@ -25,6 +25,8 @@ import {ChooseGameComponent} from './conn/choose-game/choose-game.component';
 import {TestBattleSceneComponent} from './client-phaser/scnenes/battle/test-battle-scene/test-battle-scene.component';
 import {HomeComponent} from './home/home.component';
 import {RouterModule} from "@angular/router";
+import {MarkdownModule} from "ngx-markdown";
+import {HttpClient, HttpClientModule} from "@angular/common/http";
 
 @NgModule({
   declarations: [
@@ -60,7 +62,9 @@ import {RouterModule} from "@angular/router";
     MatMenuModule,
     MatDialogModule,
     MatSnackBarModule,
-    MatExpansionModule
+    MatExpansionModule,
+    HttpClientModule,
+    MarkdownModule.forRoot({ loader: HttpClient })
   ],
   providers: [
     MatSnackBarModule

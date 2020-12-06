@@ -57,7 +57,8 @@
               "stompjs"
             ],
             "scripts": [
-              "./node_modules/phaser/dist/phaser.min.js"
+              "./node_modules/phaser/dist/phaser.min.js",
+              "node_modules/marked/lib/marked.js"
             ]
           },
           "configurations": {
