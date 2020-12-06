@@ -14,7 +14,6 @@ export class PhaserClientComponent {
 
   battleScene: boolean;
 
-  phaserGame: Phaser.Game;
   config: Phaser.Types.Core.GameConfig;
 
   constructor(
@@ -25,7 +24,7 @@ export class PhaserClientComponent {
   }
 
   joinGame(whichGame: string) {
-    window['gameService'] = this.gameService; // if this hack works its huge
+    window['gameService'] = this.gameService;
     window['settingsService'] = this.settingsService;
 
     this.websocketService.joinGame(this.gameService.playerId, whichGame, (sdkEvent => {
@@ -38,7 +37,7 @@ export class PhaserClientComponent {
         (sdkEvent) => console.log(sdkEvent.body),
         (sdkEvent) => {
           this.gameService.gameState = JSON.parse(sdkEvent.body);
-          this.createGame()
+          this.initGameConfig() // cannot initialize game config here!!!
         }
       );
       this.websocketService.requestGameView(this.gameService.gameId, this.gameService.playerId);
@@ -47,7 +46,7 @@ export class PhaserClientComponent {
     }));
   }
 
-  private createGame() {
+  private initGameConfig() {
     this.battleScene = true;
 
     this.config = {
@@ -61,7 +60,6 @@ export class PhaserClientComponent {
       },
       scene: [BattleScene]
     }
-    this.phaserGame = new Phaser.Game(this.config);
   }
 
 }
