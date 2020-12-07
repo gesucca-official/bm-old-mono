@@ -86,13 +86,17 @@ public class ViewExtractorServiceImpl implements ViewExtractorService {
     public ClientGameView extractViewFor(Game game, String playerId) {
         byte[] bytes = SerializationUtils.serialize(game);
         Game gameClone = (Game) SerializationUtils.deserialize(bytes);
-
         assert gameClone != null;
-        ClientGameView gameViewForPlayer = ClientGameView.builder()
+
+        return ClientGameView.builder()
                 .gameId(gameClone.getGameId())
                 .players(gameClone.getPlayers().values()
                         .stream()
-                        .map(this::toClientView)
+                        .map(p -> {
+                            if (!p.getPlayerId().equals(playerId))
+                                return toClientViewForOpponents(p);
+                            else return toClientViewForSelf(p);
+                        })
                         .collect(Collectors.toMap(ClientPlayerView::getPlayerId, Function.identity()))
                 )
                 .resolvedMoves(gameClone.getResolvedMoves())
@@ -100,36 +104,29 @@ public class ViewExtractorServiceImpl implements ViewExtractorService {
                 .over(gameClone.isOver())
                 .winner(gameClone.getWinner().orElse("NONE"))
                 .build();
-
-        for (ClientPlayerView oppo : gameViewForPlayer.getPlayers().values())
-            if (!oppo.getPlayerId().equals(playerId)) {
-                List<Card> hiddenCards = oppo.getCardsInHand()
-                        .stream()
-                        .map(c -> Card.UNKNOWN_CARD)
-                        .collect(Collectors.toList());
-                oppo.getCardsInHand().clear();
-                oppo.getCardsInHand().addAll(hiddenCards);
-            }
-        for (ClientPlayerView p : gameViewForPlayer.getPlayers().values()) {
-            List<Card> hiddenCards = p.getDeck()
-                    .stream()
-                    .map(c -> Card.UNKNOWN_CARD)
-                    .collect(Collectors.toList());
-            p.getDeck().clear();
-            p.getDeck().addAll(hiddenCards);
-        }
-        return gameViewForPlayer;
     }
 
-    private ClientPlayerView toClientView(Player player) {
+    private ClientSelfPlayerView toClientViewForSelf(Player player) {
         byte[] bytes = SerializationUtils.serialize(player);
         Player p = (Player) SerializationUtils.deserialize(bytes);
         assert p != null;
-        return ClientPlayerView.builder()
+        return ClientSelfPlayerView.builder()
                 .playerId(p.getPlayerId())
                 .character(toClientView(p.getCharacter()))
                 .cardsInHand(p.getCardsInHand())
-                .deck(p.getDeck())
+                .deck(p.getDeck().size())
+                .build();
+    }
+
+    private ClientOpponentView toClientViewForOpponents(Player player) {
+        byte[] bytes = SerializationUtils.serialize(player);
+        Player p = (Player) SerializationUtils.deserialize(bytes);
+        assert p != null;
+        return ClientOpponentView.builder()
+                .playerId(p.getPlayerId())
+                .character(toClientView(p.getCharacter()))
+                .cardsInHand(p.getCardsInHand().size())
+                .deck(p.getDeck().size())
                 .build();
     }
 

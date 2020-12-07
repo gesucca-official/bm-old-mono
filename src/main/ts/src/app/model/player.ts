@@ -7,3 +7,7 @@ export interface Player {
   cardsInHand: Card[],
   deckSize: number,
 }
+
+export interface Opponent extends Omit<Player, 'cardsInHand'> {
+  cardsInHand: number
+}

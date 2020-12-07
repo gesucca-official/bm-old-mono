@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {GameState} from "../model/game-state";
-import {Player} from "../model/player";
+import {Opponent, Player} from "../model/player";
 import {Card} from "../model/card";
 import {Character} from "../model/character";
 
@@ -22,7 +22,7 @@ export class GameService {
     return this.gameState.players[this.playerId];
   }
 
-  get opponents(): Player[] {
+  get opponents(): Opponent[] {
     const players = JSON.parse(JSON.stringify(this.gameState.players));
     const opp = [];
     Object.keys(players).forEach(k => {

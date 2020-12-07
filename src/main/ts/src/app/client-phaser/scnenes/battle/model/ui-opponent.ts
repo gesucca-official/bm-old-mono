@@ -1,6 +1,6 @@
 import {PhaserSettingsService} from "../../../phaser-settings.service";
 import {GameService} from "../../../../service/game.service";
-import {Player} from "../../../../model/player";
+import {Opponent} from "../../../../model/player";
 
 export class UI_Opponent {
 
@@ -13,7 +13,7 @@ export class UI_Opponent {
   private settingsService: PhaserSettingsService;
   private gameService: GameService;
 
-  constructor(scene: Phaser.Scene, model: Player, index: number, totalOpponents: number) {
+  constructor(scene: Phaser.Scene, model: Opponent, index: number, totalOpponents: number) {
     this.settingsService = window['settingsService'];
     this.gameService = window['gameService'];
 
@@ -24,14 +24,14 @@ export class UI_Opponent {
       [character]);
 
     this.container.setSize(character.displayWidth, character.displayHeight);
-    this.container.setInteractive()
+    this.container.setInteractive();
 
     UI_Opponent.setDropZone(scene, this.container, model);
 
     scene.input.enableDebug(this.container)
   }
 
-  private static setDropZone(scene: Phaser.Scene, container: Phaser.GameObjects.Container, model: Player) {
+  private static setDropZone(scene: Phaser.Scene, container: Phaser.GameObjects.Container, model: Opponent) {
     scene.add.zone(container.x, container.y, container.displayWidth, container.displayHeight)
       .setRectangleDropZone(container.displayWidth, container.displayHeight)
       .setData(model.playerId);
