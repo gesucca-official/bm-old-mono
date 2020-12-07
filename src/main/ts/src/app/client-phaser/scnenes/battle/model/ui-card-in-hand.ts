@@ -95,11 +95,19 @@ export class UI_CardInHand {
 
   private renderTemplate(scene: Phaser.Scene) {
     return scene.add.image(0, 0, 'card')
-      .setScale(this.settingsService.scaleForMin(1));
+      .setDisplaySize(this.getCardWidth(), this.getCardHeight());
+  }
+
+  private getCardWidth(): number {
+    return this.settingsService.scaleForMin(500);
+  }
+
+  private getCardHeight(): number {
+    return this.settingsService.scaleForMin(700);
   }
 
   private getCardX(templateWidth: number, index: number): number {
-    return (this.settingsService.getScreenWidth() / 2.5) + (index * this.settingsService.scaleForMin(130)) + (templateWidth / 2);
+    return (this.settingsService.getScreenWidth() / 2.5) + (index * (this.settingsService.getScreenWidth() / 12)) + (templateWidth / 2);
   }
 
   private getCardY(templateHeight: number): number {
