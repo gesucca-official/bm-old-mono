@@ -118,6 +118,30 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>com.bekioui.maven.plugin</groupId>
+                <artifactId>merge-maven-plugin</artifactId>
+                <version>1.2.0</version>
+                <executions>
+                    <execution>
+                        <id>merge-rules</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>merge</goal>
+                        </goals>
+                        <configuration>
+                            <merges>
+                                <merge>
+                                    <target>${project.basedir}/src/main/ts/src/assets/docs/rules.md</target>
+                                    <searchDir>${project.basedir}/doc</searchDir>
+                                    <pattern>.*.md</pattern>
+                                    <override>true</override>
+                                </merge>
+                            </merges>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
