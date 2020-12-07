@@ -1,20 +1,33 @@
 package com.gsc.bm.server.service.view;
 
+import com.gsc.bm.server.model.Character;
 import com.gsc.bm.server.model.cards.Card;
 import com.gsc.bm.server.model.game.Game;
 import com.gsc.bm.server.model.game.Move;
 import com.gsc.bm.server.model.game.Player;
-import com.gsc.bm.server.service.view.model.PlayerGameView;
-import com.gsc.bm.server.service.view.model.SlimGameView;
-import com.gsc.bm.server.service.view.model.SlimPlayerView;
+import com.gsc.bm.server.model.game.status.Status;
+import com.gsc.bm.server.repo.internal.CharactersGuiRecord;
+import com.gsc.bm.server.repo.internal.CharactersGuiRepository;
+import com.gsc.bm.server.service.view.model.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.SerializationUtils;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static com.gsc.bm.server.service.factories.CardFactoryService.BASE_CARDS_PKG;
 
 @Service
 public class ViewExtractorServiceImpl implements ViewExtractorService {
+
+    private final CharactersGuiRepository charactersRepo;
+
+    @Autowired
+    public ViewExtractorServiceImpl(CharactersGuiRepository charactersRepo) {
+        this.charactersRepo = charactersRepo;
+    }
 
     @Override
     public SlimGameView extractGlobalSlimView(Game game) {
@@ -26,7 +39,7 @@ public class ViewExtractorServiceImpl implements ViewExtractorService {
                 .stream()
                 .map(p -> SlimPlayerView.builder()
                         .playerId(p.getPlayerId())
-                        .character(p.getCharacter().getSlimView())
+                        .character(toSlimView(p.getCharacter()))
                         .cardsInHand(p.getCardsInHand()
                                 .stream()
                                 .map(Card::getName)
@@ -51,22 +64,44 @@ public class ViewExtractorServiceImpl implements ViewExtractorService {
                 .build();
     }
 
+    private SlimCharacterView toSlimView(Character character) {
+        String clazz = character.getClass().getName().replace(BASE_CARDS_PKG, "");
+        CharactersGuiRecord record = charactersRepo.findById(clazz)
+                .orElseThrow(() -> new RuntimeException("Couldn't load Character from internal DB! " + clazz));
+        return SlimCharacterView.builder()
+                .name(record.getGuiName())
+                .items(character.getItems().stream()
+                        .map(Card::getName)
+                        .collect(Collectors.toList()))
+                .resources(character.getResources())
+                .statuses(character.getStatuses().stream()
+                        .map(Status::getName)
+                        .collect(Collectors.toList())
+                ).immunities(character.getImmunities())
+                .build();
+    }
+
+    // TODO make ad hoc view for opponents to efficiently hide cards
     @Override
-    public PlayerGameView extractViewFor(Game game, String playerId) {
+    public ClientGameView extractViewFor(Game game, String playerId) {
         byte[] bytes = SerializationUtils.serialize(game);
         Game gameClone = (Game) SerializationUtils.deserialize(bytes);
 
         assert gameClone != null;
-        PlayerGameView gameViewForPlayer = PlayerGameView.builder()
+        ClientGameView gameViewForPlayer = ClientGameView.builder()
                 .gameId(gameClone.getGameId())
-                .players(gameClone.getPlayers())
+                .players(gameClone.getPlayers().values()
+                        .stream()
+                        .map(this::toClientView)
+                        .collect(Collectors.toMap(ClientPlayerView::getPlayerId, Function.identity()))
+                )
                 .resolvedMoves(gameClone.getResolvedMoves())
                 .timeBasedEffects(gameClone.getTimeBasedEffects())
                 .over(gameClone.isOver())
                 .winner(gameClone.getWinner().orElse("NONE"))
                 .build();
 
-        for (Player oppo : gameViewForPlayer.getPlayers().values())
+        for (ClientPlayerView oppo : gameViewForPlayer.getPlayers().values())
             if (!oppo.getPlayerId().equals(playerId)) {
                 List<Card> hiddenCards = oppo.getCardsInHand()
                         .stream()
@@ -75,7 +110,7 @@ public class ViewExtractorServiceImpl implements ViewExtractorService {
                 oppo.getCardsInHand().clear();
                 oppo.getCardsInHand().addAll(hiddenCards);
             }
-        for (Player p : gameViewForPlayer.getPlayers().values()) {
+        for (ClientPlayerView p : gameViewForPlayer.getPlayers().values()) {
             List<Card> hiddenCards = p.getDeck()
                     .stream()
                     .map(c -> Card.UNKNOWN_CARD)
@@ -84,5 +119,36 @@ public class ViewExtractorServiceImpl implements ViewExtractorService {
             p.getDeck().addAll(hiddenCards);
         }
         return gameViewForPlayer;
+    }
+
+    private ClientPlayerView toClientView(Player player) {
+        byte[] bytes = SerializationUtils.serialize(player);
+        Player p = (Player) SerializationUtils.deserialize(bytes);
+        assert p != null;
+        return ClientPlayerView.builder()
+                .playerId(p.getPlayerId())
+                .character(toClientView(p.getCharacter()))
+                .cardsInHand(p.getCardsInHand())
+                .deck(p.getDeck())
+                .build();
+    }
+
+    private ClientCharacterView toClientView(Character character) {
+        byte[] bytes = SerializationUtils.serialize(character);
+        Character c = (Character) SerializationUtils.deserialize(bytes);
+        assert c != null;
+
+        String clazz = character.getClass().getName().replace(BASE_CARDS_PKG, "");
+        CharactersGuiRecord record = charactersRepo.findById(clazz)
+                .orElseThrow(() -> new RuntimeException("Couldn't load Character from internal DB! " + clazz));
+        return ClientCharacterView.builder()
+                .name(record.getGuiName())
+                .itemsSize(c.getItemsSize())
+                .items(c.getItems())
+                .resources(c.getResources())
+                .statuses(c.getStatuses())
+                .immunities(c.getImmunities())
+                .sprite(record.getGuiImage())
+                .build();
     }
 }

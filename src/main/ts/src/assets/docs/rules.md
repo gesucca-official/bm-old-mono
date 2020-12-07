@@ -3,7 +3,6 @@
 *Will add real rules someday. Below is some gibberish, don't even bother*
 
 ---
-
 # Object Cards
 
 *Object Cards* are cards that represents objects that can be placed on the Field and can be grabbed by Characters.

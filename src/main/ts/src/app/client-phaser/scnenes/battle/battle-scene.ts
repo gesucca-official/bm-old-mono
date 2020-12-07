@@ -19,9 +19,10 @@ export class BattleScene extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image('card', 'assets/card.png');
-    this.load.image('spazienzio', 'assets/spazienzio.png');
-    this.load.image('tossico', 'assets/tossico.png');
+    this.load.image('card', 'assets/img/card-template.png');
+    this.gameService.opponents.forEach(
+      o => this.load.image(o.character.name, 'assets/img/' + o.character.sprite)
+    );
   }
 
   create() {

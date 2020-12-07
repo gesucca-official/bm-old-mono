@@ -1,7 +1,6 @@
 package com.gsc.bm.server.service.view.model;
 
 import com.gsc.bm.server.model.game.Move;
-import com.gsc.bm.server.model.game.Player;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -10,9 +9,9 @@ import java.util.Map;
 
 @Builder
 @Getter
-public class PlayerGameView {
+public class ClientGameView {
     private final String gameId;
-    private final Map<String, Player> players;
+    private final Map<String, ClientPlayerView> players;
     private final List<Move> resolvedMoves;
     private final Map<String, List<String>> timeBasedEffects;
     private final boolean over;

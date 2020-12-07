@@ -17,9 +17,8 @@ export class UI_Opponent {
     this.settingsService = window['settingsService'];
     this.gameService = window['gameService'];
 
-    // TODO dynamically load this
-    const character = scene.add.image(0, 0, model.character.name = 'Spazienzio de la Ucciso' ? 'spazienzio' : 'tossico')
-      .setDisplaySize(this.getOppoW(), this.getOppoH());
+    const character = scene.add.image(0, 0, model.character.name)
+      .setScale(this.settingsService.scaleForMin(1));
     this.container = scene.add.container(
       this.getOppoX(character.displayWidth, index, totalOpponents), this.getOppoY(character.displayHeight),
       [character]);
@@ -39,7 +38,7 @@ export class UI_Opponent {
   }
 
   private getOppoX(templateWidth: number, index: number, totalOpponents: number): number {
-    return this.settingsService.scaleForWidth(75)
+    return this.settingsService.scaleForWidth(40)
       + ((this.settingsService.getScreenWidth() / totalOpponents) * index) + (templateWidth / 2);
   }
 
@@ -47,11 +46,4 @@ export class UI_Opponent {
     return (this.settingsService.getScreenHeight() * 0.05) + (templateHeight / 2)
   }
 
-  private getOppoW(): number {
-    return this.settingsService.scaleForWidth(300)
-  }
-
-  private getOppoH(): number {
-    return this.settingsService.scaleForHeight(300)
-  }
 }

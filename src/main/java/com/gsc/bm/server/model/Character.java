@@ -5,7 +5,6 @@ import com.gsc.bm.server.model.cards.Card;
 import com.gsc.bm.server.model.game.status.Status;
 import com.gsc.bm.server.model.game.status.StatusFlow;
 import com.gsc.bm.server.model.game.status.StatusType;
-import com.gsc.bm.server.service.view.model.SlimCharacterView;
 import lombok.Getter;
 import org.apache.commons.collections4.queue.CircularFifoQueue;
 
@@ -16,7 +15,7 @@ import java.util.stream.Collectors;
 @Getter
 public abstract class Character implements Serializable {
 
-    private final String name;
+    private final String name; // TODO these are also in db, move everything there
 
     private final int itemsSize;
     private final Queue<Card> items;
@@ -113,22 +112,6 @@ public abstract class Character implements Serializable {
 
     public boolean isDead() {
         return resources.get(Resource.HEALTH) <= 0;
-    }
-
-    // TODO move this to service
-    @JsonIgnore
-    public SlimCharacterView getSlimView() {
-        return SlimCharacterView.builder()
-                .name(name)
-                .items(items.stream()
-                        .map(Card::getName)
-                        .collect(Collectors.toList()))
-                .resources(resources)
-                .statuses(statuses.stream()
-                        .map(Status::getName)
-                        .collect(Collectors.toList())
-                ).immunities(immunities)
-                .build();
     }
 
     // algebraic sum

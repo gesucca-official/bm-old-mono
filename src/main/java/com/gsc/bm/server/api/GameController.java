@@ -7,7 +7,7 @@ import com.gsc.bm.server.service.session.GameSessionService;
 import com.gsc.bm.server.service.session.QueueService;
 import com.gsc.bm.server.service.session.model.QueuedPlayer;
 import com.gsc.bm.server.service.view.ViewExtractorService;
-import com.gsc.bm.server.service.view.model.PlayerGameView;
+import com.gsc.bm.server.service.view.model.ClientGameView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -92,7 +92,7 @@ public class GameController {
 
     @MessageMapping("/game/{gameId}/{playerId}/view")
     @SendToUser("/queue/game/{gameId}/{playerId}/view")
-    public PlayerGameView getGameView(@DestinationVariable String gameId, @DestinationVariable String playerId) {
+    public ClientGameView getGameView(@DestinationVariable String gameId, @DestinationVariable String playerId) {
         return viewExtractorService.extractViewFor(gameSessionService.getGame(gameId), playerId);
 
     }

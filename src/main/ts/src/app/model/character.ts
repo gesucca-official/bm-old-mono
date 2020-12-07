@@ -7,7 +7,8 @@ export interface Character {
   immunities: string[],
   resources: Resources,
   statuses: Status[],
-  items: Card[]
+  items: Card[],
+  sprite: string
 }
 
 export interface Resources {
