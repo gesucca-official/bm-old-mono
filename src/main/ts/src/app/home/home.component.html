@@ -1,8 +1,4 @@
-<mat-toolbar>
-  <span>BOTTE MICIDIALI</span>
-  <span style="flex: 1 1 auto;"></span>
-  <span>-alpha-</span>
-</mat-toolbar>
+<app-toolbar></app-toolbar>
 
 <mat-card class="presentation-card">
   <mat-card-header>
@@ -10,12 +6,19 @@
     <mat-card-subtitle>About this Project</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <p>Hi everyone. I am gesucca and I made this - among others countless things.</p>
     <p>
-      Someday I will write something meaningful about this project. Until that day, here's a porcamadonna for you.
+      Hi everyone. I am <i>gesucca</i> and I made this - among others countless things.
     </p>
     <p>
-      You know what? I don't pay for words, so here's another porcamadonna. You're welcome.
+      <b>Botte Micidiali</b> is a card game of my own invention. It shamelessly robs some elements from other
+      successful
+      card games such as Magic: The Gathering, Yu-Gi Oh!, Hearthstone and the such, but it includes some concepts and
+      mechanics never seen before.
+    </p>
+    <p>
+      You can help me sponsoring a virtual cup of coffee or - better - a beer, or just by telling me if you discover
+      some
+      weird behaviour.
     </p>
   </mat-card-content>
   <mat-card-actions>
@@ -35,9 +38,22 @@
   </mat-card-header>
   <mat-card-content>
     <p>
-      And here I should write the game's rules. Once I've invented them, you know.
+      <b>Botte Micidiali</b> is a card game that mimics what happens in a street brawl among big, bad and ugly thugs.
+      Cards represents the character you play, actions you can do and objects you can use to kill others and remain
+      alive yourself.
+    </p>
+    <p>
+      Up to five bad guys play their cards all at the same time, performing actions on others or objects around them.
+      Knowing who to attack and when to do it, rather than defending or buffing oneself is a crucial skill.
     </p>
   </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button color="accent" class="choice-button"
+            routerLink="/rules"
+            routerLinkActive="active">
+      Read Comprehensive Rules
+    </button>
+  </mat-card-actions>
 </mat-card>
 
 <div fxLayout="row wrap" fxLayoutGap="5px grid">
@@ -78,6 +94,3 @@
     </mat-card-content>
   </mat-card>
 </div>
-
-<markdown [src]="'assets/docs/rules.md'"></markdown>
-<!--https://github.com/MehdiBekioui/merge-maven-plugin-->

@@ -27,6 +27,8 @@ import {HomeComponent} from './home/home.component';
 import {RouterModule} from "@angular/router";
 import {MarkdownModule} from "ngx-markdown";
 import {HttpClient, HttpClientModule} from "@angular/common/http";
+import {RulesComponent} from './home/rules/rules.component';
+import {ToolbarComponent} from './home/toolbar/toolbar.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +42,8 @@ import {HttpClient, HttpClientModule} from "@angular/common/http";
     ChooseGameComponent,
     TestBattleSceneComponent,
     HomeComponent,
+    RulesComponent,
+    ToolbarComponent,
   ],
   imports: [
     CommonModule,
@@ -48,6 +52,7 @@ import {HttpClient, HttpClientModule} from "@angular/common/http";
     FormsModule,
     RouterModule.forRoot([
       {path: '', component: HomeComponent},
+      {path: 'rules', component: RulesComponent},
       {path: 'client/debug', component: DebugClientComponent},
       {path: 'client/graphic', component: PhaserClientComponent},
       {path: 'client/graphic/test/battle', component: TestBattleSceneComponent},
@@ -64,7 +69,7 @@ import {HttpClient, HttpClientModule} from "@angular/common/http";
     MatSnackBarModule,
     MatExpansionModule,
     HttpClientModule,
-    MarkdownModule.forRoot({ loader: HttpClient })
+    MarkdownModule.forRoot({loader: HttpClient})
   ],
   providers: [
     MatSnackBarModule
