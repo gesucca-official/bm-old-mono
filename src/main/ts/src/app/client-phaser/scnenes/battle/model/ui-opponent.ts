@@ -26,9 +26,17 @@ export class UI_Opponent {
       .setFontFamily('Trebuchet MS')
       .setColor('#ffffff');
 
+    const items: Phaser.GameObjects.Image[] = [];
+    for (let i = 0; i < model.character.items.length; i++) {
+      items.push(scene.add.image(this.getItemX(character.displayWidth, i), this.getItemY(character.displayHeight), 'item')
+        .setDisplaySize(this.getItemSize(character.displayWidth), this.getItemSize(character.displayWidth)))
+    }
+
+    const children = [character, name];
+    items.forEach(i => children.push(i));
+
     this.container = scene.add.container(
-      this.getOppoX(character.displayWidth, index, totalOpponents), this.getOppoY(character.displayHeight),
-      [character, name]);
+      this.getOppoX(character.displayWidth, index, totalOpponents), this.getOppoY(character.displayHeight), children);
 
     this.container.setSize(character.displayWidth, character.displayHeight);
     this.container.setInteractive();
@@ -59,5 +67,17 @@ export class UI_Opponent {
 
   private getOppoHeight(totalOpponents: number): number {
     return Math.min(this.settingsService.getScreenHeight() / 2, this.getOppoWidth(totalOpponents) * (4 / 3));
+  }
+
+  private getItemSize(opponentWidth: number): number {
+    return (opponentWidth / 3) - this.settingsService.scaleForMin(5);
+  }
+
+  private getItemX(opponentWidth: number, i: number) {
+    return (-opponentWidth / 2) + (i * opponentWidth / 3) + this.settingsService.scaleForMin(35);
+  }
+
+  private getItemY(opponentHeight: number): number {
+    return (opponentHeight / 2) - this.settingsService.scaleForMin(35);
   }
 }

@@ -22,6 +22,7 @@ export class BattleScene extends Phaser.Scene {
 
   preload() {
     this.load.image('card', 'assets/img/card-template.png');
+    this.load.image('item', 'assets/img/item.png');
     this.gameService.opponents.forEach(
       o => {
         this.load.image(o.character.name, 'assets/img/' + o.character.sprite);
