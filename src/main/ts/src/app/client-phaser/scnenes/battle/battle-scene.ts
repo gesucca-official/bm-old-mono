@@ -13,6 +13,7 @@ export class BattleScene extends Phaser.Scene {
   player: Phaser.GameObjects.Container;
   cards: Phaser.GameObjects.Container[] = [];
   opponents: Phaser.GameObjects.Container[] = [];
+  items: Phaser.GameObjects.Container[] = [];
 
   constructor() {
     super({key: BattleScene.KEY});
@@ -33,7 +34,9 @@ export class BattleScene extends Phaser.Scene {
 
   create() {
     for (let i = 0; i < this.gameService.opponents.length; i++) {
-      this.opponents.push(new UI_Opponent(this, this.gameService.opponents[i], i, this.gameService.opponents.length).getContainer())
+      const oppo = new UI_Opponent(this, this.gameService.opponents[i], i, this.gameService.opponents.length);
+      this.opponents.push(oppo.getOpponent())
+      oppo.getItems().forEach(i => this.items.push(i));
     }
     for (let i = 0; i < this.gameService.playerState.cardsInHand.length; i++) {
       this.cards.push(new UI_CardInHand(this, this.gameService.playerState.cardsInHand[i], i).getContainer());
@@ -45,11 +48,7 @@ export class BattleScene extends Phaser.Scene {
       gameObject.y = dragY;
     });
     this.input.on('drop', (pointer, gameObject, dropZone) => {
-      console.log(pointer);
-      console.log(gameObject);
-      console.log(dropZone);
-
-      alert(JSON.stringify(dropZone.data))
+      alert(gameObject.data.list.card + ' dropped on ' + dropZone.data.list.target)
     })
   }
 

@@ -32,7 +32,7 @@ export class UI_Player {
   private static setDropZone(scene: Phaser.Scene, container: Phaser.GameObjects.Container, model: Player) {
     scene.add.zone(container.x, container.y, container.displayWidth, container.displayHeight)
       .setRectangleDropZone(container.displayWidth, container.displayHeight)
-      .setData(model.playerId);
+      .setData({target: model.playerId});
   }
 
   private getPlayerY(templateHeight: number): number {

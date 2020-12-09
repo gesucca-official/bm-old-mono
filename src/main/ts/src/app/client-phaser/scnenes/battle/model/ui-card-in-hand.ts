@@ -23,6 +23,7 @@ export class UI_CardInHand {
 
     this.container.setSize(template.displayWidth, template.displayHeight);
     this.container.setDepth(index);
+    this.container.setData({card: model.name})
     this.container.setInteractive();
     scene.input.setDraggable(this.container)
 

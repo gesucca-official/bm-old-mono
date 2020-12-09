@@ -1,13 +1,19 @@
 import {PhaserSettingsService} from "../../../phaser-settings.service";
 import {GameService} from "../../../../service/game.service";
 import {Opponent} from "../../../../model/player";
+import {UI_Item} from "./ui-item";
 
 export class UI_Opponent {
 
   private readonly container: Phaser.GameObjects.Container;
+  private readonly items: Phaser.GameObjects.Container[] = [];
 
-  getContainer(): Phaser.GameObjects.Container {
+  getOpponent(): Phaser.GameObjects.Container {
     return this.container;
+  }
+
+  getItems(): Phaser.GameObjects.Container[] {
+    return this.items;
   }
 
   private settingsService: PhaserSettingsService;
@@ -26,29 +32,25 @@ export class UI_Opponent {
       .setFontFamily('Trebuchet MS')
       .setColor('#ffffff');
 
-    const items: Phaser.GameObjects.Image[] = [];
-    for (let i = 0; i < model.character.items.length; i++) {
-      items.push(scene.add.image(this.getItemX(character.displayWidth, i), this.getItemY(character.displayHeight), 'item')
-        .setDisplaySize(this.getItemSize(character.displayWidth), this.getItemSize(character.displayWidth)))
-    }
-
-    const children = [character, name];
-    items.forEach(i => children.push(i));
-
     this.container = scene.add.container(
-      this.getOppoX(character.displayWidth, index, totalOpponents), this.getOppoY(character.displayHeight), children);
+      this.getOppoX(character.displayWidth, index, totalOpponents), this.getOppoY(character.displayHeight), [character, name]);
 
     this.container.setSize(character.displayWidth, character.displayHeight);
-    this.container.setInteractive();
 
+    this.container.setInteractive();
     UI_Opponent.setDropZone(scene, this.container, model);
     scene.input.enableDebug(this.container)
+
+    for (let i = 0; i < model.character.items.length; i++) {
+      const item = new UI_Item(scene, model.character.items[i], this.getOpponent(), i);
+      this.items.push(item.getContainer());
+    }
   }
 
   private static setDropZone(scene: Phaser.Scene, container: Phaser.GameObjects.Container, model: Opponent) {
     scene.add.zone(container.x, container.y, container.displayWidth, container.displayHeight)
       .setRectangleDropZone(container.displayWidth, container.displayHeight)
-      .setData(model.playerId);
+      .setData({target: model.playerId});
   }
 
   private getOppoX(templateWidth: number, index: number, totalOpponents: number): number {
@@ -69,15 +71,4 @@ export class UI_Opponent {
     return Math.min(this.settingsService.getScreenHeight() / 2, this.getOppoWidth(totalOpponents) * (4 / 3));
   }
 
-  private getItemSize(opponentWidth: number): number {
-    return (opponentWidth / 3) - this.settingsService.scaleForMin(5);
-  }
-
-  private getItemX(opponentWidth: number, i: number) {
-    return (-opponentWidth / 2) + (i * opponentWidth / 3) + this.settingsService.scaleForMin(35);
-  }
-
-  private getItemY(opponentHeight: number): number {
-    return (opponentHeight / 2) - this.settingsService.scaleForMin(35);
-  }
 }
