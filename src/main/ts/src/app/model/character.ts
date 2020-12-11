@@ -8,6 +8,7 @@ export interface Character {
   resources: Resources,
   statuses: Status[],
   items: Card[],
+
   sprite: string
 }
 

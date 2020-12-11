@@ -6,4 +6,8 @@ public interface LoadableCard extends Card {
 
     void setGuiEffectDescription(String description);
 
+    void setGuiImage(String image);
+
+    void setGuiSprite(String sprite);
+
 }

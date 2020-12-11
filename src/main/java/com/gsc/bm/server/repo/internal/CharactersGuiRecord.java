@@ -25,6 +25,6 @@ public class CharactersGuiRecord implements Serializable {
     @Column(name = "T_GUI_NAME")
     private String guiName;
 
-    @Column(name = "T_GUI_IMAGE")
+    @Column(name = "T_GUI_SPRITE")
     private String guiImage;
 }

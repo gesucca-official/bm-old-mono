@@ -63,6 +63,10 @@ public abstract class AbstractCard implements Card, LoadableCard, Serializable {
     private String name;
     @Setter(AccessLevel.NONE)
     private String effect;
+    @Setter(AccessLevel.NONE)
+    private String image;
+    @Setter(AccessLevel.NONE)
+    private String sprite;
 
     @Override
     public void setGuiName(String name) {
@@ -72,6 +76,16 @@ public abstract class AbstractCard implements Card, LoadableCard, Serializable {
     @Override
     public void setGuiEffectDescription(String description) {
         this.effect = description;
+    }
+
+    @Override
+    public void setGuiImage(String image) {
+        this.image = image;
+    }
+
+    @Override
+    public void setGuiSprite(String sprite) {
+        this.sprite = sprite;
     }
 
     @Override

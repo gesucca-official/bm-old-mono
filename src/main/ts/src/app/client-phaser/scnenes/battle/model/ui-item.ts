@@ -18,7 +18,7 @@ export class UI_Item {
   constructor(scene: Phaser.Scene, model: Card, player: Phaser.GameObjects.Container, index: number) {
     this.settingsService = window['settingsService'];
 
-    const item = scene.add.image(0, 0, 'item')
+    const item = scene.add.image(0, 0, model.name + '-sprite')
       .setDisplaySize(this.getItemSize(player.displayWidth), this.getItemSize(player.displayWidth));
 
     this.container = scene.add.container(

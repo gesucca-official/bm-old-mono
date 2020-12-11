@@ -9,4 +9,7 @@ export interface Card {
   basicAction: boolean;
   characterBound: boolean,
   lastResort: boolean
+
+  image: string,
+  sprite: string
 }

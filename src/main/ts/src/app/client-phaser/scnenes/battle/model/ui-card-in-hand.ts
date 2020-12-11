@@ -15,11 +15,12 @@ export class UI_CardInHand {
 
     const template = this.renderTemplate(scene);
     const text = this.renderName(scene, template, model);
+    const image = this.renderImage(scene, template, model);
 
     this.container = scene.add.container(
       this.getCardX(template.displayWidth, index),
       this.getCardY(template.displayHeight),
-      [template, text]);
+      [template, text, image]);
 
     this.container.setSize(template.displayWidth, template.displayHeight);
     this.container.setDepth(index + 1);
@@ -123,4 +124,10 @@ export class UI_CardInHand {
     return -(templateHeight / 2) + this.settingsService.scaleForMin(35)
   }
 
+  private renderImage(scene: Phaser.Scene, template: Phaser.GameObjects.Image, model: Card) {
+    // TODO position this once template is somewhat definitive
+    const card = model.image ? model.name : 'no-img';
+    return scene.add.image(0, 0, card)
+      .setDisplaySize(50, 50);
+  }
 }

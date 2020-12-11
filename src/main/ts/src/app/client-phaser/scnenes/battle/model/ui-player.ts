@@ -16,7 +16,7 @@ export class UI_Player {
     this.settingsService = window['settingsService'];
     this.gameService = window['gameService'];
 
-    const character = scene.add.image(0, 0, model.character.name + ' BACK')
+    const character = scene.add.image(0, 0, model.character.name + '-back')
       .setDisplaySize(this.getPlayerWidth(), this.getPlayerHeight());
 
     this.container = scene.add.container(

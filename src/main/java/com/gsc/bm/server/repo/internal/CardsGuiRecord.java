@@ -28,4 +28,10 @@ public class CardsGuiRecord implements Serializable {
     @Column(name = "T_GUI_DESCRIPTION")
     private String guiDescription;
 
+    @Column(name = "T_GUI_IMAGE")
+    private String guiImage;
+
+    @Column(name = "T_GUI_SPRITE")
+    private String guiSprite;
+
 }

@@ -35,6 +35,8 @@ public class CardFactoryServiceImpl implements CardFactoryService {
                 .orElseThrow(() -> new IllegalArgumentException("No such card in DB: " + shortClassName));
         card.setGuiName(rec.getGuiName());
         card.setGuiEffectDescription(buildHtml(card, rec.getGuiDescription()));
+        card.setGuiImage(rec.getGuiImage());
+        card.setGuiSprite(rec.getGuiSprite());
     }
 
     private String buildHtml(Card c, String d) {

@@ -22,14 +22,23 @@ export class BattleScene extends Phaser.Scene {
   }
 
   preload() {
+    // card template
     this.load.image('card', 'assets/img/card-template.png');
-    this.load.image('item', 'assets/img/item.png');
-    this.gameService.opponents.forEach(
-      o => {
-        this.load.image(o.character.name, 'assets/img/' + o.character.sprite);
-        this.load.image(o.character.name + ' BACK',
-          'assets/img/' + o.character.sprite.replace('.png', '') + '-back.png');
-      });
+    // card image fallback
+    this.load.image('no-img', 'assets/img/cards//no-img.png');
+    // player back
+    this.load.image(this.gameService.playerState.character.name + '-back',
+      'assets/img/characters/' + this.gameService.playerState.character.sprite.replace('.png', '') + '-back.png');
+    // opponents front
+    this.gameService.opponents.forEach(o => {
+      this.load.image(o.character.name, 'assets/img/characters/' + o.character.sprite);
+      o.character.items.forEach(i => this.load.image(i.name + '-sprite', 'assets/img/cards/' + i.sprite))
+    });
+    // cards images
+    this.gameService.playerState.cardsInHand.forEach(c => {
+      if (c.image)
+        this.load.image(c.name, 'assets/img/cards/' + c.image);
+    });
   }
 
   create() {
