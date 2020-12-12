@@ -125,9 +125,11 @@ export class UI_CardInHand {
   }
 
   private renderImage(scene: Phaser.Scene, template: Phaser.GameObjects.Image, model: Card) {
-    // TODO position this once template is somewhat definitive
     const card = model.image ? model.name : 'no-img';
-    return scene.add.image(0, 0, card)
-      .setDisplaySize(50, 50);
+    return scene.add.image(
+      this.getTextX(template.displayWidth),
+      this.getTextY(template.displayHeight) + this.settingsService.scaleForMin(50),
+      card).setOrigin(0, 0)
+      .setDisplaySize(this.settingsService.scaleForMin(420), this.settingsService.scaleForMin(300));
   }
 }
