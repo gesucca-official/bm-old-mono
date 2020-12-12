@@ -12,7 +12,7 @@ export class BattleScene extends Phaser.Scene {
 
   player: Phaser.GameObjects.Container;
   cards: Phaser.GameObjects.Container[] = [];
-  opponents: Phaser.GameObjects.Container[] = [];
+  opponents: Map<string, Phaser.GameObjects.Container> = new Map<string, Phaser.GameObjects.Container>();
   items: Phaser.GameObjects.Container[] = [];
 
   constructor() {
@@ -44,7 +44,7 @@ export class BattleScene extends Phaser.Scene {
   create() {
     for (let i = 0; i < this.gameService.opponents.length; i++) {
       const oppo = new UI_Opponent(this, this.gameService.opponents[i], i, this.gameService.opponents.length);
-      this.opponents.push(oppo.getOpponent())
+      this.opponents.set(this.gameService.opponents[i].playerId, oppo.getOpponent());
       oppo.getItems().forEach(i => this.items.push(i));
     }
     for (let i = 0; i < this.gameService.playerState.cardsInHand.length; i++) {
@@ -59,6 +59,25 @@ export class BattleScene extends Phaser.Scene {
     this.input.on('drop', (pointer, gameObject, dropZone) => {
       alert(gameObject.data.list.card + ' dropped on ' + dropZone.data.list.target)
     })
+
+    this.playResolvedMovesAnimation();
+    this.playTimeBasedAnimation();
   }
 
+  private playResolvedMovesAnimation(): void {
+    if (!this.gameService.gameState.resolvedMoves)
+      return;
+    // TODO
+  }
+
+  private playTimeBasedAnimation() {
+    if (!this.gameService.gameState.timeBasedEffects)
+      return;
+  }
+
+  private getPlayerContainer(name: string): Phaser.GameObjects.Container {
+    if (name === this.gameService.playerState.playerId)
+      return this.player
+    else return this.opponents.get(name);
+  }
 }
