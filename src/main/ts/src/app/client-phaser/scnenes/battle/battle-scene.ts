@@ -25,7 +25,7 @@ export class BattleScene extends Phaser.Scene {
     // card template
     this.load.image('card', 'assets/img/card-template.png');
     // card image fallback
-    this.load.image('no-img', 'assets/img/cards//no-img.png');
+    this.load.image('no-img', 'assets/img/cards/no-img.png');
     // player back
     this.load.image(this.gameService.playerState.character.name + '-back',
       'assets/img/characters/' + this.gameService.playerState.character.sprite.replace('.png', '') + '-back.png');
