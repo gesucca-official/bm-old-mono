@@ -1,7 +1,7 @@
 import {Opponent} from "../../../../model/player";
 import {UI_Item} from "./ui-item";
 import {UI_AbstractObject} from "./ui-abstract-object";
-import {FOCUS_DETAILS, PLAYER_DETAILS} from "../animations/player-details";
+import {FOCUS_DETAILS, PLAYER_DETAILS} from "../animations/details";
 
 export class UI_Opponent extends UI_AbstractObject {
 
@@ -42,8 +42,8 @@ export class UI_Opponent extends UI_AbstractObject {
     this.zone = scene.add.zone(this.container.x, this.container.y, this.container.displayWidth, this.container.displayHeight)
       .setRectangleDropZone(this.container.displayWidth, this.container.displayHeight)
       .setDepth(-1)
-      .setData({target: model.playerId});
-    this.zone.setName(this.getId() + '_dropZone');
+      .setData({target: model.playerId})
+      .setName(this.getId() + '_dropZone');
     scene.input.enableDebug(this.container);
 
     for (let i = 0; i < model.character.items.length; i++) {
@@ -52,7 +52,6 @@ export class UI_Opponent extends UI_AbstractObject {
     }
     this.container.on('pointerup', () => FOCUS_DETAILS(scene, this, this.settingsService));
     this.container.on('pointerup', () => PLAYER_DETAILS(scene, this, this.settingsService));
-
   }
 
   getHeight(): number {

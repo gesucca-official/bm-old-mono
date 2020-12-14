@@ -1,52 +1,64 @@
-import {PhaserSettingsService} from "../../../phaser-settings.service";
-import {GameService} from "../../../../service/game.service";
 import {Player} from "../../../../model/player";
+import {UI_AbstractObject} from "./ui-abstract-object";
+import {FOCUS_DETAILS, PLAYER_DETAILS} from "../animations/details";
 
-export class UI_Player {
-  private readonly container: Phaser.GameObjects.Container;
+export class UI_Player extends UI_AbstractObject {
 
-  getContainer(): Phaser.GameObjects.Container {
-    return this.container;
-  }
-
-  private settingsService: PhaserSettingsService;
-  private gameService: GameService;
+  private readonly model: Player;
+  private readonly character: Phaser.GameObjects.Image;
+  private readonly zone: Phaser.GameObjects.Zone;
 
   constructor(scene: Phaser.Scene, model: Player) {
-    this.settingsService = window['settingsService'];
-    this.gameService = window['gameService'];
+    super();
+    this.model = model;
 
-    const character = scene.add.image(0, 0, model.character.name + '-back')
-      .setDisplaySize(this.getPlayerWidth(), this.getPlayerHeight());
+    this.character = scene.add.image(0, 0, model.character.name + '-back')
+      .setDisplaySize(this.getWidth(), this.getHeight());
 
     this.container = scene.add.container(
-      character.displayWidth / 2, this.getPlayerY(character.displayHeight), [character]);
-
-    this.container.setSize(character.displayWidth, character.displayHeight);
+      this.character.displayWidth / 2, this.getY(), [this.character])
+    this.container.setName(this.getId());
+    this.container.setSize(this.character.displayWidth, this.character.displayHeight);
     this.container.setInteractive();
 
-    UI_Player.setDropZone(scene, this.container, model);
+    this.zone = scene.add.zone(this.container.x, this.container.y, this.container.displayWidth, this.container.displayHeight)
+      .setRectangleDropZone(this.container.displayWidth, this.container.displayHeight)
+      .setData({target: model.playerId})
+      .setDepth(-1)
+      .setName(this.getId() + '_dropZone');
     scene.input.enableDebug(this.container)
+
+    this.container.on('pointerup', () => FOCUS_DETAILS(scene, this, this.settingsService));
+    this.container.on('pointerup', () => PLAYER_DETAILS(scene, this, this.settingsService));
   }
 
-  private static setDropZone(scene: Phaser.Scene, container: Phaser.GameObjects.Container, model: Player) {
-    scene.add.zone(container.x, container.y, container.displayWidth, container.displayHeight)
-      .setRectangleDropZone(container.displayWidth, container.displayHeight)
-      .setData({target: model.playerId});
+  getAnimationTargets(): (Phaser.GameObjects.Container | Phaser.GameObjects.Zone)[] {
+    const targets: any = [];
+    targets.push(this.container);
+    targets.push(this.zone);
+    return targets;
   }
 
-  private getPlayerY(templateHeight: number): number {
-    return Math.min(
-      this.settingsService.getScreenHeight() - templateHeight / 2,
-      (this.settingsService.getScreenHeight() * 0.75) + (templateHeight / 2)
-    );
+  getHeight(): number {
+    return Math.min(this.settingsService.getScreenHeight() * 0.5, this.getWidth());
   }
 
-  private getPlayerWidth(): number {
+  getWidth(): number {
     return Math.min(this.settingsService.getScreenWidth() * 0.35, this.settingsService.getScreenHeight() * 0.5);
   }
 
-  private getPlayerHeight(): number {
-    return Math.min(this.settingsService.getScreenHeight() * 0.5, this.getPlayerWidth());
+  getId(): string {
+    return this.model.playerId;
+  }
+
+  getX(): number {
+    return 0;
+  }
+
+  getY(): number {
+    return Math.min(
+      this.settingsService.getScreenHeight() - this.character.displayHeight / 2,
+      (this.settingsService.getScreenHeight() * 0.75) + (this.character.displayHeight / 2)
+    );
   }
 }
