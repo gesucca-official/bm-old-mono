@@ -3,12 +3,13 @@ import {PhaserSettingsService} from "../../phaser-settings.service";
 import {UI_CardInHand} from "./model/ui-card-in-hand";
 import {UI_Opponent} from "./model/ui-opponent";
 import {UI_Player} from "./model/ui-player";
+import {ResolvedMoveAnimation} from "./animations/resolves-moves";
 
 export class BattleScene extends Phaser.Scene {
 
   public static KEY = 'battleScene';
-  private gameService: GameService;
-  private settingsService: PhaserSettingsService;
+  private readonly gameService: GameService;
+  private readonly settingsService: PhaserSettingsService;
 
   player: Phaser.GameObjects.Container;
   cards: Phaser.GameObjects.Container[] = [];
@@ -60,14 +61,15 @@ export class BattleScene extends Phaser.Scene {
       alert(gameObject.data.list.card + ' dropped on ' + dropZone.data.list.target)
     })
 
-    this.playResolvedMovesAnimation();
+    if (this.gameService.gameState.resolvedMoves)
+      this.setupMoveAnimation(0);
     this.playTimeBasedAnimation();
   }
 
-  private playResolvedMovesAnimation(): void {
-    if (!this.gameService.gameState.resolvedMoves)
-      return;
-    // TODO
+  getPlayerContainer(name: string): Phaser.GameObjects.Container {
+    if (name === this.gameService.playerState.playerId)
+      return this.player
+    else return this.opponents.get(name);
   }
 
   private playTimeBasedAnimation() {
@@ -75,9 +77,17 @@ export class BattleScene extends Phaser.Scene {
       return;
   }
 
-  private getPlayerContainer(name: string): Phaser.GameObjects.Container {
-    if (name === this.gameService.playerState.playerId)
-      return this.player
-    else return this.opponents.get(name);
+  private setupMoveAnimation(index: number): void {
+    const animation = new ResolvedMoveAnimation(
+      this,
+      this.settingsService,
+      this.gameService.gameState.resolvedMoves[index],
+      (name) => this.getPlayerContainer(name));
+    animation.play();
+    animation.getOkButton().on('pointerdown', () => {
+      animation.resetAndDestroy();
+      if (index + 1 < this.gameService.gameState.resolvedMoves.length)
+        this.setupMoveAnimation(index + 1);
+    });
   }
 }
