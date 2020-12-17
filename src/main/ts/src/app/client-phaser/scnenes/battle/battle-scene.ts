@@ -23,6 +23,9 @@ export class BattleScene extends Phaser.Scene {
   }
 
   preload() {
+    // symbols
+    this.load.image('health', 'assets/img/health.png');
+    this.load.image('alertness', 'assets/img/alertness.png');
     // card template
     this.load.image('card', 'assets/img/card-template.png');
     // card image fallback

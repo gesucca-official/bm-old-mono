@@ -22,17 +22,17 @@ export class UI_Item extends UI_AbstractObject {
     this.container = scene.add.container(this.getX(), this.getY(), [item]);
     this.container.setSize(item.displayWidth, item.displayHeight);
     this.container.setName(model.name);
-    this.container.setInteractive();
-
+    this.container.setDepth(playerSprite.depth + 1);
     this.zone = scene.add.zone(
       this.container.x, this.container.y, this.container.displayWidth, this.container.displayHeight)
       .setRectangleDropZone(this.container.displayWidth, this.container.displayHeight)
       .setData({target: model.name})
-      .setName(this.getId() + '_dropZone');
+      .setName(this.getId() + '_dropZone')
+      .setDepth(playerSprite.depth + 1);
+
     this.container.setInteractive();
     scene.input.enableDebug(this.container);
 
-    //this.setDetailsAnimation(scene, zone, playerSprite);
     this.container.on('pointerup', () => ITEM_DETAILS(scene, this));
   }
 

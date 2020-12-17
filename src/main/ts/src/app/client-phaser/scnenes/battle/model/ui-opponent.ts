@@ -11,9 +11,12 @@ export class UI_Opponent extends UI_AbstractObject {
     return this.items;
   }
 
+  private readonly scene: Phaser.Scene;
+
   private readonly model: Opponent;
   private readonly character: Phaser.GameObjects.Image;
   private readonly name: Phaser.GameObjects.Text;
+  private readonly stats: Phaser.GameObjects.Container;
   private readonly zone: Phaser.GameObjects.Zone;
 
   private readonly index: number;
@@ -25,16 +28,20 @@ export class UI_Opponent extends UI_AbstractObject {
     this.index = index;
     this.opponentsQty = opponentsQty;
 
+    this.scene = scene;
+
     this.character = scene.add.image(0, 0, model.character.name)
       .setDisplaySize(this.getWidth(), this.getHeight());
 
     this.name = scene.add.text(
       -this.character.displayWidth * 0.45, -this.character.displayHeight * 0.55, [model.playerId])
       .setFontSize(this.settingsService.scaleForMin(36))
-      .setFontFamily('Trebuchet MS')
+      .setFontFamily('titleFont')
       .setColor('#ffffff');
 
-    this.container = scene.add.container(this.getX(), this.getY(), [this.character, this.name]);
+    this.stats = this.renderCharacterResources();
+
+    this.container = scene.add.container(this.getX(), this.getY(), [this.character, this.name, this.stats]);
     this.container.setName(this.getId());
     this.container.setSize(this.character.displayWidth, this.character.displayHeight);
     this.container.setInteractive();
@@ -52,6 +59,31 @@ export class UI_Opponent extends UI_AbstractObject {
     }
     this.container.on('pointerup', () => FOCUS_DETAILS(scene, this, this.settingsService));
     this.container.on('pointerup', () => PLAYER_DETAILS(scene, this, this.settingsService));
+  }
+
+  private renderCharacterResources(): Phaser.GameObjects.Container {
+    const healthSymbol = this.scene.add.image(0, 0, 'health')
+      .setDisplaySize(this.settingsService.scaleForMin(50), this.settingsService.scaleForMin(50));
+    const healthText = this.scene.add.text(
+      this.settingsService.scaleForMin(30),
+      -healthSymbol.displayHeight / 2 + this.settingsService.scaleForMin(10),
+      '' + this.model.character.resources['HEALTH'])
+      .setFontSize(this.settingsService.scaleForMin(32))
+      .setFontFamily('textFont')
+      .setColor('#ffffff');
+
+    const alertnessSymbol = this.scene.add.image(0, this.settingsService.scaleForMin(75), 'alertness')
+      .setDisplaySize(this.settingsService.scaleForMin(50), this.settingsService.scaleForMin(50));
+    const alertnessText = this.scene.add.text(
+      this.settingsService.scaleForMin(30),
+      -alertnessSymbol.displayHeight / 2 + alertnessSymbol.y,
+      '' + this.model.character.resources['ALERTNESS'])
+      .setFontSize(this.settingsService.scaleForMin(32))
+      .setFontFamily('textFont')
+      .setColor('#ffffff');
+
+    return this.scene.add.container(this.name.x, this.name.y + this.name.displayHeight * 2,
+      [healthSymbol, healthText, alertnessSymbol, alertnessText]);
   }
 
   getHeight(): number {
