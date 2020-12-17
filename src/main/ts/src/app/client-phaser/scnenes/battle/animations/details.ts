@@ -34,8 +34,6 @@ export class DetailsAnimation {
     }
   }
 
-  // TODO REFACTOR THIS INTO ONE
-
   public showPlayerDetails(scene: Phaser.Scene, player: UI_AbstractObject, settings: PhaserSettingsService) {
     if (!this.detailsShownFor.get(player.getId())) {
       player.getAnimationTargets().forEach(target => {
@@ -46,8 +44,8 @@ export class DetailsAnimation {
           ease: 'Sine.easeInOut',
           delay: 100,
           duration: 250,
-          x: (target.x - player.getX()) * 1.5 + player.getContainer().displayWidth,
-          y: target.y + (settings.getScreenHeight() / 2 - target.displayHeight / 2) - settings.scaleForMin(100),
+          x: (target.x - player.getX()) * 1.5 + (settings.getScreenWidth() / 3) - player.getContainer().displayWidth / 2,
+          y: (target.y - player.getY()) * 1.5 + (settings.getScreenHeight() / 2),
           scale: 1.5
         });
         this.detailsShownFor.set(player.getId(), true);
