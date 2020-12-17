@@ -1,6 +1,6 @@
 import {Card} from "../../../../model/card";
 import {UI_AbstractObject} from "./ui-abstract-object";
-import {ITEM_DETAILS} from "../animations/details";
+import {DetailsAnimation} from "../animations/details";
 
 export class UI_Item extends UI_AbstractObject {
 
@@ -8,6 +8,7 @@ export class UI_Item extends UI_AbstractObject {
   private readonly model: Card;
   private readonly index: number;
 
+  private readonly item: Phaser.GameObjects.Image;
   private readonly zone: Phaser.GameObjects.Zone;
 
   constructor(scene: Phaser.Scene, model: Card, playerSprite: Phaser.GameObjects.Container, index: number) {
@@ -33,7 +34,7 @@ export class UI_Item extends UI_AbstractObject {
     this.container.setInteractive();
     scene.input.enableDebug(this.container);
 
-    this.container.on('pointerup', () => ITEM_DETAILS(scene, this));
+    this.container.on('pointerup', () => DetailsAnimation.getInstance().showItemDetails(scene, this));
   }
 
   getAnimationTargets(): (Phaser.GameObjects.Container | Phaser.GameObjects.Zone)[] {
@@ -68,5 +69,9 @@ export class UI_Item extends UI_AbstractObject {
 
   private getItemSize(): number {
     return (this.playerSprite.displayWidth / 3) - this.settingsService.scaleForMin(5);
+  }
+
+  getTintTarget(): Phaser.GameObjects.Image {
+    return this.item;
   }
 }

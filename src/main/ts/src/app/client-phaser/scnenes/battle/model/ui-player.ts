@@ -1,6 +1,6 @@
 import {Player} from "../../../../model/player";
 import {UI_AbstractObject} from "./ui-abstract-object";
-import {FOCUS_DETAILS, PLAYER_DETAILS} from "../animations/details";
+import {DetailsAnimation} from "../animations/details";
 
 export class UI_Player extends UI_AbstractObject {
 
@@ -28,8 +28,8 @@ export class UI_Player extends UI_AbstractObject {
       .setName(this.getId() + '_dropZone');
     scene.input.enableDebug(this.container)
 
-    this.container.on('pointerup', () => FOCUS_DETAILS(scene, this, this.settingsService));
-    this.container.on('pointerup', () => PLAYER_DETAILS(scene, this, this.settingsService));
+    this.container.on('pointerup', () => DetailsAnimation.getInstance().focusDetails(scene, this, this.settingsService));
+    this.container.on('pointerup', () => DetailsAnimation.getInstance().showPlayerDetails(scene, this, this.settingsService));
   }
 
   getAnimationTargets(): (Phaser.GameObjects.Container | Phaser.GameObjects.Zone)[] {
@@ -60,5 +60,9 @@ export class UI_Player extends UI_AbstractObject {
       this.settingsService.getScreenHeight() - this.character.displayHeight / 2,
       (this.settingsService.getScreenHeight() * 0.75) + (this.character.displayHeight / 2)
     );
+  }
+
+  getTintTarget(): Phaser.GameObjects.Image {
+    return this.character;
   }
 }

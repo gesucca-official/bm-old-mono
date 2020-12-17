@@ -1,61 +1,74 @@
 import {Card} from "../../../../model/card";
-import {PhaserSettingsService} from "../../../phaser-settings.service";
-import {GameService} from "../../../../service/game.service";
-import {CARD_HIGHLIGHT, resetCardHighlight} from "../animations/card-highlight";
+import {HIGHLIGHT, RESET_HIGHLIGHT} from "../animations/highlight";
+import {UI_AbstractObject} from "./ui-abstract-object";
 
-export class UI_CardInHand {
+export class UI_CardInHand extends UI_AbstractObject {
 
-  private readonly container: Phaser.GameObjects.Container;
-
-  getContainer(): Phaser.GameObjects.Container {
-    return this.container;
-  }
-
+  private readonly model: Card;
   private readonly index: number;
 
-  getIndex(): number {
-    return this.index;
-  }
-
-  private readonly settingsService: PhaserSettingsService;
-  private readonly gameService: GameService;
+  private readonly template: Phaser.GameObjects.Image;
 
   constructor(scene: Phaser.Scene, model: Card, index: number) {
-    this.settingsService = window['settingsService'];
-    this.gameService = window['gameService'];
-
+    super();
+    this.model = model;
     this.index = index;
 
-    const template = this.renderTemplate(scene)
+    this.template = this.renderTemplate(scene)
       .setName('template');
-    const text = this.renderName(scene, template, model);
-    const image = this.renderImage(scene, template, model);
+    const text = this.renderName(scene, this.template, model);
+    const image = this.renderImage(scene, this.template, model);
 
     this.container = scene.add.container(
-      this.getCardX(template.displayWidth, index),
-      this.getCardY(template.displayHeight),
-      [template, text, image]);
+      this.getX(), this.getY(),
+      [this.template, text, image]);
 
-    this.container.setSize(template.displayWidth, template.displayHeight);
-    this.container.setDepth(index + 1);
+    this.container.setSize(this.template.displayWidth, this.template.displayHeight);
+    this.container.setDepth(index + 3);
     this.container.setData({card: model.name})
     this.container.setInteractive();
     scene.input.setDraggable(this.container)
 
     if (!this.gameService.isPlayable(model, this.gameService.playerState.character))
-      template.setTint(0xd3d3d3);
+      this.template.setTint(0xd3d3d3);
 
     // set animations
-    CARD_HIGHLIGHT(scene, this, this.settingsService);
-    resetCardHighlight(scene, this);
+    HIGHLIGHT(scene, this.settingsService, this, 'pointerover', true);
+    RESET_HIGHLIGHT(scene, this);
   }
 
-  getCardX(templateWidth: number, index: number): number {
-    return (this.settingsService.getScreenWidth() / 2.5) + (index * (this.settingsService.getScreenWidth() / 12)) + (templateWidth / 2);
+  getIndex(): number {
+    return this.index;
   }
 
-  getCardY(templateHeight: number): number {
-    return (this.settingsService.getScreenHeight() * 0.75) + (templateHeight / 2)
+  getId(): string {
+    return this.model.name;
+  }
+
+  getAnimationTargets(): (Phaser.GameObjects.Container | Phaser.GameObjects.Zone)[] {
+    return [this.container];
+  }
+
+  getHeight(): number {
+    return this.settingsService.scaleForMin(700);
+  }
+
+  getWidth(): number {
+    return this.settingsService.scaleForMin(500);
+  }
+
+  getX(): number {
+    return (this.settingsService.getScreenWidth() / 2.5)
+      + (this.index * (this.settingsService.getScreenWidth() / 12))
+      + (this.template.displayWidth / 2);
+  }
+
+  getY(): number {
+    return (this.settingsService.getScreenHeight() * 0.75) + (this.template.displayHeight / 2)
+  }
+
+  getTintTarget(): Phaser.GameObjects.Image {
+    return this.template;
   }
 
   private renderName(scene: Phaser.Scene, template: Phaser.GameObjects.Image, model: Card) {
@@ -67,15 +80,7 @@ export class UI_CardInHand {
 
   private renderTemplate(scene: Phaser.Scene) {
     return scene.add.image(0, 0, 'card')
-      .setDisplaySize(this.getCardWidth(), this.getCardHeight());
-  }
-
-  private getCardWidth(): number {
-    return this.settingsService.scaleForMin(500);
-  }
-
-  private getCardHeight(): number {
-    return this.settingsService.scaleForMin(700);
+      .setDisplaySize(this.getWidth(), this.getHeight());
   }
 
   private getTextX(templateWidth: number): number {

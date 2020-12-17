@@ -1,7 +1,7 @@
 import {Opponent} from "../../../../model/player";
 import {UI_Item} from "./ui-item";
 import {UI_AbstractObject} from "./ui-abstract-object";
-import {FOCUS_DETAILS, PLAYER_DETAILS} from "../animations/details";
+import {DetailsAnimation} from "../animations/details";
 
 export class UI_Opponent extends UI_AbstractObject {
 
@@ -57,8 +57,8 @@ export class UI_Opponent extends UI_AbstractObject {
       const item = new UI_Item(scene, model.character.items[i], this.getContainer(), i);
       this.items.push(item.getContainer().setName(this.getId() + '_item' + i));
     }
-    this.container.on('pointerup', () => FOCUS_DETAILS(scene, this, this.settingsService));
-    this.container.on('pointerup', () => PLAYER_DETAILS(scene, this, this.settingsService));
+    this.container.on('pointerup', () => DetailsAnimation.getInstance().focusDetails(scene, this, this.settingsService));
+    this.container.on('pointerup', () => DetailsAnimation.getInstance().showPlayerDetails(scene, this, this.settingsService));
   }
 
   private renderCharacterResources(): Phaser.GameObjects.Container {
@@ -114,6 +114,10 @@ export class UI_Opponent extends UI_AbstractObject {
     targets.push(this.container);
     targets.push(this.zone);
     return targets;
+  }
+
+  getTintTarget(): Phaser.GameObjects.Image {
+    return this.character;
   }
 
 }

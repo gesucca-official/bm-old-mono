@@ -28,4 +28,6 @@ export abstract class UI_AbstractObject {
   abstract getHeight(): number;
 
   abstract getAnimationTargets(): (Phaser.GameObjects.Container | Phaser.GameObjects.Zone)[];
+
+  abstract getTintTarget(): Phaser.GameObjects.Image;
 }
