@@ -29,13 +29,21 @@ public class ComPlayer extends Player {
     }
 
     private String choseTarget(Game game, Card chosenCard) {
+        // TODO work this out: cards maybe will be able to targets multiple things at once (ex. you or opponents)
+        // this will break
+        if (chosenCard.getCanTarget().contains(Card.CardTarget.SELF)
+                || chosenCard.getCanTarget().contains(Card.CardTarget.NEAR_ITEM))
+            return "SELF";
+
         List<String> availableTargets = game.getOpponents(getPlayerId())
                 .stream()
+                .filter(t -> {
+                    if (chosenCard.getCanTarget().contains(Card.CardTarget.FAR_ITEM))
+                        return t.getCharacter().getItems().size() > 0;
+                    else return true;
+                })
                 .map(Player::getPlayerId)
                 .collect(Collectors.toList());
-
-        if (chosenCard.getCanTarget().contains(Card.CardTarget.SELF))
-            availableTargets.add("SELF");
 
         Collections.shuffle(availableTargets);
         return availableTargets.get(0);
@@ -48,7 +56,7 @@ public class ComPlayer extends Player {
         if (cards.get(index).getCanTarget().contains(Card.CardTarget.NEAR_ITEM))
             choices.put(Move.AdditionalAction.TARGET_ITEM, choseNearItem());
         else if (cards.get(index).getCanTarget().contains(Card.CardTarget.FAR_ITEM))
-            choices.put(Move.AdditionalAction.TARGET_ITEM, choseFarItem(game));
+            choices.put(Move.AdditionalAction.TARGET_ITEM, choseFarItem(game, target));
 
         return new Move(
                 cards.get(index).getName(),
@@ -59,9 +67,10 @@ public class ComPlayer extends Player {
         );
     }
 
-    private String choseFarItem(Game game) {
+    private String choseFarItem(Game game, String targetPlayer) {
         List<String> items = game.getOpponents(getPlayerId())
                 .stream()
+                .filter(p -> p.getPlayerId().equals(targetPlayer))
                 .flatMap(player -> player.getCharacter().getItems().stream())
                 .map(Card::getName)
                 .collect(Collectors.toList());

@@ -76,7 +76,6 @@ represented by their own Card.
 There is a limited amount of Objects a Character can be "aware of". Objects exceeding this limit are discarded following
 a First-In-First-Out model: for example, if a Character's Attention Threshold is 3, when the 4th object spawns on his
 side of the Field, the 1st object immediately ceases to exist ("is forgotten" by the not-so-smart Character).
-
 ## Playing the Game
 
 Each Player starts the Game with a Deck of 20 Cards (Regular Action Cards and Object Cards).
