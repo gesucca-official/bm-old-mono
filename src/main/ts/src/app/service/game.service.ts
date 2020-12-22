@@ -64,9 +64,10 @@ export class GameService {
   isPlayable(card: Card, character: Character): boolean {
     if (this.getTargets(card).length <= 0)
       return false;
-    for (let key in card.cost)
-      if (character.resources[key] < card.cost[key])
+    for (let key in card.cost) {
+      if (!character.resources[key] || character.resources[key] < card.cost[key])
         return false;
+    }
     return true;
   }
 

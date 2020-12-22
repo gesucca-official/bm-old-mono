@@ -113,7 +113,7 @@ public class Move implements Serializable {
 
             // check if costs can be satisfied
             for (Map.Entry<Resource, Integer> cost : playedCard.getCost().entrySet()) {
-                int availableResource = playerResources.get(cost.getKey());
+                int availableResource = playerResources.getOrDefault(cost.getKey(), 0);
                 if (availableResource < cost.getValue())
                     return new MoveCheckResult(false, "cant be cast with current resources");
             }

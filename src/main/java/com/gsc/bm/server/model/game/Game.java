@@ -23,7 +23,8 @@ import java.util.stream.Collectors;
 @ToString
 public class Game implements Serializable {
 
-    private static class LoggingList extends ArrayList<String> implements Serializable {
+    // TODO move this in its own file?
+    public static class LoggingList extends ArrayList<String> implements Serializable {
 
         private final boolean printLogs;
 
@@ -166,6 +167,8 @@ public class Game implements Serializable {
 
     @JsonIgnore
     public Card getItem(String playerId, String itemCardName) {
+        if (!players.containsKey(playerId))
+            throw new IllegalMoveException(playerId, "there's no such player");
         for (Card item : players.get(playerId).getCharacter().getItems())
             if (item.getName().equals(itemCardName))
                 return item;
