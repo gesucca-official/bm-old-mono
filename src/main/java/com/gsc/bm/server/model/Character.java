@@ -2,6 +2,7 @@ package com.gsc.bm.server.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gsc.bm.server.model.cards.Card;
+import com.gsc.bm.server.model.game.Timer;
 import com.gsc.bm.server.model.game.status.Status;
 import com.gsc.bm.server.model.game.status.StatusFlow;
 import com.gsc.bm.server.model.game.status.StatusType;
@@ -23,6 +24,7 @@ public abstract class Character implements Serializable {
     private final Map<Resource, Integer> resources = new EnumMap<>(Resource.class);
     private final List<Status> statuses = new ArrayList<>();
     private final Set<Resource> immunities = new HashSet<>();
+    private final Set<Timer> timers = new HashSet<>();
 
     public Character(String name, int hp, int speed, int itemsSize) {
         this.name = name;
@@ -47,7 +49,7 @@ public abstract class Character implements Serializable {
         // resources based effect
         if (!immunities.contains(Resource.TOXICITY) && resources.get(Resource.TOXICITY) != null && resources.get(Resource.TOXICITY) > 0)
             effectsReport.add("(TOXICITY effect) " +
-                    takeDamage(new Damage(Damage.DamageType.POISON, resources.get(Resource.TOXICITY))));
+                    takeDamage(new Damage(Damage.DamageType.POISON, resources.get(Resource.TOXICITY) / 2)));
 
         if (!immunities.contains(Resource.ALCOHOL) && resources.get(Resource.ALCOHOL) != null && resources.get(Resource.ALCOHOL) > 0) {
             effectsReport.add("(ALCOHOL effect) " +
@@ -55,6 +57,19 @@ public abstract class Character implements Serializable {
             effectsReport.add("(ALCOHOL effect) " +
                     loseResource(Resource.ALCOHOL, resources.get(Resource.ALCOHOL) / 2 + 1));
         }
+
+        // resolve timers
+        Set<Timer> expiredTimers = new HashSet<>();
+        timers.forEach(timer -> {
+            timer.timeTick();
+            if (timer.getTimer() <= 0) {
+                timer.getCallback().accept(this);
+                // TODO capture output of callback to report
+                effectsReport.add("Timer expired for " + timer.getName() + ": effect triggered");
+                expiredTimers.add(timer);
+            }
+        });
+        timers.removeAll(expiredTimers);
 
         // clear statuses
         List<Status> expiredStatuses = new ArrayList<>();  // concurrent access problem with foreach

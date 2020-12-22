@@ -45,7 +45,7 @@ public class AmphetamineReflexes extends AbstractCard {
         if (!countered.isEmpty())
             return List.of("Countered Move(s) of: " + countered);
         else
-            return List.of("You were too slow and didn't countered anything.");
+            return List.of("You didn't countered anything.");
     }
 
 }
