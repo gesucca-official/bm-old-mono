@@ -4,11 +4,13 @@ import com.gsc.bm.server.service.session.model.UserSessionInfo;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 @Log4j2
@@ -30,12 +32,12 @@ public class ConnectionsServiceImpl implements ConnectionsService {
 
     @Override
     public void userConnected(SessionConnectEvent event) {
-        Object rawNativeHeaders = event.getMessage().getHeaders().get("nativeHeaders");
-        if (rawNativeHeaders == null) {
-            log.info("SessionConnectEvent does not have the expected Native Headers!");
-        }
+        // TODO continue here
+        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
+        String userLoginName = accessor.getLogin();
+        String passcode = accessor.getPasscode();
+        System.out.println(passcode);
 
-        String userLoginName = ((List<String>) (new HashMap<>((Map<? extends String, ?>) rawNativeHeaders).get("login"))).get(0);
         String sessionId = event.getMessage().getHeaders().get("simpSessionId", String.class);
 
         log.info("User Connected! " + userLoginName + " with simpSessionId " + sessionId);
@@ -75,7 +77,7 @@ public class ConnectionsServiceImpl implements ConnectionsService {
         return _USERS.stream()
                 .filter(userSessionInfo -> userSessionInfo.getSessionId().equals(simpSessionId))
                 .findAny()
-                .get() // TODO definitely custom exception
+                .get() // TODO use header accessor even here
                 .getUserLogin();
     }
 

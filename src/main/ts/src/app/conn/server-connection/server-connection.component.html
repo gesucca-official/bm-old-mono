@@ -7,9 +7,16 @@
            [(ngModel)]="gameService.playerId"
            [ngModelOptions]="{standalone: true}">
   </mat-form-field>
+  <mat-form-field color="accent" style="margin-right: 10px">
+    <mat-label>Password</mat-label>
+    <input matInput type="password"
+           [disabled]="websocketService.isConnected()"
+           [(ngModel)]="password"
+           [ngModelOptions]="{standalone: true}">
+  </mat-form-field>
   <button mat-raised-button color="accent"
-          (click)="websocketService.connect(gameService.playerId)"
-          [disabled]="gameService.playerId == null || websocketService.isConnected()">
+          (click)="websocketService.connect(gameService.playerId, password)"
+          [disabled]="gameService.playerId == null || password == null || websocketService.isConnected()">
     Connect to Server
   </button>
   <!--log the game state to console-->

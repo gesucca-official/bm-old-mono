@@ -20,11 +20,11 @@ export class WebsocketService {
     this.connected = false;
   }
 
-  public connect(username: string): void {
+  public connect(username: string, password: string): void {
     this.stompClient = Stomp.over(new SockJS(environment.websocketServerEndpoint));
     this.stompClient.connect({
       login: username,
-      passcode: 'authYetToBeAdded'
+      passcode: password
     }, () => {
       this.connected = true;
       this.stompClient.subscribe('/topic/connections/users',
@@ -34,7 +34,7 @@ export class WebsocketService {
       console.log('Connection Failed! errorCallBack -> ' + error);
       console.log('Reattempting in 3 seconds...');
       setTimeout(() => {
-        this.connect(username);
+        this.connect(username, password);
       }, 3000);
     });
   }

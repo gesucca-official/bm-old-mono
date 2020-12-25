@@ -9,6 +9,8 @@ import {WebsocketService} from "../../service/websocket.service";
 })
 export class ServerConnectionComponent {
 
+  password: string;
+
   constructor(public websocketService: WebsocketService,
               public gameService: GameService) {
   }
