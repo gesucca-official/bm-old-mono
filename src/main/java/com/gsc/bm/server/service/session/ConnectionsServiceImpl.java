@@ -3,8 +3,11 @@ package com.gsc.bm.server.service.session;
 import com.gsc.bm.server.service.session.model.UserSessionInfo;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
@@ -19,10 +22,12 @@ public class ConnectionsServiceImpl implements ConnectionsService {
     private static final Set<UserSessionInfo> _USERS = new HashSet<>();
 
     private final SimpMessagingTemplate messagingTemplate;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public ConnectionsServiceImpl(SimpMessagingTemplate messagingTemplate) {
+    public ConnectionsServiceImpl(SimpMessagingTemplate messagingTemplate, PasswordEncoder passwordEncoder) {
         this.messagingTemplate = messagingTemplate;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -36,7 +41,9 @@ public class ConnectionsServiceImpl implements ConnectionsService {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
         String userLoginName = accessor.getLogin();
         String passcode = accessor.getPasscode();
-        System.out.println(passcode);
+        System.out.println(passwordEncoder.encode(passcode));
+        // lamiapassword
+        System.out.println(passwordEncoder.matches(passcode, "$2a$10$xSRuxxJQ64ZFKJoz/vGmZe7lHaMpOaCftJjBBVC0pRE5y/iEQhMVS"));
 
         String sessionId = event.getMessage().getHeaders().get("simpSessionId", String.class);
 
