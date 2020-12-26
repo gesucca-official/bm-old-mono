@@ -20,8 +20,8 @@ import {CharacterCardComponent} from './client-debug/character-card/character-ca
 import {FlexLayoutModule} from "@angular/flex-layout";
 import {CardInHandComponent} from './client-debug/card-in-hand/card-in-hand.component';
 import {MatExpansionModule} from "@angular/material/expansion";
-import {ServerConnectionComponent} from './conn/server-connection/server-connection.component';
-import {ChooseGameComponent} from './conn/choose-game/choose-game.component';
+import {ServerConnectionComponent} from './connection/server-connection/server-connection.component';
+import {ChooseGameComponent} from './connection/choose-game/choose-game.component';
 import {TestBattleSceneComponent} from './client-phaser/scnenes/battle/test-battle-scene/test-battle-scene.component';
 import {HomeComponent} from './home/home.component';
 import {RouterModule} from "@angular/router";

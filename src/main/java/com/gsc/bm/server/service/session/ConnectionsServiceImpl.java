@@ -3,11 +3,8 @@ package com.gsc.bm.server.service.session;
 import com.gsc.bm.server.service.session.model.UserSessionInfo;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
@@ -22,12 +19,10 @@ public class ConnectionsServiceImpl implements ConnectionsService {
     private static final Set<UserSessionInfo> _USERS = new HashSet<>();
 
     private final SimpMessagingTemplate messagingTemplate;
-    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public ConnectionsServiceImpl(SimpMessagingTemplate messagingTemplate, PasswordEncoder passwordEncoder) {
+    public ConnectionsServiceImpl(SimpMessagingTemplate messagingTemplate) {
         this.messagingTemplate = messagingTemplate;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -37,24 +32,18 @@ public class ConnectionsServiceImpl implements ConnectionsService {
 
     @Override
     public void userConnected(SessionConnectEvent event) {
-        // TODO continue here
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
         String userLoginName = accessor.getLogin();
-        String passcode = accessor.getPasscode();
-        System.out.println(passwordEncoder.encode(passcode));
-        // lamiapassword
-        System.out.println(passwordEncoder.matches(passcode, "$2a$10$xSRuxxJQ64ZFKJoz/vGmZe7lHaMpOaCftJjBBVC0pRE5y/iEQhMVS"));
-
-        String sessionId = event.getMessage().getHeaders().get("simpSessionId", String.class);
-
+        String sessionId = accessor.getSessionId();
         log.info("User Connected! " + userLoginName + " with simpSessionId " + sessionId);
         _USERS.add(new UserSessionInfo(userLoginName, sessionId, UserSessionInfo.Activity.FREE));
     }
 
     @Override
     public String userDisconnected(SessionDisconnectEvent event) {
-        String sessionId = event.getMessage().getHeaders().get("simpSessionId", String.class);
-        String userLoginName = getUserLoginName(sessionId);
+        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
+        String sessionId = accessor.getSessionId();
+        String userLoginName = accessor.getLogin();
         _USERS.stream()
                 .filter(userSessionInfo -> userSessionInfo.getSessionId().equals(sessionId))
                 .findAny()
@@ -78,14 +67,6 @@ public class ConnectionsServiceImpl implements ConnectionsService {
                         () -> log.info("An User not known as attempted to change Activity!")
                 );
         broadcastUsersInfo();
-    }
-
-    private String getUserLoginName(String simpSessionId) {
-        return _USERS.stream()
-                .filter(userSessionInfo -> userSessionInfo.getSessionId().equals(simpSessionId))
-                .findAny()
-                .get() // TODO use header accessor even here
-                .getUserLogin();
     }
 
 }

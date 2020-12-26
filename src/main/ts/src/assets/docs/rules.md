@@ -43,10 +43,10 @@ There are 3 types of Action Cards:
 
 - **Regular Action Cards**: they are Cards in Hand, drawn from Deck and used only once and then Discarded. They always
   require Player to pay some kind of Cost in Character Resources in order to activate them.
-- **Character-Bound Action Cards**: they are Cards bound to a particular Character. Players always have 2 of these in
-  their Hand. They are not discarded after use, but they require Players to discard another Regular Action Card in their
-  Hand (for example, an Action Card they cannot Cast). Cards like this have no cost, providing a means almost always
-  have an Action to perform each turn.
+- **Character-Bound Action Cards**, that represent **Fallback Actions**: they are Cards bound to a particular Character.
+  Players always have 2 of these in their Hand. They are not discarded after use, but they require Players to discard
+  another Regular Action Card in their Hand (for example, an Action Card they cannot Cast). Cards like this have no
+  cost, providing a means almost always have an Action to perform each turn.
 - **Basic Action Card**: like Character-Bound Action Cards, they have no cost and are not discarded after use, but they
   don't require Player to do any additional action to employ them. Players always have 1 of these on their Hand. They
   provide a mean to always being able to perform a particular Action regardless of any other aspect of the Game.

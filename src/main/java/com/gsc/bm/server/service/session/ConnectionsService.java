@@ -13,4 +13,5 @@ public interface ConnectionsService {
     String userDisconnected(SessionDisconnectEvent event);
 
     void userActivityChanged(String userId, UserSessionInfo.Activity activity);
+
 }

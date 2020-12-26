@@ -32,10 +32,6 @@ export class WebsocketService {
       this.stompClient.send('/app/connections/users/tell/me', {});
     }, (error) => {
       console.log('Connection Failed! errorCallBack -> ' + error);
-      console.log('Reattempting in 3 seconds...');
-      setTimeout(() => {
-        this.connect(username, password);
-      }, 3000);
     });
   }
 
