@@ -30,8 +30,6 @@ export class WebsocketService {
       this.stompClient.subscribe('/topic/connections/users',
         (sdkEvent) => this.sessionService.usersConnected = JSON.parse(sdkEvent.body));
       this.stompClient.send('/app/connections/users/tell/me', {});
-    }, (error) => {
-      console.log('Connection Failed! errorCallBack -> ' + error);
     });
   }
 

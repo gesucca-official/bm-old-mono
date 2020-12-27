@@ -30,8 +30,12 @@ public class AuthChannelInterceptorAdapter implements ChannelInterceptor {
         if (StompCommand.CONNECT == accessor.getCommand()) {
             final String username = accessor.getLogin();
             final String password = accessor.getPasscode();
-            final UsernamePasswordAuthenticationToken user = authService.getAuthTokenOrFail(username, password);
-            accessor.setUser(user);
+            try {
+                final UsernamePasswordAuthenticationToken user = authService.getAuthTokenOrFail(username, password);
+                accessor.setUser(user);
+            } catch (AuthenticationException e) {
+                return null;
+            }
         }
         return message;
     }

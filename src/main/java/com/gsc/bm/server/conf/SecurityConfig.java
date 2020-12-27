@@ -27,10 +27,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        // TODO encode http control panel password
         auth.inMemoryAuthentication()
-                .withUser(environment.getProperty("auth.username"))
-                .password(encoder().encode(environment.getProperty("auth.password")))
+                .withUser(environment.getProperty("control-panel.auth.username"))
+                .password(environment.getProperty("control-panel.auth.password"))
                 .roles("ADMIN");
     }
 

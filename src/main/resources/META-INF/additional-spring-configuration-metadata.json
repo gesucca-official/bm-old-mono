@@ -1,0 +1,13 @@
+{
+  "properties": [
+    {
+      "name": "control-panel.auth.username",
+      "type": "java.lang.String",
+      "description": "Description for control-panel.auth.username."
+    },
+    {
+      "name": "control-panel.auth.password",
+      "type": "java.lang.String",
+      "description": "Description for control-panel.auth.password."
+    }
+  ] }

@@ -6,6 +6,7 @@ spring:
     open-in-view: false
     hibernate:
       ddl-auto: none
-auth:
-  username: gesucca
-  password: kamehameha
+control-panel:
+  auth:
+    username: gesucca
+    password: $2a$10$xqpm6aaPyyulJoAshw00OeSrTAw4bLqAVqD/ilwCl6LEHgflTPJxe
