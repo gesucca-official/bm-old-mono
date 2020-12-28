@@ -4,6 +4,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 
 public interface AuthService {
 
-    UsernamePasswordAuthenticationToken getAuthTokenOrFail(final String username, final String password);
+    boolean isUsernameAvailable(String username);
+
+    boolean isMailAvailable(String email);
+
+    void sendVerificationEmail(String username, String address);
+
+    void completeRegistration(String username, String password, String email, String code);
+
+    UsernamePasswordAuthenticationToken getAuthTokenOrFail(String username, String password);
 
 }

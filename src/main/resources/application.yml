@@ -2,6 +2,19 @@ server:
   servlet:
     context-path: /
 spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: bottemicidiali@gmail.com
+    password: k4YVy=twx7c%vPb^
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          ssl:
+            trust: smtp.gmail.com
   jpa:
     open-in-view: false
     hibernate:

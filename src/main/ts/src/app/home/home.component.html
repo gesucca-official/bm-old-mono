@@ -46,10 +46,10 @@
     </p>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-raised-button color="accent" class="choice-button"
+    <button mat-raised-button class="choice-button mat-elevation-z4"
             routerLink="/rules"
             routerLinkActive="active">
-      Read Comprehensive Rules
+      Read Rules
     </button>
   </mat-card-actions>
 </mat-card>
@@ -58,19 +58,19 @@
   <mat-card class="chooser-card">
     <mat-card-header>
       <mat-card-title class="smaller-title">
-        Chose a Client
+        Play the Game
       </mat-card-title>
     </mat-card-header>
     <mat-card-content>
       <button mat-raised-button color="accent" class="choice-button"
-              routerLink="/client/debug"
+              routerLink="/hub"
               routerLinkActive="active">
-        Debug Client
+        Log In
       </button>
-      <button mat-raised-button color="accent" class="choice-button" [disabled]="true">
-        <!--routerLink="/client/graphic"
-        routerLinkActive="active"-->
-        Graphic Client
+      <button mat-raised-button class="choice-button mat-elevation-z4"
+              routerLink="/sign-up"
+              routerLinkActive="active">
+        Register
       </button>
     </mat-card-content>
   </mat-card>

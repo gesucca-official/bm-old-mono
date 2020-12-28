@@ -6,7 +6,7 @@ import {CommonModule} from '@angular/common';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {DebugClientComponent} from "./client-debug/debug-client.component";
 import {PhaserClientComponent} from "./client-phaser/phaser-client.component";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatButtonModule} from "@angular/material/button";
 import {MatCardModule} from "@angular/material/card";
@@ -29,6 +29,8 @@ import {MarkdownModule} from "ngx-markdown";
 import {HttpClient, HttpClientModule} from "@angular/common/http";
 import {RulesComponent} from './home/rules/rules.component';
 import {ToolbarComponent} from './home/toolbar/toolbar.component';
+import {UserHubComponent} from './user-hub/user-hub.component';
+import {SignUpComponent} from './connection/sign-up/sign-up.component';
 
 @NgModule({
   declarations: [
@@ -44,6 +46,8 @@ import {ToolbarComponent} from './home/toolbar/toolbar.component';
     HomeComponent,
     RulesComponent,
     ToolbarComponent,
+    UserHubComponent,
+    SignUpComponent,
   ],
   imports: [
     CommonModule,
@@ -53,8 +57,10 @@ import {ToolbarComponent} from './home/toolbar/toolbar.component';
     RouterModule.forRoot([
       {path: '', component: HomeComponent},
       {path: 'rules', component: RulesComponent},
-      {path: 'client/debug', component: DebugClientComponent},
-      {path: 'client/graphic', component: PhaserClientComponent},
+      {path: 'hub', component: UserHubComponent},
+      {path: 'sign-up', component: SignUpComponent},
+      //{path: 'client/debug', component: DebugClientComponent},
+      //{path: 'client/graphic', component: PhaserClientComponent},
       {path: 'client/graphic/test/battle', component: TestBattleSceneComponent},
       {path: '**', redirectTo: '', component: HomeComponent}
     ], {onSameUrlNavigation: 'reload'}),
@@ -69,7 +75,8 @@ import {ToolbarComponent} from './home/toolbar/toolbar.component';
     MatSnackBarModule,
     MatExpansionModule,
     HttpClientModule,
-    MarkdownModule.forRoot({loader: HttpClient})
+    MarkdownModule.forRoot({loader: HttpClient}),
+    ReactiveFormsModule
   ],
   providers: [
     MatSnackBarModule
