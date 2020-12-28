@@ -41,7 +41,6 @@ public class UserSignUpController {
 
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void completeRegistration(@RequestBody Map<String, String> credentials) {
-        System.out.println(credentials);
         try {
             authService.completeRegistration(
                     credentials.get("username"),

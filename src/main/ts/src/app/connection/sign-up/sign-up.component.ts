@@ -1,13 +1,18 @@
 import {Component} from '@angular/core';
 import {ErrorStateMatcher} from "@angular/material/core";
-import {FormControl, FormGroupDirective, NgForm, Validators} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from "@angular/forms";
 import {HttpClient} from "@angular/common/http";
 
-/** Error when invalid control is dirty, touched, or submitted. */
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
-    const isSubmitted = form && form.submitted;
-    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+    if (control.parent === undefined) {
+      const isSubmitted = form && form.submitted;
+      return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+    } else {
+      const invalidCtrl = !!(control && control.invalid && control.parent.dirty);
+      const invalidParent = !!(control && control.parent && control.parent.invalid && control.parent.dirty);
+      return (invalidCtrl || invalidParent);
+    }
   }
 }
 
@@ -20,11 +25,6 @@ export class SignUpComponent {
 
   sendCodeClicked = false;
   registerClicked = false;
-
-  constructor(protected http: HttpClient) {
-  }
-
-  playerId: string;
 
   playerIdFormControl = new FormControl('', [
     Validators.required,
@@ -43,7 +43,16 @@ export class SignUpComponent {
     Validators.pattern('^[0-9]+$')
   ]);
 
+  passwordForm: FormGroup;
+
   matcher = new MyErrorStateMatcher();
+
+  constructor(protected http: HttpClient, private formBuilder: FormBuilder) {
+    this.passwordForm = this.formBuilder.group({
+      password: ['', [Validators.required]],
+      confirmPassword: ['']
+    }, { validator: this.checkPasswords });
+  }
 
   sendVerificationEmail() {
     this.sendCodeClicked = true;
@@ -73,12 +82,18 @@ export class SignUpComponent {
     this.registerClicked = true;
     this.http.post<void>('/sign-up/register', {
       username: this.playerIdFormControl.value,
-      password: 'askforpassword',
+      password: this.passwordForm.value.password,
       email: this.emailFormControl.value,
       code: this.verificationCodeFormControl.value
     }).subscribe(res => {
       console.log(res)
       alert('account created')
     })
+  }
+
+  checkPasswords(group: FormGroup) {
+    let pass = group.controls.password.value;
+    let confirmPass = group.controls.confirmPassword.value;
+    return pass === confirmPass ? null : { notSame: true }
   }
 }

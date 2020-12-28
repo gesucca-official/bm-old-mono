@@ -38,9 +38,29 @@
       This code is <strong>required</strong>!
     </mat-error>
   </mat-form-field>
+  <br>
+  <form [formGroup]="passwordForm">
+    <mat-form-field color="accent">
+      <input matInput type="password" placeholder="Password" formControlName="password" required>
+      <mat-error *ngIf="passwordForm.hasError('required', 'password')">
+        Enter your Password
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field color="accent" style="margin-left: 10px">
+      <input matInput type="password" placeholder="Confirm Password" formControlName="confirmPassword"
+             [errorStateMatcher]="matcher">
+      <mat-error *ngIf="passwordForm.hasError('notSame')">
+        Passwords do not match!
+      </mat-error>
+    </mat-form-field>
+  </form>
   <button mat-raised-button color="accent"
           (click)="signUp()"
-          [disabled]="emailFormControl.invalid || playerIdFormControl.invalid || verificationCodeFormControl.invalid || registerClicked">
+          [disabled]="emailFormControl.invalid
+          || playerIdFormControl.invalid
+          || verificationCodeFormControl.invalid
+          || passwordForm.invalid
+          || registerClicked">
     Sign Up
   </button>
 </mat-card>
