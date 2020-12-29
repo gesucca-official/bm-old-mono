@@ -1,10 +1,11 @@
 <mat-card style="margin-top: 5px">
+  <ngx-loading [show]="isLoading"></ngx-loading>
   <!--websocket connection-->
   <mat-form-field color="accent" style="margin-right: 10px">
     <mat-label>Player ID</mat-label>
     <input matInput type="text"
            [disabled]="websocketService.isConnected()"
-           [(ngModel)]="gameService.playerId"
+           [(ngModel)]="playerId"
            [ngModelOptions]="{standalone: true}">
   </mat-form-field>
   <mat-form-field color="accent" style="margin-right: 10px">
@@ -15,12 +16,8 @@
            [ngModelOptions]="{standalone: true}">
   </mat-form-field>
   <button mat-raised-button color="accent"
-          (click)="websocketService.connect(gameService.playerId, password)"
-          [disabled]="gameService.playerId == null || password == null || websocketService.isConnected()">
-    Connect to Server
-  </button>
-  <!--log the game state to console-->
-  <button mat-raised-button class="mat-elevation-z4" (click)="logGameService()" style="float: right">
-    Log Game State
+          (click)="logIn()"
+          [disabled]="playerId == null || password == null || websocketService.isConnected()">
+    Log In
   </button>
 </mat-card>

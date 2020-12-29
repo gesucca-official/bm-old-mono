@@ -25,8 +25,8 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 })
 export class SignUpComponent {
 
+  isLoading = false;
   sendCodeClicked = false;
-  registerClicked = false;
 
   playerIdFormControl = new FormControl('', [
     Validators.required,
@@ -46,7 +46,6 @@ export class SignUpComponent {
   ]);
 
   passwordForm: FormGroup;
-
   matcher = new MyErrorStateMatcher();
 
   constructor(protected http: HttpClient, private formBuilder: FormBuilder, private router: Router) {
@@ -58,30 +57,33 @@ export class SignUpComponent {
 
   async sendVerificationEmail() {
     this.sendCodeClicked = true;
-    setTimeout(() => this.sendCodeClicked = false, 10000)
+    this.isLoading = true;
+    setTimeout(() => this.sendCodeClicked = false, 15000)
 
     const usernameAvailable = await this.checkUsernameAvailability(this.playerIdFormControl.value);
     if (!usernameAvailable) {
+      this.isLoading = false
       Swal.fire(
         'Error!',
         'This username is already taken. Please choose another.',
         'error'
-      ).then(() => this.sendCodeClicked = false);
-      this.sendCodeClicked = false;
+      ).then();
       return;
     }
 
     const emailAvailable = await this.checkEmailAvailability(this.emailFormControl.value);
     if (!emailAvailable) {
+      this.isLoading = false
       Swal.fire(
         'Error!',
         'This email has already been used for registration. Please use another one.',
         'error'
-      ).then(() => this.sendCodeClicked = false);
+      ).then();
       return;
     }
 
     await this.sendVerificationCode(this.playerIdFormControl.value, this.emailFormControl.value);
+    this.isLoading = false
     Swal.fire(
       'Check Your Email',
       'An email containing your Verification Code has been sent. Please enter that Code to complete your registration.',
@@ -90,7 +92,7 @@ export class SignUpComponent {
   }
 
   signUp() {
-    this.registerClicked = true;
+    this.isLoading = true;
     this.http.post<void>('/sign-up/register', {
       username: this.playerIdFormControl.value,
       password: this.passwordForm.value.password,
@@ -107,7 +109,7 @@ export class SignUpComponent {
         'Error',
         'Your request was refused. Did you entered your Verification Code correctly?',
         'error'
-      ).then(() => this.registerClicked = false);
+      ).then(() => this.isLoading = false);
       console.log(error);
     }))
   }

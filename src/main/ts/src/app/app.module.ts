@@ -20,7 +20,7 @@ import {CharacterCardComponent} from './client-debug/character-card/character-ca
 import {FlexLayoutModule} from "@angular/flex-layout";
 import {CardInHandComponent} from './client-debug/card-in-hand/card-in-hand.component';
 import {MatExpansionModule} from "@angular/material/expansion";
-import {ServerConnectionComponent} from './connection/server-connection/server-connection.component';
+import {SignInComponent} from './connection/sign-in/sign-in.component';
 import {ChooseGameComponent} from './connection/choose-game/choose-game.component';
 import {TestBattleSceneComponent} from './client-phaser/scnenes/battle/test-battle-scene/test-battle-scene.component';
 import {HomeComponent} from './home/home.component';
@@ -31,6 +31,7 @@ import {RulesComponent} from './home/rules/rules.component';
 import {ToolbarComponent} from './home/toolbar/toolbar.component';
 import {UserHubComponent} from './user-hub/user-hub.component';
 import {SignUpComponent} from './connection/sign-up/sign-up.component';
+import {NgxLoadingModule} from "ngx-loading";
 
 @NgModule({
   declarations: [
@@ -40,7 +41,7 @@ import {SignUpComponent} from './connection/sign-up/sign-up.component';
     CodeDialogComponent,
     CharacterCardComponent,
     CardInHandComponent,
-    ServerConnectionComponent,
+    SignInComponent,
     ChooseGameComponent,
     TestBattleSceneComponent,
     HomeComponent,
@@ -54,6 +55,7 @@ import {SignUpComponent} from './connection/sign-up/sign-up.component';
     BrowserModule,
     BrowserAnimationsModule,
     FormsModule,
+    HttpClientModule,
     RouterModule.forRoot([
       {path: '', component: HomeComponent},
       {path: 'rules', component: RulesComponent},
@@ -74,9 +76,9 @@ import {SignUpComponent} from './connection/sign-up/sign-up.component';
     MatDialogModule,
     MatSnackBarModule,
     MatExpansionModule,
-    HttpClientModule,
-    MarkdownModule.forRoot({loader: HttpClient}),
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgxLoadingModule,
+    MarkdownModule.forRoot({loader: HttpClient})
   ],
   providers: [
     MatSnackBarModule

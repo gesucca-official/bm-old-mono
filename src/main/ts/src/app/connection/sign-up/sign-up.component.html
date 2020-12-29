@@ -1,4 +1,5 @@
 <mat-card style="margin-top: 5px">
+  <ngx-loading [show]="isLoading"></ngx-loading>
   <mat-form-field color="accent" style="margin-right: 10px">
     <mat-label>Player ID</mat-label>
     <input matInput type="text" [formControl]="playerIdFormControl" [errorStateMatcher]="matcher">
@@ -62,8 +63,7 @@
           [disabled]="emailFormControl.invalid
           || playerIdFormControl.invalid
           || verificationCodeFormControl.invalid
-          || passwordForm.invalid
-          || registerClicked">
+          || passwordForm.invalid">
     Sign Up
   </button>
 </mat-card>
