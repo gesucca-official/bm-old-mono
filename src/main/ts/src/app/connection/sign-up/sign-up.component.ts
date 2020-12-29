@@ -2,6 +2,8 @@ import {Component} from '@angular/core';
 import {ErrorStateMatcher} from "@angular/material/core";
 import {FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from "@angular/forms";
 import {HttpClient} from "@angular/common/http";
+import Swal from 'sweetalert2';
+import {Router} from "@angular/router";
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -47,35 +49,44 @@ export class SignUpComponent {
 
   matcher = new MyErrorStateMatcher();
 
-  constructor(protected http: HttpClient, private formBuilder: FormBuilder) {
+  constructor(protected http: HttpClient, private formBuilder: FormBuilder, private router: Router) {
     this.passwordForm = this.formBuilder.group({
       password: ['', [Validators.required]],
       confirmPassword: ['']
-    }, { validator: this.checkPasswords });
+    }, {validator: this.checkPasswords});
   }
 
-  sendVerificationEmail() {
+  async sendVerificationEmail() {
     this.sendCodeClicked = true;
     setTimeout(() => this.sendCodeClicked = false, 10000)
-    this.http.get<boolean>('/sign-up/users/' + this.playerIdFormControl.value + '/available').subscribe(res => {
-      console.log(res)
-      if (!res)
-        alert('username already taken');
-      else this.http.get<boolean>('/sign-up/mail/' + this.emailFormControl.value + '/available').subscribe(res => {
-        console.log(res)
-        if (!res)
-          alert('email already taken');
-        else
-          this.http.post<void>('/sign-up/verify', {
-            username: this.playerIdFormControl.value,
-            email: this.emailFormControl.value
-          }).subscribe(res => {
-            console.log(res)
-            this.sendCodeClicked = false;
-            alert('email sent')
-          })
-      });
-    });
+
+    const usernameAvailable = await this.checkUsernameAvailability(this.playerIdFormControl.value);
+    if (!usernameAvailable) {
+      Swal.fire(
+        'Error!',
+        'This username is already taken. Please choose another.',
+        'error'
+      ).then(() => this.sendCodeClicked = false);
+      this.sendCodeClicked = false;
+      return;
+    }
+
+    const emailAvailable = await this.checkEmailAvailability(this.emailFormControl.value);
+    if (!emailAvailable) {
+      Swal.fire(
+        'Error!',
+        'This email has already been used for registration. Please use another one.',
+        'error'
+      ).then(() => this.sendCodeClicked = false);
+      return;
+    }
+
+    await this.sendVerificationCode(this.playerIdFormControl.value, this.emailFormControl.value);
+    Swal.fire(
+      'Check Your Email',
+      'An email containing your Verification Code has been sent. Please enter that Code to complete your registration.',
+      'success'
+    ).then();
   }
 
   signUp() {
@@ -85,15 +96,40 @@ export class SignUpComponent {
       password: this.passwordForm.value.password,
       email: this.emailFormControl.value,
       code: this.verificationCodeFormControl.value
-    }).subscribe(res => {
-      console.log(res)
-      alert('account created')
-    })
+    }).subscribe(() => {
+      Swal.fire(
+        'Account Created',
+        'Your account has been successfully created. You can now Log In.',
+        'success'
+      ).then(() => this.router.navigateByUrl('/hub'));
+    }, (error => {
+      Swal.fire(
+        'Error',
+        'Your request was refused. Did you entered your Verification Code correctly?',
+        'error'
+      ).then(() => this.registerClicked = false);
+      console.log(error);
+    }))
   }
 
   checkPasswords(group: FormGroup) {
     let pass = group.controls.password.value;
     let confirmPass = group.controls.confirmPassword.value;
-    return pass === confirmPass ? null : { notSame: true }
+    return pass === confirmPass ? null : {notSame: true}
+  }
+
+  private async checkUsernameAvailability(username: string): Promise<boolean> {
+    return this.http.get<boolean>('/sign-up/users/' + username + '/available').toPromise();
+  }
+
+  private async checkEmailAvailability(email: string): Promise<boolean> {
+    return this.http.get<boolean>('/sign-up/mail/' + email + '/available').toPromise();
+  }
+
+  private async sendVerificationCode(username: string, email: string): Promise<void> {
+    return this.http.post<void>('/sign-up/verify', {
+      username: username,
+      email: email
+    }).toPromise()
   }
 }

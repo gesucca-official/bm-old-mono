@@ -51,8 +51,9 @@ public class AuthServiceImpl implements AuthService {
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(address);
-        message.setSubject("Welcome to BOTTE MICIDIALI");
-        message.setText("Here's your confirmation code: " + pendingVerificationCodes.get(username));
+        message.setSubject("Welcome to BOTTE MICIDIALI, " + username + "!");
+        message.setText("Hello " + username + ", thank you for joining us.\n" +
+                "Here's your confirmation code: " + pendingVerificationCodes.get(username));
         javaMailSender.send(message);
     }
 
