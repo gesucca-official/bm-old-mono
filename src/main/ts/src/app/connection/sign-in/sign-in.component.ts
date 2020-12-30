@@ -31,6 +31,7 @@ export class SignInComponent {
         'error'
       ).then(() => this.isLoading = false);
     } else {
+      this.gameService.playerId = this.playerId;
       this.websocketService.connect(this.playerId, this.password);
       this.isLoading = false;
     }

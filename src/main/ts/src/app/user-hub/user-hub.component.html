@@ -1,1 +1,12 @@
-<app-server-connection></app-server-connection>
+<app-server-connection *ngIf="!websocketService.isConnected()"></app-server-connection>
+<mat-tab-group *ngIf="websocketService.isConnected()" backgroundColor="accent">
+  <mat-tab label="Play (debug)">
+    <app-debug-client></app-debug-client>
+  </mat-tab>
+  <mat-tab label="Play (graphic)">
+    <app-phaser-client></app-phaser-client>
+  </mat-tab>
+  <mat-tab label="Collection">To Be Added</mat-tab>
+  <mat-tab label="Profile">To Be Added</mat-tab>
+</mat-tab-group>
+

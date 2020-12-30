@@ -32,6 +32,7 @@ import {ToolbarComponent} from './home/toolbar/toolbar.component';
 import {UserHubComponent} from './user-hub/user-hub.component';
 import {SignUpComponent} from './connection/sign-up/sign-up.component';
 import {NgxLoadingModule} from "ngx-loading";
+import {MatTabsModule} from "@angular/material/tabs";
 
 @NgModule({
   declarations: [
@@ -76,6 +77,7 @@ import {NgxLoadingModule} from "ngx-loading";
     MatDialogModule,
     MatSnackBarModule,
     MatExpansionModule,
+    MatTabsModule,
     ReactiveFormsModule,
     NgxLoadingModule,
     MarkdownModule.forRoot({loader: HttpClient})

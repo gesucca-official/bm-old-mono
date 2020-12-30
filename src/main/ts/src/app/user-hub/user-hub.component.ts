@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {WebsocketService} from "../service/websocket.service";
 
 @Component({
   selector: 'app-user-hub',
@@ -7,7 +8,7 @@ import {Component, OnInit} from '@angular/core';
 })
 export class UserHubComponent implements OnInit {
 
-  constructor() {
+  constructor(public websocketService: WebsocketService) {
   }
 
   ngOnInit(): void {
