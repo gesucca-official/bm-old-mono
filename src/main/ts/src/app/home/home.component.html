@@ -1,6 +1,6 @@
 <app-toolbar></app-toolbar>
 
-<mat-card class="presentation-card">
+<mat-card class="presentation-card mat-elevation-z4">
   <mat-card-header>
     <mat-card-title>What's This?</mat-card-title>
     <mat-card-subtitle>About this Project</mat-card-subtitle>
@@ -20,16 +20,16 @@
     </p>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-raised-button onClick="window.location.href = 'mailto:gesucca.official@gmail.com'">
+    <button mat-raised-button color="primary" onClick="window.location.href = 'mailto:gesucca.official@gmail.com'">
       Send me a Mail
     </button>
-    <button mat-raised-button color="accent" onClick="window.open('https://www.paypal.com/paypalme/gesucca/')">
+    <button mat-raised-button color="primary" onClick="window.open('https://www.paypal.com/paypalme/gesucca/')">
       Support This
     </button>
   </mat-card-actions>
 </mat-card>
 
-<mat-card class="presentation-card">
+<mat-card class="presentation-card mat-elevation-z4">
   <mat-card-header>
     <mat-card-title>How do I play?</mat-card-title>
     <mat-card-subtitle>About this Game</mat-card-subtitle>
@@ -46,7 +46,8 @@
     </p>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-raised-button class="choice-button mat-elevation-z4"
+    <button mat-raised-button class="choice-button mat-elevation-z10"
+            color="primary"
             routerLink="/rules"
             routerLinkActive="active">
       Read Rules
@@ -67,7 +68,7 @@
               routerLinkActive="active">
         Log In
       </button>
-      <button mat-raised-button class="choice-button mat-elevation-z4"
+      <button mat-raised-button color="primary" class="choice-button"
               routerLink="/sign-up"
               routerLinkActive="active">
         Register
