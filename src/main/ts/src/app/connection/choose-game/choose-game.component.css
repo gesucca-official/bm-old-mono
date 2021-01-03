@@ -7,6 +7,14 @@ mat-panel-description.right-aligned {
   flex-grow: 0;
 }
 
+table {
+  width: 100%;
+}
+
+th.mat-sort-header-sorted {
+  color: black;
+}
+
 .chooser-card {
   width: fit-content;
   margin: 20px auto;
@@ -19,4 +27,9 @@ mat-panel-description.right-aligned {
 .smaller-title {
   font-size: medium;
   margin-top: 5px;
+}
+
+.whole-component {
+  width: 99%;
+  margin: 0 auto;
 }

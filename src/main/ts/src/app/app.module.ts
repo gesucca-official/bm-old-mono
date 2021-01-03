@@ -33,6 +33,9 @@ import {UserHubComponent} from './user-hub/user-hub.component';
 import {SignUpComponent} from './connection/sign-up/sign-up.component';
 import {NgxLoadingModule} from "ngx-loading";
 import {MatTabsModule} from "@angular/material/tabs";
+import {MatTableModule} from "@angular/material/table";
+import {MatPaginatorModule} from "@angular/material/paginator";
+import {MatSortModule} from "@angular/material/sort";
 
 @NgModule({
   declarations: [
@@ -78,6 +81,9 @@ import {MatTabsModule} from "@angular/material/tabs";
     MatSnackBarModule,
     MatExpansionModule,
     MatTabsModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
     ReactiveFormsModule,
     NgxLoadingModule,
     MarkdownModule.forRoot({loader: HttpClient})

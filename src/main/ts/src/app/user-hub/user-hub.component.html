@@ -1,3 +1,4 @@
+<app-toolbar></app-toolbar>
 <app-server-connection *ngIf="!websocketService.isConnected()"></app-server-connection>
 <mat-tab-group color="accent" backgroundColor="accent" *ngIf="websocketService.isConnected()">
   <mat-tab label="Play">
