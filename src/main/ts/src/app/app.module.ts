@@ -36,6 +36,7 @@ import {MatTabsModule} from "@angular/material/tabs";
 import {MatTableModule} from "@angular/material/table";
 import {MatPaginatorModule} from "@angular/material/paginator";
 import {MatSortModule} from "@angular/material/sort";
+import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 
 @NgModule({
   declarations: [
@@ -84,6 +85,7 @@ import {MatSortModule} from "@angular/material/sort";
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
+    MatSlideToggleModule,
     ReactiveFormsModule,
     NgxLoadingModule,
     MarkdownModule.forRoot({loader: HttpClient})

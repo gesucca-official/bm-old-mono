@@ -9,6 +9,8 @@ import {Character} from "../model/character";
 })
 export class GameService {
 
+  private _graphicClient: boolean;
+
   private _gameId: string;
   private _playerId: string;
   private _gameState: GameState;
@@ -59,6 +61,14 @@ export class GameService {
 
   set gameId(value: string) {
     this._gameId = value;
+  }
+
+  get graphicClient(): boolean {
+    return this._graphicClient;
+  }
+
+  set graphicClient(value: boolean) {
+    this._graphicClient = value;
   }
 
   isPlayable(card: Card, character: Character): boolean {

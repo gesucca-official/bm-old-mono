@@ -8,44 +8,44 @@ import {User} from "../../model/user";
 import {MatSort} from "@angular/material/sort";
 
 @Component({
-    selector: 'app-choose-game',
-    templateUrl: './choose-game.component.html',
-    styleUrls: ['./choose-game.component.css']
+  selector: 'app-choose-game',
+  templateUrl: './choose-game.component.html',
+  styleUrls: ['./choose-game.component.css']
 })
 export class ChooseGameComponent implements AfterViewInit {
 
-    @Output() joinGameRequest: EventEmitter<String> = new EventEmitter<String>();
+  @Output() joinGameRequest: EventEmitter<String> = new EventEmitter<String>();
 
-    constructor(public websocketService: WebsocketService,
-                public gameService: GameService,
-                public sessionService: SessionService) {
-    }
+  constructor(public websocketService: WebsocketService,
+              public gameService: GameService,
+              public sessionService: SessionService) {
+  }
 
-    @ViewChild(MatPaginator) paginator: MatPaginator;
-    @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
 
-    dataSource = new MatTableDataSource<User>(this.sessionService.usersConnected);
+  dataSource = new MatTableDataSource<User>(this.sessionService.usersConnected);
 
-    ngAfterViewInit() {
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
-    }
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+  }
 
-    ngDoCheck() {
-        if (this.dataSource.data !== this.sessionService.usersConnected)
-            this.dataSource = new MatTableDataSource<User>(this.sessionService.usersConnected);
-    }
+  ngDoCheck() {
+    if (this.dataSource.data !== this.sessionService.usersConnected)
+      this.dataSource = new MatTableDataSource<User>(this.sessionService.usersConnected);
+  }
 
-    joinGame(game: string) {
-        this.joinGameRequest.emit(game); // TODO why am I emitting this event and not directly calling the service
-    }
+  joinGame(game: string) {
+    this.joinGameRequest.emit(game); // TODO why am I emitting this event and not directly calling the service
+  }
 
-    addComPlayerToFfaGame() {
-        this.websocketService.addComToGame();
-    }
+  addComPlayerToFfaGame() {
+    this.websocketService.addComToGame();
+  }
 
-    forceStartFfaGame() {
-        this.websocketService.forceStartFfaGame();
-    }
+  forceStartFfaGame() {
+    this.websocketService.forceStartFfaGame();
+  }
 
 }

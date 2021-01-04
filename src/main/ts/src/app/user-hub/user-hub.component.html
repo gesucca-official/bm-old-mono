@@ -2,7 +2,9 @@
 <app-server-connection *ngIf="!websocketService.isConnected()"></app-server-connection>
 <mat-tab-group color="accent" backgroundColor="accent" *ngIf="websocketService.isConnected()">
   <mat-tab label="Play">
+    <app-choose-game *ngIf="!gameService.gameState" (joinGameRequest)="bounceJoinGameEvent($event)"></app-choose-game>
     <app-debug-client></app-debug-client>
+    <app-phaser-client></app-phaser-client>
   </mat-tab>
   <mat-tab label="Collection">To Be Added</mat-tab>
   <mat-tab label="Profile">To Be Added</mat-tab>
