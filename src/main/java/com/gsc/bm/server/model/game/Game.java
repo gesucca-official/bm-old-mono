@@ -50,6 +50,8 @@ public class Game implements Serializable {
 
     private int turn = 0; // why keeping it here? client could use it
     @JsonIgnore
+    private final String type;
+    @JsonIgnore
     private final LoggingList loggedTurnEvents;
 
     @JsonProperty
@@ -70,8 +72,9 @@ public class Game implements Serializable {
         return Optional.empty();
     }
 
-    public Game(List<Player> players, boolean printLogs) {
+    public Game(List<Player> players, String type, boolean printLogs) {
         generateGameId(players);
+        this.type = type;
         // rearrange players in a map
         this.players = new HashMap<>(players.size());
         for (Player p : players)

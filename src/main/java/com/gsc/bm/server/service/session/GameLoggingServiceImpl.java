@@ -53,7 +53,7 @@ public class GameLoggingServiceImpl implements GameLoggingService {
                 .orElse("Error reducing PlayerIds");
         String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         if (Objects.equals(environment.getProperty("log.db"), "Y"))
-            SAVE_QUEUE.submit(() -> repo.save(new GameLogRecord(game.getGameId(), players, date, status, log)));
+            SAVE_QUEUE.submit(() -> repo.save(new GameLogRecord(game.getGameId(), game.getType(), players, date, status, log)));
     }
 
 }

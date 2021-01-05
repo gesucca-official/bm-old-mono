@@ -35,6 +35,9 @@ public class GameLogRecord {
     @Column(name = "T_PLAYERS")
     private String players;
 
+    @Column(name = "T_TYPE")
+    private String type;
+
     @Column(name = "T_DATE")
     private String date;
 

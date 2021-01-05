@@ -29,11 +29,14 @@ public class GameFactoryServiceImpl implements GameFactoryService {
         return new Game(List.of(
                 playerFactoryService.craftRandomPlayer(playerId),
                 playerFactoryService.craftRandomComPlayer()
-        ), Objects.equals(env.getProperty("log.db"), "N"));
+        ), "quick1vCom", Objects.equals(env.getProperty("log.db"), "N"));
     }
 
     @Override
     public Game craftQuickMultiPlayerGame(List<QueuedPlayer> queuedPlayers) {
+        String type =
+                queuedPlayers.stream().allMatch(QueuedPlayer::isHuman) && queuedPlayers.size() == 2
+                        ? "quick1v1" : "quickFFA";
         List<Player> players = new ArrayList<>(queuedPlayers.size());
         for (QueuedPlayer qp : queuedPlayers)
             players.add(
@@ -41,7 +44,7 @@ public class GameFactoryServiceImpl implements GameFactoryService {
                             ? playerFactoryService.craftRandomPlayer(qp.getPlayerId())
                             : playerFactoryService.craftRandomComPlayer()
             );
-        return new Game(players, Objects.equals(env.getProperty("log.db"), "N"));
+        return new Game(players, type, Objects.equals(env.getProperty("log.db"), "N"));
     }
 
 }
