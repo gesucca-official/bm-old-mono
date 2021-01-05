@@ -40,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/control-panel/**").authenticated()
+                .antMatchers("/control-panel/logs/games/drain").authenticated()
                 .and()
                 .authorizeRequests()
                 .antMatchers("/bm-server/**").permitAll()

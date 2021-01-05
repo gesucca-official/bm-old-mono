@@ -8,27 +8,12 @@
   </mat-tab>
   <mat-tab label="Collection">To Be Added</mat-tab>
   <mat-tab label="Profile">
-    <!--TODO this obviously goes into its own component-->
     <ul>
       <li> {{sessionService.userAccountData.username}} </li>
       <li> {{sessionService.userAccountData.email}} </li>
       <li> {{sessionService.userAccountData.role}}  </li>
     </ul>
-    <mat-card *ngIf="sessionService.userAccountData.role === 'ADMIN'" class="chooser-card">
-      <mat-card-title>
-        Control Panel
-      </mat-card-title>
-      <mat-card-content>
-        Show logged games qty &c&c
-      </mat-card-content>
-      <mat-card-actions>
-        <button mat-raised-button
-                class="choice-button"
-                (click)="$event.stopPropagation()">
-          Drain Logs
-        </button>
-      </mat-card-actions>
-    </mat-card>
+    <app-admin-control-panel *ngIf="sessionService.userAccountData.role === 'ADMIN'"></app-admin-control-panel>
   </mat-tab>
 </mat-tab-group>
 

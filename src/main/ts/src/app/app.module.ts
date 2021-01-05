@@ -37,6 +37,7 @@ import {MatTableModule} from "@angular/material/table";
 import {MatPaginatorModule} from "@angular/material/paginator";
 import {MatSortModule} from "@angular/material/sort";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
+import {AdminControlPanelComponent} from './user-hub/admin-control-panel/admin-control-panel.component';
 
 @NgModule({
   declarations: [
@@ -54,6 +55,8 @@ import {MatSlideToggleModule} from "@angular/material/slide-toggle";
     ToolbarComponent,
     UserHubComponent,
     SignUpComponent,
+    AdminControlPanelComponent,
+    AdminControlPanelComponent,
   ],
   imports: [
     CommonModule,
