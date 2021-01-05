@@ -1,11 +1,10 @@
-package com.gsc.bm.server.api.panel;
+package com.gsc.bm.server.api.rest.panel;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gsc.bm.server.repo.external.GameLogRecord;
 import com.gsc.bm.server.repo.external.GameLogRepository;
 import com.gsc.bm.server.service.session.GameLoggingService;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,13 +25,11 @@ public class LogController {
         this.gameLogRepo = gameLogRepo;
     }
 
-    @ApiOperation("Tell how many Games has been logged")
     @GetMapping(value = "/games/qty", produces = MediaType.APPLICATION_JSON_VALUE)
     public long getLoggedGamesQty() {
         return gameLogRepo.count();
     }
 
-    @ApiOperation("Find all abandoned Games")
     @GetMapping(value = "/games/open", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<GameLogRecord> getOpenedGames() {
         List<GameLogRecord> openGames = new ArrayList<>();
@@ -41,7 +38,6 @@ public class LogController {
         return openGames;
     }
 
-    @ApiOperation("Drain all Game Logs from DB")
     @GetMapping(value = "/games/drain", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public byte[] drainLogs() throws JsonProcessingException {
         List<GameLogRecord> logs = new ArrayList<>((int) gameLogRepo.count());

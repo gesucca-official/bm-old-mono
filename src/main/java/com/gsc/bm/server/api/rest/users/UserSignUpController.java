@@ -1,4 +1,4 @@
-package com.gsc.bm.server.api.users;
+package com.gsc.bm.server.api.rest.users;
 
 import com.gsc.bm.server.service.session.AuthService;
 import org.springframework.http.HttpStatus;

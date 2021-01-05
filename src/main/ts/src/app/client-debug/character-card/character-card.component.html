@@ -21,6 +21,10 @@
 
     <br>
 
+    <p *ngFor="let timer of playerState.character.timers">
+      TIMERS: <b>{{timer.name}}</b> ({{timer.timer}})
+    </p>
+
     <p *ngFor="let status of playerState.character.statuses">
       STATUS: <b>{{status.name}}</b> <br> ({{status.description}})
     </p>

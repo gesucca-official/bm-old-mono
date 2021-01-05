@@ -1,4 +1,4 @@
-package com.gsc.bm.server.api;
+package com.gsc.bm.server.api.ws;
 
 import com.gsc.bm.server.model.game.IllegalMoveException;
 import com.gsc.bm.server.model.game.Move;
@@ -94,7 +94,6 @@ public class GameController {
     @SendToUser("/queue/game/{gameId}/{playerId}/view")
     public ClientGameView getGameView(@DestinationVariable String gameId, @DestinationVariable String playerId) {
         return viewExtractorService.extractViewFor(gameSessionService.getGame(gameId), playerId);
-
     }
 
     @MessageMapping("/game/{gameId}/{playerId}/leave")

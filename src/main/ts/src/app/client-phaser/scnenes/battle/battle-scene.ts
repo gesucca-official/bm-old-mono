@@ -64,7 +64,7 @@ export class BattleScene extends Phaser.Scene {
       alert(gameObject.data.list.card + ' dropped on ' + dropZone.data.list.target)
     })
 
-    if (this.gameService.gameState.resolvedMoves)
+    if (this.gameService.gameState.resolvedMoves && this.gameService.gameState.resolvedMoves.length > 0)
       this.setupMoveAnimation(0);
     this.playTimeBasedAnimation();
   }

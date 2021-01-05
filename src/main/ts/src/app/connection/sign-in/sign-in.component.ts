@@ -32,9 +32,12 @@ export class SignInComponent {
       ).then(() => this.isLoading = false);
     } else {
       this.gameService.playerId = this.playerId;
-      this.websocketService.connect(this.playerId, this.password);
-      this.isLoading = false;
+      this.websocketService.connect(this.playerId, this.password, () => this.loginCallback());
     }
+  }
+
+  private loginCallback(): void {
+    this.isLoading = false;
   }
 
   private async checkCredentials(username: string, password: string): Promise<boolean> {

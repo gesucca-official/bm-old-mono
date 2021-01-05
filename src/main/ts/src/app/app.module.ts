@@ -66,9 +66,6 @@ import {MatSlideToggleModule} from "@angular/material/slide-toggle";
       {path: 'rules', component: RulesComponent},
       {path: 'hub', component: UserHubComponent},
       {path: 'sign-up', component: SignUpComponent},
-      //{path: 'client/debug', component: DebugClientComponent},
-      //{path: 'client/graphic', component: PhaserClientComponent},
-      {path: 'client/graphic/test/battle', component: TestBattleSceneComponent},
       {path: '**', redirectTo: '', component: HomeComponent}
     ], {onSameUrlNavigation: 'reload'}),
     FlexLayoutModule,

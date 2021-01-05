@@ -28,9 +28,9 @@ export class TestBattleSceneComponent implements OnInit {
       scale: {
         mode: Phaser.Scale.FIT,
         parent: 'phaserClient',
-        autoCenter: Phaser.Scale.CENTER_BOTH,
+        autoCenter: Phaser.Scale.NONE,
         width: this.settingsService.getScreenWidth(),
-        height: this.settingsService.getScreenHeight(),
+        height: this.settingsService.getScreenHeight()
       },
       scene: [BattleScene]
     }

@@ -19,7 +19,7 @@ public class AuthServiceImpl implements AuthService {
 
     private final JavaMailSender javaMailSender;
     private final PasswordEncoder passwordEncoder;
-    // TODO cache for this
+    // TODO cache for this?
     private final UserCredentialsRepository userCredentialsRepo;
 
     private final Map<String, String> pendingVerificationCodes = new HashMap<>();
@@ -63,7 +63,7 @@ public class AuthServiceImpl implements AuthService {
             throw new BadCredentialsException("Invalid VERIFICATION CODE");
         if (!isUsernameAvailable(username) || !isMailAvailable(email))
             throw new BadCredentialsException("USERNAME or EMAIL already present in DB");
-        userCredentialsRepo.save(new UserCredentialsRecord(username, email, passwordEncoder.encode(password)));
+        userCredentialsRepo.save(new UserCredentialsRecord(username, email, passwordEncoder.encode(password), "USER"));
         pendingVerificationCodes.remove(username);
     }
 

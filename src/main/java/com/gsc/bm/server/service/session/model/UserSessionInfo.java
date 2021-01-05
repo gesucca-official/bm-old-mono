@@ -10,13 +10,9 @@ import lombok.ToString;
 @ToString
 public class UserSessionInfo {
 
-    public enum Activity {
-        FREE, QUEUED, PLAYING
-    }
-
     private final String userLogin;
     private final String sessionId;
     @Setter
-    private Activity activity;
+    private String activity;
 
 }

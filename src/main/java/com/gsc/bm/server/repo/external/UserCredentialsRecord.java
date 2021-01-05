@@ -3,6 +3,7 @@ package com.gsc.bm.server.repo.external;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,6 +16,7 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@ToString
 public class UserCredentialsRecord {
 
     @Id
@@ -26,4 +28,7 @@ public class UserCredentialsRecord {
 
     @Column(name = "T_SALTED_HASH")
     private String saltedHash;
+
+    @Column(name = "T_ROLE")
+    private String role;
 }

@@ -1,6 +1,7 @@
-package com.gsc.bm.server.api.users;
+package com.gsc.bm.server.api.rest.users;
 
 import com.gsc.bm.server.service.session.AuthService;
+import com.gsc.bm.server.service.session.ConnectionsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
@@ -13,14 +14,18 @@ import java.util.Map;
 public class UserLogInController {
 
     private final AuthService authService;
+    private final ConnectionsService connectionsService;
 
     @Autowired
-    public UserLogInController(AuthService authService) {
+    public UserLogInController(AuthService authService, ConnectionsService connectionsService) {
         this.authService = authService;
+        this.connectionsService = connectionsService;
     }
 
     @PostMapping(value = "/validate")
     public boolean validateCredentials(@RequestBody Map<String, String> credentials) {
+        if (connectionsService.getAllConnectedUsers().contains(credentials.get("username")))
+            return false; // rough patch to avoid multiple connections with the same user
         try {
             authService.getAuthTokenOrFail(credentials.get("username"), credentials.get("password"));
         } catch (AuthenticationException e) {

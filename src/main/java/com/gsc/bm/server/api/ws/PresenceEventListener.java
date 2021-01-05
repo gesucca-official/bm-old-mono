@@ -1,4 +1,4 @@
-package com.gsc.bm.server.api;
+package com.gsc.bm.server.api.ws;
 
 import com.gsc.bm.server.service.session.ConnectionsService;
 import com.gsc.bm.server.service.session.QueueService;
@@ -25,18 +25,18 @@ public class PresenceEventListener {
     @EventListener
     public synchronized void handleSessionConnected(SessionConnectEvent event) {
         connectionsService.userConnected(event);
-        connectionsService.broadcastUsersInfo();
+        connectionsService.broadcastUsersStatus();
     }
 
     @EventListener
     public synchronized void handleSessionDisconnect(SessionDisconnectEvent event) {
         String userId = connectionsService.userDisconnected(event);
         queueService.leaveAllQueues(new QueuedPlayer(userId, true));
-        connectionsService.broadcastUsersInfo();
+        connectionsService.broadcastUsersStatus();
     }
 
     @MessageMapping("/connections/users/tell/me")
     public void broadcastUsers() {
-        connectionsService.broadcastUsersInfo();
+        connectionsService.broadcastUsersStatus();
     }
 }
