@@ -1,15 +1,19 @@
 import {Injectable} from '@angular/core';
 import {QueuedUser, User} from "../model/user";
+import {UserAccountData} from "../model/user-account-data";
 
 @Injectable({
   providedIn: 'root'
 })
 export class SessionService {
+
   private _queued: boolean;
   private _queuedFor: string;
 
   private _usersConnected: User[] = [];
   private _usersInCurrentQueue: QueuedUser[] = [];
+
+  private _userAccountData: UserAccountData = {};
 
   get queued(): boolean {
     return this._queued;
@@ -45,6 +49,14 @@ export class SessionService {
 
   set usersConnected(value: User[]) {
     this._usersConnected = value;
+  }
+
+  get userAccountData(): UserAccountData {
+    return this._userAccountData;
+  }
+
+  set userAccountData(value: UserAccountData) {
+    this._userAccountData = value;
   }
 
 }

@@ -5,6 +5,7 @@ import com.gsc.bm.server.model.Resource;
 import com.gsc.bm.server.model.cards.AbstractCard;
 import com.gsc.bm.server.model.game.Game;
 import com.gsc.bm.server.model.game.Move;
+import com.gsc.bm.server.model.game.Timer;
 
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,8 @@ public class ToxicBloodDrain extends AbstractCard {
 
     @Override
     public List<String> applyEffectOnTarget(Character self, Character target) {
+        target.getImmunities().remove(Resource.TOXICITY);
+        self.getTimers().add(new Timer("Blood Drain", c -> c.getImmunities().add(Resource.TOXICITY), 1));
         return List.of(
                 target.gainResource(Resource.TOXICITY, toxicity)
         );

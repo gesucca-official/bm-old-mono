@@ -1,0 +1,12 @@
+mat-tab {
+  overflow: hidden !important;
+}
+
+.chooser-card {
+  width: fit-content;
+  margin: 5px auto;
+}
+
+.choice-button {
+  margin-left: 5px;
+}

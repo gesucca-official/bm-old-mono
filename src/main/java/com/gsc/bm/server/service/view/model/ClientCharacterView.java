@@ -2,6 +2,7 @@ package com.gsc.bm.server.service.view.model;
 
 import com.gsc.bm.server.model.Resource;
 import com.gsc.bm.server.model.cards.Card;
+import com.gsc.bm.server.model.game.Timer;
 import com.gsc.bm.server.model.game.status.Status;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,6 +21,7 @@ public class ClientCharacterView {
     private final Map<Resource, Integer> resources;
     private final List<Status> statuses;
     private final Set<Resource> immunities;
+    private final Set<Timer> timers;
 
     private final String sprite;
 }

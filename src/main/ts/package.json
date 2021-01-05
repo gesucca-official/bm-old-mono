@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --host 0.0.0.0 --port 4201",
+    "start": "ng serve --host 0.0.0.0 --port 4201 --proxy-config proxy.config.json",
     "build": "ng build",
     "build-prod": "ng build --configuration=production",
     "test": "ng test",
@@ -25,6 +25,7 @@
     "@angular/router": "~10.1.6",
     "@ion-phaser/core": "^1.2.3",
     "net": "^1.0.2",
+    "ngx-loading": "^8.0.0",
     "ngx-markdown": "^10.1.1",
     "phaser": "^3.24.1",
     "rxjs": "^6.6.3",

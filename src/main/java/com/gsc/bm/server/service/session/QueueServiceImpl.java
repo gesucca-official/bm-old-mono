@@ -1,7 +1,6 @@
 package com.gsc.bm.server.service.session;
 
 import com.gsc.bm.server.service.session.model.QueuedPlayer;
-import com.gsc.bm.server.service.session.model.UserSessionInfo;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,7 +34,7 @@ public class QueueServiceImpl implements QueueService {
         log.info(player.getPlayerId() + " is joining queue: " + queue);
         QUEUES.get(queue).add(player);
         if (player.isHuman())
-            connectionsService.userActivityChanged(player.getPlayerId(), UserSessionInfo.Activity.QUEUED);
+            connectionsService.userActivityChanged(player.getPlayerId(), "Queued for " + queue);
 
         if (QUEUES.get(queue).size() >= MAX_QUEUE_SIZES.get(queue)) {
             List<QueuedPlayer> playersInGame = new ArrayList<>(QUEUES.get(queue));

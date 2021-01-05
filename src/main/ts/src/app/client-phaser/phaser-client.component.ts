@@ -53,8 +53,8 @@ export class PhaserClientComponent {
       type: Phaser.AUTO,
       scale: {
         mode: Phaser.Scale.FIT,
-        parent: 'phaserContainer',
-        autoCenter: Phaser.Scale.CENTER_BOTH,
+        parent: 'phaserClient',
+        autoCenter: Phaser.Scale.NONE,
         width: this.settingsService.getScreenWidth(),
         height: this.settingsService.getScreenHeight()
       },

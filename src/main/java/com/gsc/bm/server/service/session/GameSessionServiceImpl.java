@@ -2,7 +2,6 @@ package com.gsc.bm.server.service.session;
 
 import com.gsc.bm.server.model.game.*;
 import com.gsc.bm.server.service.session.model.ActionLog;
-import com.gsc.bm.server.service.session.model.UserSessionInfo;
 import com.gsc.bm.server.service.view.ViewExtractorService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +38,7 @@ public class GameSessionServiceImpl implements GameSessionService {
                 .stream()
                 .filter(p -> !(p instanceof ComPlayer))
                 .map(Player::getPlayerId)
-                .peek(p -> connectionsService.userActivityChanged(p, UserSessionInfo.Activity.PLAYING))
+                .peek(p -> connectionsService.userActivityChanged(p, "Playing against " + game.getPlayers().values()))
                 .collect(Collectors.toSet());
 
         _GAMES.put(game, usersSubscribed);
@@ -62,7 +61,7 @@ public class GameSessionServiceImpl implements GameSessionService {
     @Override
     public synchronized void leaveGame(String gameId, String playerId) {
         _GAMES.get(getGame(gameId)).remove(playerId);
-        connectionsService.userActivityChanged(playerId, UserSessionInfo.Activity.FREE);
+        connectionsService.userActivityChanged(playerId, "Free");
         log.info("Player " + playerId + " left Game " + gameId);
 
         if (_GAMES.get(getGame(gameId)).isEmpty()) {

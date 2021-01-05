@@ -4,11 +4,14 @@ import com.gsc.bm.server.service.session.model.UserSessionInfo;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -24,28 +27,29 @@ public class ConnectionsServiceImpl implements ConnectionsService {
     }
 
     @Override
-    public void broadcastUsersInfo() {
+    public void broadcastUsersStatus() {
         messagingTemplate.convertAndSend("/topic/connections/users", _USERS);
     }
 
     @Override
+    public Set<String> getAllConnectedUsers() {
+        return _USERS.stream().map(UserSessionInfo::getUserLogin).collect(Collectors.toSet());
+    }
+
+    @Override
     public void userConnected(SessionConnectEvent event) {
-        Object rawNativeHeaders = event.getMessage().getHeaders().get("nativeHeaders");
-        if (rawNativeHeaders == null) {
-            log.info("SessionConnectEvent does not have the expected Native Headers!");
-        }
-
-        String userLoginName = ((List<String>) (new HashMap<>((Map<? extends String, ?>) rawNativeHeaders).get("login"))).get(0);
-        String sessionId = event.getMessage().getHeaders().get("simpSessionId", String.class);
-
+        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
+        String userLoginName = accessor.getLogin();
+        String sessionId = accessor.getSessionId();
         log.info("User Connected! " + userLoginName + " with simpSessionId " + sessionId);
-        _USERS.add(new UserSessionInfo(userLoginName, sessionId, UserSessionInfo.Activity.FREE));
+        _USERS.add(new UserSessionInfo(userLoginName, sessionId, "Free"));
     }
 
     @Override
     public String userDisconnected(SessionDisconnectEvent event) {
-        String sessionId = event.getMessage().getHeaders().get("simpSessionId", String.class);
-        String userLoginName = getUserLoginName(sessionId);
+        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
+        String sessionId = accessor.getSessionId();
+        String userLoginName = accessor.getLogin();
         _USERS.stream()
                 .filter(userSessionInfo -> userSessionInfo.getSessionId().equals(sessionId))
                 .findAny()
@@ -60,7 +64,7 @@ public class ConnectionsServiceImpl implements ConnectionsService {
     }
 
     @Override
-    public void userActivityChanged(String userId, UserSessionInfo.Activity activity) {
+    public void userActivityChanged(String userId, String activity) {
         _USERS.stream()
                 .filter(userSessionInfo -> userSessionInfo.getUserLogin().equals(userId))
                 .findAny()
@@ -68,15 +72,7 @@ public class ConnectionsServiceImpl implements ConnectionsService {
                         userSessionInfo -> userSessionInfo.setActivity(activity),
                         () -> log.info("An User not known as attempted to change Activity!")
                 );
-        broadcastUsersInfo();
-    }
-
-    private String getUserLoginName(String simpSessionId) {
-        return _USERS.stream()
-                .filter(userSessionInfo -> userSessionInfo.getSessionId().equals(simpSessionId))
-                .findAny()
-                .get() // TODO definitely custom exception
-                .getUserLogin();
+        broadcastUsersStatus();
     }
 
 }

@@ -6,7 +6,7 @@ import {CommonModule} from '@angular/common';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {DebugClientComponent} from "./client-debug/debug-client.component";
 import {PhaserClientComponent} from "./client-phaser/phaser-client.component";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatButtonModule} from "@angular/material/button";
 import {MatCardModule} from "@angular/material/card";
@@ -20,8 +20,8 @@ import {CharacterCardComponent} from './client-debug/character-card/character-ca
 import {FlexLayoutModule} from "@angular/flex-layout";
 import {CardInHandComponent} from './client-debug/card-in-hand/card-in-hand.component';
 import {MatExpansionModule} from "@angular/material/expansion";
-import {ServerConnectionComponent} from './conn/server-connection/server-connection.component';
-import {ChooseGameComponent} from './conn/choose-game/choose-game.component';
+import {SignInComponent} from './connection/sign-in/sign-in.component';
+import {ChooseGameComponent} from './connection/choose-game/choose-game.component';
 import {TestBattleSceneComponent} from './client-phaser/scnenes/battle/test-battle-scene/test-battle-scene.component';
 import {HomeComponent} from './home/home.component';
 import {RouterModule} from "@angular/router";
@@ -29,6 +29,14 @@ import {MarkdownModule} from "ngx-markdown";
 import {HttpClient, HttpClientModule} from "@angular/common/http";
 import {RulesComponent} from './home/rules/rules.component';
 import {ToolbarComponent} from './home/toolbar/toolbar.component';
+import {UserHubComponent} from './user-hub/user-hub.component';
+import {SignUpComponent} from './connection/sign-up/sign-up.component';
+import {NgxLoadingModule} from "ngx-loading";
+import {MatTabsModule} from "@angular/material/tabs";
+import {MatTableModule} from "@angular/material/table";
+import {MatPaginatorModule} from "@angular/material/paginator";
+import {MatSortModule} from "@angular/material/sort";
+import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 
 @NgModule({
   declarations: [
@@ -38,24 +46,26 @@ import {ToolbarComponent} from './home/toolbar/toolbar.component';
     CodeDialogComponent,
     CharacterCardComponent,
     CardInHandComponent,
-    ServerConnectionComponent,
+    SignInComponent,
     ChooseGameComponent,
     TestBattleSceneComponent,
     HomeComponent,
     RulesComponent,
     ToolbarComponent,
+    UserHubComponent,
+    SignUpComponent,
   ],
   imports: [
     CommonModule,
     BrowserModule,
     BrowserAnimationsModule,
     FormsModule,
+    HttpClientModule,
     RouterModule.forRoot([
       {path: '', component: HomeComponent},
       {path: 'rules', component: RulesComponent},
-      {path: 'client/debug', component: DebugClientComponent},
-      {path: 'client/graphic', component: PhaserClientComponent},
-      {path: 'client/graphic/test/battle', component: TestBattleSceneComponent},
+      {path: 'hub', component: UserHubComponent},
+      {path: 'sign-up', component: SignUpComponent},
       {path: '**', redirectTo: '', component: HomeComponent}
     ], {onSameUrlNavigation: 'reload'}),
     FlexLayoutModule,
@@ -68,7 +78,13 @@ import {ToolbarComponent} from './home/toolbar/toolbar.component';
     MatDialogModule,
     MatSnackBarModule,
     MatExpansionModule,
-    HttpClientModule,
+    MatTabsModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatSlideToggleModule,
+    ReactiveFormsModule,
+    NgxLoadingModule,
     MarkdownModule.forRoot({loader: HttpClient})
   ],
   providers: [

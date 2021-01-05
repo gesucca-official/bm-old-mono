@@ -145,6 +145,7 @@ public class ViewExtractorServiceImpl implements ViewExtractorService {
                 .resources(c.getResources())
                 .statuses(c.getStatuses())
                 .immunities(c.getImmunities())
+                .timers(c.getTimers())
                 .sprite(record.getGuiImage()) // TODO load this at once in a character factory??
                 .build();
     }

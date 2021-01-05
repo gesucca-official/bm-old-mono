@@ -1,0 +1,34 @@
+<app-toolbar></app-toolbar>
+<app-server-connection *ngIf="!websocketService.isConnected()"></app-server-connection>
+<mat-tab-group color="accent" backgroundColor="accent" *ngIf="websocketService.isConnected()">
+  <mat-tab label="Play">
+    <app-choose-game *ngIf="!gameService.gameState" (joinGameRequest)="bounceJoinGameEvent($event)"></app-choose-game>
+    <app-debug-client></app-debug-client>
+    <app-phaser-client></app-phaser-client>
+  </mat-tab>
+  <mat-tab label="Collection">To Be Added</mat-tab>
+  <mat-tab label="Profile">
+    <!--TODO this obviously goes into its own component-->
+    <ul>
+      <li> {{sessionService.userAccountData.username}} </li>
+      <li> {{sessionService.userAccountData.email}} </li>
+      <li> {{sessionService.userAccountData.role}}  </li>
+    </ul>
+    <mat-card *ngIf="sessionService.userAccountData.role === 'ADMIN'" class="chooser-card">
+      <mat-card-title>
+        Control Panel
+      </mat-card-title>
+      <mat-card-content>
+        Show logged games qty &c&c
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-raised-button
+                class="choice-button"
+                (click)="$event.stopPropagation()">
+          Drain Logs
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </mat-tab>
+</mat-tab-group>
+

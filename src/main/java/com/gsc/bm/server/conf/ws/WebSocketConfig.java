@@ -1,4 +1,4 @@
-package com.gsc.bm.server.conf;
+package com.gsc.bm.server.conf.ws;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
