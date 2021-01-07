@@ -73,7 +73,7 @@ export class SignUpComponent {
 
     const emailAvailable = await this.checkEmailAvailability(this.emailFormControl.value);
     if (!emailAvailable) {
-      this.isLoading = false
+      this.isLoading = false;
       Swal.fire(
         'Error!',
         'This email has already been used for registration. Please use another one.',
@@ -83,7 +83,7 @@ export class SignUpComponent {
     }
 
     await this.sendVerificationCode(this.playerIdFormControl.value, this.emailFormControl.value);
-    this.isLoading = false
+    this.isLoading = false;
     Swal.fire(
       'Check Your Email',
       'An email containing your Verification Code has been sent. Please enter that Code to complete your registration.',
@@ -99,6 +99,7 @@ export class SignUpComponent {
       email: this.emailFormControl.value,
       code: this.verificationCodeFormControl.value
     }).subscribe(() => {
+      this.isLoading = false;
       Swal.fire(
         'Account Created',
         'Your account has been successfully created. You can now Log In.',
@@ -109,7 +110,7 @@ export class SignUpComponent {
         'Error',
         'Your request was refused. Did you entered your Verification Code correctly?',
         'error'
-      ).then(() => this.isLoading = false);
+      ).then();
       console.log(error);
     }))
   }
