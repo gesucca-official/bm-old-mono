@@ -1,4 +1,6 @@
-.tabbed-component {
-  width: 99%;
+.tabbed {
+  height: 100%;
+  width: 90%;
   margin: 0 auto;
+  overflow: hidden;
 }

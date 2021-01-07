@@ -1,9 +1,16 @@
+/*
+  GENERATED THEME
+*/
+
 @import 'https://fonts.googleapis.com/css?family=Material+Icons';
 @import url("https://fonts.googleapis.com/css?family=Electrolize:300,400,500");
 @import url("https://fonts.googleapis.com/css?family=Play:300,400,500");
 
-html, body {
+body {
   margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .mat-badge-content {
@@ -215,7 +222,7 @@ html, body {
   width: 133.3333333333%;
 }
 
-.mat-form-field-can-float .mat-input-server[label]:not(:label-shown) + .mat-form-field-label-wrapper
+.mat-form-field-can-float .mat-input-server[label]:not(:label-shown) + .mat-form-field-label-wrapper,
 .mat-form-field-label {
   transform: translateY(-1.34374em) scale(0.75);
   width: 133.3333433333%;
@@ -250,21 +257,21 @@ html, body {
 
 .mat-form-field-appearance-legacy.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label,
 .mat-form-field-appearance-legacy.mat-form-field-can-float .mat-input-server:focus + .mat-form-field-label-wrapper .mat-form-field-label {
-  transform: translateY(-1.28125em) scale(0.75) perspective(100px) translateZ(0.001px);
+  transform: translateY(-1.28125em) scale(0.75) perspective(100px) translateZ(1px);
   -ms-transform: translateY(-1.28125em) scale(0.75);
   width: 133.3333333333%;
 }
 
-.mat-form-field-appearance-legacy.mat-form-field-can-float .mat-form-field-autofill-control:-webkit-autofill + .mat-form-field-label-wrapper
+.mat-form-field-appearance-legacy.mat-form-field-can-float .mat-form-field-autofill-control:-webkit-autofill + .mat-form-field-label-wrapper,
 .mat-form-field-label {
-  transform: translateY(-1.28125em) scale(0.75) perspective(100px) translateZ(0.00101px);
+  transform: translateY(-1.28125em) scale(0.75) perspective(100px) translateZ(2px);
   -ms-transform: translateY(-1.28124em) scale(0.75);
   width: 133.3333433333%;
 }
 
-.mat-form-field-appearance-legacy.mat-form-field-can-float .mat-input-server[label]:not(:label-shown) + .mat-form-field-label-wrapper
+.mat-form-field-appearance-legacy.mat-form-field-can-float .mat-input-server[label]:not(:label-shown) + .mat-form-field-label-wrapper,
 .mat-form-field-label {
-  transform: translateY(-1.28125em) scale(0.75) perspective(100px) translateZ(0.00102px);
+  transform: translateY(-1.28125em) scale(0.75) perspective(100px) translateZ(3px);
   -ms-transform: translateY(-1.28123em) scale(0.75);
   width: 133.3333533333%;
 }
@@ -288,12 +295,12 @@ html, body {
     transform: translateY(-1.28122em) scale(0.75);
   }
 
-  .mat-form-field-appearance-legacy.mat-form-field-can-float .mat-form-field-autofill-control:-webkit-autofill + .mat-form-field-label-wrapper
+  .mat-form-field-appearance-legacy.mat-form-field-can-float .mat-form-field-autofill-control:-webkit-autofill + .mat-form-field-label-wrapper,
   .mat-form-field-label {
     transform: translateY(-1.28121em) scale(0.75);
   }
 
-  .mat-form-field-appearance-legacy.mat-form-field-can-float .mat-input-server[label]:not(:label-shown) + .mat-form-field-label-wrapper
+  .mat-form-field-appearance-legacy.mat-form-field-can-float .mat-input-server[label]:not(:label-shown) + .mat-form-field-label-wrapper,
   .mat-form-field-label {
     transform: translateY(-1.2812em) scale(0.75);
   }
@@ -314,7 +321,7 @@ html, body {
   width: 133.3333333333%;
 }
 
-.mat-form-field-appearance-fill.mat-form-field-can-float .mat-input-server[label]:not(:label-shown) + .mat-form-field-label-wrapper
+.mat-form-field-appearance-fill.mat-form-field-can-float .mat-input-server[label]:not(:label-shown) + .mat-form-field-label-wrapper,
 .mat-form-field-label {
   transform: translateY(-0.59374em) scale(0.75);
   width: 133.3333433333%;
@@ -335,7 +342,7 @@ html, body {
   width: 133.3333333333%;
 }
 
-.mat-form-field-appearance-outline.mat-form-field-can-float .mat-input-server[label]:not(:label-shown) + .mat-form-field-label-wrapper
+.mat-form-field-appearance-outline.mat-form-field-can-float .mat-input-server[label]:not(:label-shown) + .mat-form-field-label-wrapper,
 .mat-form-field-label {
   transform: translateY(-1.59374em) scale(0.75);
   width: 133.3333433333%;
@@ -1624,7 +1631,7 @@ th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
 }
 
 @media (hover: none) {
-  .mat-expansion-panel:not(.mat-expanded):not([aria-disabled='true'])
+  .mat-expansion-panel:not(.mat-expanded):not([aria-disabled='true']),
   .mat-expansion-panel-header:hover {
     background: #343434;
   }
@@ -2587,4 +2594,23 @@ th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
 
 .material-icons .mat-badge-content {
   font-family: 'Play', sans-serif;
+}
+
+/*
+  COMMON STYLING reused by various components, here for commodity
+  or well, that it what should have happened
+  for reasons angular do not propagate those to components even though this shit is global
+*/
+.chooser-card {
+  width: fit-content;
+  margin: 5px auto;
+}
+
+.choice-button {
+  margin-left: 5px;
+}
+
+.smaller-title {
+  font-size: medium;
+  margin-top: 5px;
 }

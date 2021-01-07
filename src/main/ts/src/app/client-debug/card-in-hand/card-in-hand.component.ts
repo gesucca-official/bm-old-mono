@@ -16,7 +16,7 @@ export class CardInHandComponent {
   @Input() chosenTarget: string;
 
   @Input() discardableCards: string[];
-  cardToDiscard: string;
+  @Input() cardToDiscard: string;
 
   @Input() character: Character;
 

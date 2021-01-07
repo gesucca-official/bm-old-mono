@@ -1,3 +1,8 @@
+.tabbed {
+  width: 90%;
+  margin: 0 auto;
+}
+
 mat-expansion-panel {
   width: 85%;
   margin: 10px auto;
@@ -27,9 +32,4 @@ th.mat-sort-header-sorted {
 .smaller-title {
   font-size: medium;
   margin-top: 5px;
-}
-
-.tabbed-component {
-  width: 99%;
-  margin: 0 auto;
 }
