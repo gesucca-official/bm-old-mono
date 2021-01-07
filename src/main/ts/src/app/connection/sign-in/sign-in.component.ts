@@ -25,11 +25,12 @@ export class SignInComponent {
     this.isLoading = true;
     const areCredentialsValid = await this.checkCredentials(this.playerId, this.password);
     if (!areCredentialsValid) {
+      this.isLoading = false
       Swal.fire(
         'Log In Failed',
-        'Please check your credentials',
+        'Please check your credentials and ensure you are not already logged from somewhere else.',
         'error'
-      ).then(() => this.isLoading = false);
+      ).then();
     } else {
       this.gameService.playerId = this.playerId;
       this.websocketService.connect(this.playerId, this.password, () => this.loginCallback());
