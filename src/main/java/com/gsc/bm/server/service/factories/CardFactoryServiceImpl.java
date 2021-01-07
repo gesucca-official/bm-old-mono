@@ -23,7 +23,19 @@ public class CardFactoryServiceImpl implements CardFactoryService {
     }
 
     @Override
-    public Card craftCard(Supplier<LoadableCard> cardConstructor) {
+    public Card craftCard(String cardClazz) {
+        Supplier<LoadableCard> supplier = () -> {
+            try {
+                return (LoadableCard) Class.forName(CardFactoryService.BASE_CARDS_PKG + cardClazz).getConstructor().newInstance();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null; // this should really be managed better
+            }
+        };
+        return craftCardFromConstructor(supplier);
+    }
+
+    private Card craftCardFromConstructor(Supplier<LoadableCard> cardConstructor) {
         LoadableCard card = cardConstructor.get();
         this.loadCard(card);
         return card;

@@ -2,7 +2,6 @@ package com.gsc.bm.server.service.factories;
 
 import com.gsc.bm.server.model.Character;
 import com.gsc.bm.server.model.cards.Card;
-import com.gsc.bm.server.model.cards.LoadableCard;
 import com.gsc.bm.server.repo.internal.StarterDeckRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -32,20 +30,21 @@ public class DeckFactoryServiceImpl implements DeckFactoryService {
                 .stream()
                 .map(rec -> {
                     List<String> copies = new ArrayList<>(rec.getQty());
-                    IntStream.range(0, rec.getQty()).forEach(
-                            n -> copies.add(CardFactoryService.BASE_CARDS_PKG + rec.getCardClazz())
-                    );
+                    IntStream.range(0, rec.getQty()).forEach(n -> copies.add(rec.getCardClazz()));
                     return copies;
                 })
                 .flatMap(Collection::stream)
-                .map(this::craftCard)
+                .map(cardFactoryService::craftCard)
                 .collect(Collectors.toList());
     }
 
+    // when all these special cards goes finally into db, all this things should not matter anymore
+    // and I could finally stop replacing class strings
+
     @Override
     public Card craftBasicActionCard(Character character) {
-        return craftCard(
-                character.getBasicActionCard().getName()
+        return cardFactoryService.craftCard(
+                character.getBasicActionCard().getName().replace(CardFactoryService.BASE_CARDS_PKG, "")
         );
     }
 
@@ -54,27 +53,16 @@ public class DeckFactoryServiceImpl implements DeckFactoryService {
         return character.getCharacterBoundCards()
                 .stream()
                 .map(Class::getName)
-                .map(this::craftCard)
+                .map(c -> c.replace(CardFactoryService.BASE_CARDS_PKG, ""))
+                .map(cardFactoryService::craftCard)
                 .collect(Collectors.toList());
     }
 
     @Override
     public Card craftLastResortCard(Character character) {
-        return craftCard(
-                character.getLastResortCard().getName()
+        return cardFactoryService.craftCard(
+                character.getLastResortCard().getName().replace(CardFactoryService.BASE_CARDS_PKG, "")
         );
-    }
-
-    private Card craftCard(String cardClazz) {
-        Supplier<LoadableCard> supplier = () -> {
-            try {
-                return (LoadableCard) Class.forName(cardClazz).getConstructor().newInstance();
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null; // this should really be managed better
-            }
-        };
-        return cardFactoryService.craftCard(supplier);
     }
 
 }

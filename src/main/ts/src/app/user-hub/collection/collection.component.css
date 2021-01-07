@@ -1,0 +1,14 @@
+.tabbed {
+  height: 100%;
+  width: 95%;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.collection-card {
+  height: 90%;
+}
+
+.smaller-title {
+  font-size: medium;
+}
