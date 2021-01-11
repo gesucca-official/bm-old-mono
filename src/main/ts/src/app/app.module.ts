@@ -39,6 +39,7 @@ import {MatSortModule} from "@angular/material/sort";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {AdminControlPanelComponent} from './user-hub/admin-control-panel/admin-control-panel.component';
 import {CollectionComponent} from './user-hub/collection/collection.component';
+import {SponsorComponent} from './home/sponsor/sponsor.component';
 
 @NgModule({
   declarations: [
@@ -59,6 +60,7 @@ import {CollectionComponent} from './user-hub/collection/collection.component';
     AdminControlPanelComponent,
     AdminControlPanelComponent,
     CollectionComponent,
+    SponsorComponent,
   ],
   imports: [
     CommonModule,

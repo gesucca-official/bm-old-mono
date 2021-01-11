@@ -1,0 +1,15 @@
+.title {
+  text-align: center;
+  margin-bottom: 0;
+}
+
+.sponsors {
+  display: flex;
+  margin-left: calc(50% - 60px);
+  /* this works only not that I have only one sponsor */
+}
+
+.sponsor {
+  height: 120px;
+  width: 120px;
+}

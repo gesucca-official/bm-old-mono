@@ -2596,6 +2596,11 @@ th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
   font-family: 'Play', sans-serif;
 }
 
+.mat-snack-bar-container {
+  background-color: #86c1b9;
+
+}
+
 /*
   COMMON STYLING reused by various components, here for commodity
   or well, that it what should have happened
