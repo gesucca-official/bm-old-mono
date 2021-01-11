@@ -13,7 +13,7 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.snackBar.openFromComponent(SponsorComponent, {duration: 3000});
+    this.snackBar.openFromComponent(SponsorComponent, {duration: 2500, panelClass: 'sponsor'});
   }
 
 }
