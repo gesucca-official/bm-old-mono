@@ -92,7 +92,7 @@ import {SponsorComponent} from './home/sponsor/sponsor.component';
     MatSlideToggleModule,
     ReactiveFormsModule,
     NgxLoadingModule,
-    MarkdownModule.forRoot({loader: HttpClient})
+    MarkdownModule.forRoot({loader: HttpClient}),
   ],
   providers: [
     MatSnackBarModule

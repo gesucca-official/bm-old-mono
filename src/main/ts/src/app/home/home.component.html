@@ -6,8 +6,17 @@
   </mat-card-header>
   <mat-card-content>
     <p>
-      Hi everyone. I am <i>gesucca</i> and I made this - among others countless things.
+      Hi everyone. I am <a style="color: rgb(130, 190, 185)" [matMenuTriggerFor]="aboutMe">gesucca</a> and I made this -
+      among others countless things.
     </p>
+    <mat-menu #aboutMe="matMenu">
+      <button mat-menu-item (click)="instagramLink()">
+        <i class="fab fa-instagram"></i> Instagram
+      </button>
+      <button mat-menu-item (click)="youtubeLink()">
+        <i class="fab fa-youtube"></i> Youtube
+      </button>
+    </mat-menu>
     <p>
       <b>Botte Micidiali</b> is a card game of my own invention. It shamelessly robs some elements from other
       successful card games such as Magic: The Gathering, Yu-Gi Oh!, Hearthstone and the such, but it includes some

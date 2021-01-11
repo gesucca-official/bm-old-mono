@@ -16,5 +16,12 @@ export class HomeComponent implements OnInit {
     this.snackBar.openFromComponent(SponsorComponent, {duration: 2500, panelClass: 'sponsor'});
   }
 
+  youtubeLink() {
+    window.document.location.href = "https://www.youtube.com/channel/UCVn26_2xCJDngLicWKxQRmw"
+  }
+
+  instagramLink() {
+    window.document.location.href = "https://www.instagram.com/gesucca/"
+  }
 }
 
