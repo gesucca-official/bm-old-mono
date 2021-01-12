@@ -13,7 +13,7 @@ import java.util.Set;
 public class LittleSmack extends AbstractCharacterBoundCard {
 
     public LittleSmack() {
-        super(BigBadBruiser.NAME);
+        super(BigBadBruiser.class);
         setCanTarget(Set.of(CardTarget.OPPONENT));
     }
 

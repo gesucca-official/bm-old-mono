@@ -7,7 +7,7 @@ import com.gsc.bm.server.service.session.GameSessionService;
 import com.gsc.bm.server.service.session.QueueService;
 import com.gsc.bm.server.service.session.model.QueuedPlayer;
 import com.gsc.bm.server.service.view.ViewExtractorService;
-import com.gsc.bm.server.service.view.model.ClientGameView;
+import com.gsc.bm.server.service.view.model.client.ClientGameView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;

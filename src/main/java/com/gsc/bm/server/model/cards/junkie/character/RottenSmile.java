@@ -12,7 +12,7 @@ import java.util.Set;
 public class RottenSmile extends AbstractCharacterBoundCard {
 
     public RottenSmile() {
-        super(ToxicJunkie.NAME);
+        super(ToxicJunkie.class);
         setCanTarget(Set.of(CardTarget.OPPONENT));
         setPriority(2);
     }

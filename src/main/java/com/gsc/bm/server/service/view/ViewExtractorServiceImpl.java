@@ -8,7 +8,10 @@ import com.gsc.bm.server.model.game.Player;
 import com.gsc.bm.server.model.game.status.Status;
 import com.gsc.bm.server.repo.internal.CharactersGuiRecord;
 import com.gsc.bm.server.repo.internal.CharactersGuiRepository;
-import com.gsc.bm.server.service.view.model.*;
+import com.gsc.bm.server.service.view.model.client.*;
+import com.gsc.bm.server.service.view.model.logging.SlimCharacterView;
+import com.gsc.bm.server.service.view.model.logging.SlimGameView;
+import com.gsc.bm.server.service.view.model.logging.SlimPlayerView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.SerializationUtils;
@@ -97,7 +100,7 @@ public class ViewExtractorServiceImpl implements ViewExtractorService {
                                 return toClientViewForOpponents(p);
                             else return toClientViewForSelf(p);
                         })
-                        .collect(Collectors.toMap(ClientPlayerView::getPlayerId, Function.identity()))
+                        .collect(Collectors.toMap(AbstractClientPlayerView::getPlayerId, Function.identity()))
                 )
                 .resolvedMoves(gameClone.getResolvedMoves())
                 .timeBasedEffects(gameClone.getTimeBasedEffects())

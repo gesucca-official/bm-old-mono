@@ -1,18 +1,18 @@
 package com.gsc.bm.server.model.cards;
 
+import com.gsc.bm.server.model.Character;
 import com.gsc.bm.server.model.game.Game;
 import com.gsc.bm.server.model.game.Move;
+import com.gsc.bm.server.service.factories.CardFactoryService;
 
 import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractCharacterBoundCard extends AbstractCard {
 
-    public AbstractCharacterBoundCard(String boundTo) {
+    public AbstractCharacterBoundCard(Class<? extends Character> boundTo) {
         super();
-        setCharacterBound(true);
-        setBoundToCharacter(boundTo);
-        setCost(Map.of());
+        setBoundToCharacter(boundTo.getName().replace(CardFactoryService.BASE_CARDS_PKG, ""));
     }
 
     @Override

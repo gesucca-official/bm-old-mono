@@ -1,18 +1,18 @@
-package com.gsc.bm.server.service.view.model;
+package com.gsc.bm.server.service.view.model.logging;
 
-import com.gsc.bm.server.model.game.Move;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
 @Builder
 @Getter
-public class ClientGameView {
+public class SlimGameView implements Serializable {
     private final String gameId;
-    private final Map<String, ClientPlayerView> players;
-    private final List<Move> resolvedMoves;
+    private final List<SlimPlayerView> players;
+    private final List<SlimMoveView> resolvedMoves;
     private final Map<String, List<String>> timeBasedEffects;
     private final boolean over;
     private final String winner;

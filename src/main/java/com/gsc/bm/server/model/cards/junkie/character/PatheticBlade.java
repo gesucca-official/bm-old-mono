@@ -13,7 +13,7 @@ import java.util.Set;
 public class PatheticBlade extends AbstractCharacterBoundCard {
 
     public PatheticBlade() {
-        super(ToxicJunkie.NAME);
+        super(ToxicJunkie.class);
         setCanTarget(Set.of(CardTarget.OPPONENT));
     }
 

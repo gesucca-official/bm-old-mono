@@ -11,13 +11,13 @@ import java.util.Set;
 
 public interface Card {
 
-    UnknownCard UNKNOWN_CARD = new UnknownCard();
-
     enum CardTarget {
         SELF, OPPONENT, NEAR_ITEM, FAR_ITEM
     }
 
     String getName();
+
+    String getBindingName();
 
     String getEffect();
 
@@ -29,7 +29,7 @@ public interface Card {
 
     boolean isCharacterBound();
 
-    Optional<String> boundToCharacter();
+    String getBoundToCharacter();
 
     int getPriority();  // higher priority resolved first (2 before 1)
 

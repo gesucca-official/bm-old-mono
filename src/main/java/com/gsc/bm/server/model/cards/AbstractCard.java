@@ -1,16 +1,19 @@
 package com.gsc.bm.server.model.cards;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gsc.bm.server.model.Character;
 import com.gsc.bm.server.model.Resource;
 import com.gsc.bm.server.model.game.Game;
 import com.gsc.bm.server.model.game.Move;
+import com.gsc.bm.server.service.factories.CardFactoryService;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Getter
 @Setter(AccessLevel.PROTECTED)
@@ -19,20 +22,21 @@ public abstract class AbstractCard implements Card, LoadableCard, Serializable {
     private boolean isItem;
     private boolean isBasicAction;
     private boolean isLastResort;
-    private boolean isCharacterBound;
-    private Map<Resource, Integer> cost;
+
     private int priority;
+    private Map<Resource, Integer> cost;
     private Set<CardTarget> canTarget;
 
-    @Getter(value = AccessLevel.NONE)
-    @JsonIgnore
-    private String boundToCharacter;
+    private String boundToCharacter = null;
 
     @Override
-    public Optional<String> boundToCharacter() {
-        if (isCharacterBound && boundToCharacter != null)
-            return Optional.of(boundToCharacter);
-        else return Optional.empty();
+    public boolean isCharacterBound() {
+        return boundToCharacter != null;
+    }
+
+    @Override
+    public String getBindingName() {
+        return this.getClass().getName().replace(CardFactoryService.BASE_CARDS_PKG, "");
     }
 
     @Override
@@ -53,8 +57,6 @@ public abstract class AbstractCard implements Card, LoadableCard, Serializable {
     public abstract List<String> applyEffectOnTarget(Character self, Character target);
 
     public AbstractCard() {
-        isLastResort = false;
-        isCharacterBound = false;
         priority = 1;
         cost = Map.of();
     }

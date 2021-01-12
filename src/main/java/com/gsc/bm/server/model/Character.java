@@ -1,11 +1,11 @@
 package com.gsc.bm.server.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gsc.bm.server.model.cards.Card;
 import com.gsc.bm.server.model.game.Timer;
 import com.gsc.bm.server.model.game.status.Status;
 import com.gsc.bm.server.model.game.status.StatusFlow;
 import com.gsc.bm.server.model.game.status.StatusType;
+import com.gsc.bm.server.service.factories.CardFactoryService;
 import lombok.Getter;
 import org.apache.commons.collections4.queue.CircularFifoQueue;
 
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Getter
 public abstract class Character implements Serializable {
 
-    private final String name; // TODO these are also in db, move everything there
+    private final String bindingName;
 
     private final int itemsSize;
     private final Queue<Card> items;
@@ -26,22 +26,13 @@ public abstract class Character implements Serializable {
     private final Set<Resource> immunities = new HashSet<>();
     private final Set<Timer> timers = new HashSet<>();
 
-    public Character(String name, int hp, int speed, int itemsSize) {
-        this.name = name;
+    public Character(int hp, int speed, int itemsSize) {
+        this.bindingName = this.getClass().getName().replace(CardFactoryService.BASE_CARDS_PKG, "");
         this.itemsSize = itemsSize;
         this.items = new CircularFifoQueue<>(itemsSize);
         this.resources.put(Resource.HEALTH, hp);
         this.resources.put(Resource.ALERTNESS, speed);
     }
-
-    @JsonIgnore
-    public abstract Class<?> getBasicActionCard();
-
-    @JsonIgnore
-    public abstract Set<Class<?>> getCharacterBoundCards();
-
-    @JsonIgnore
-    public abstract Class<?> getLastResortCard();
 
     public List<String> resolveTimeBasedEffects() {
         List<String> effectsReport = new ArrayList<>();
