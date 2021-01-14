@@ -25,3 +25,7 @@ mat-panel-description.right-aligned {
 ::ng-deep .mat-form-field {
   letter-spacing: 0;
 }
+
+p {
+  font-family: Electrolize, sans-serif;
+}

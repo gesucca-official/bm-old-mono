@@ -1,14 +1,16 @@
 package com.gsc.bm.server.model.cards;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.gsc.bm.server.model.Resource;
 import com.gsc.bm.server.model.game.Game;
 import com.gsc.bm.server.model.game.Move;
+import lombok.Getter;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
+@JsonDeserialize(as = Card.DeserializedCard.class)
 public interface Card {
 
     enum CardTarget {
@@ -38,5 +40,25 @@ public interface Card {
     Map<Resource, Integer> getCost();
 
     Map<CardTarget, List<String>> resolve(Game game, Move move);
+
+    @Getter
+    class DeserializedCard implements Card {
+        String name;
+        String bindingName;
+        String effect;
+        boolean item;
+        boolean basicAction;
+        boolean lastResort;
+        boolean characterBound;
+        String boundToCharacter;
+        int priority;
+        Set<CardTarget> canTarget;
+        Map<Resource, Integer> cost;
+
+        @Override
+        public Map<CardTarget, List<String>> resolve(Game game, Move move) {
+            return null;
+        }
+    }
 
 }

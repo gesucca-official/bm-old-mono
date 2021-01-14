@@ -10,7 +10,7 @@ import {WebsocketService} from "../../service/websocket.service";
 })
 export class CollectionComponent {
 
-  editing: boolean;
+  editing = false;
   targetDeck: Deck;
 
   constructor(public sessionService: SessionService, public websocketService: WebsocketService) {
@@ -26,6 +26,11 @@ export class CollectionComponent {
       characterBoundCards: [],
       regularCards: []
     };
+  }
+
+  editDeck(deck: Deck) {
+    this.editing = true;
+    this.targetDeck = deck;
   }
 
   saveDeck($event: Deck) {

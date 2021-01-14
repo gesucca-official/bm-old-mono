@@ -12,12 +12,10 @@ import java.util.Set;
 @ToString
 @EqualsAndHashCode
 public class UserAccountInfo {
-
     String username;
     String email;
     String role;
     // TODO this is becoming gigantic to load all at once
     Set<UserGuiDeck> decks;
     UserCollection collection;
-
 }

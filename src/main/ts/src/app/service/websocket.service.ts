@@ -46,7 +46,7 @@ export class WebsocketService {
   }
 
   public saveDeck(username: string, deck: Deck) {
-    this.stompClient.send('/app/user/' + username + '/deck', JSON.stringify(deck));
+    this.stompClient.send('/app/user/' + username + '/deck', {}, JSON.stringify(deck));
   }
 
   public joinGame(playerId: string, gameType: string, callback: (sdkEvent) => void): void {
