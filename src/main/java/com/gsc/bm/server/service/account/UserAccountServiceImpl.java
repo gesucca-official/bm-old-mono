@@ -6,7 +6,9 @@ import com.gsc.bm.server.repo.external.UserCredentialsRepository;
 import com.gsc.bm.server.repo.external.UserDecksRecord;
 import com.gsc.bm.server.repo.external.UserDecksRepository;
 import com.gsc.bm.server.repo.internal.CardsGuiRepository;
+import com.gsc.bm.server.repo.internal.CharactersGuiRepository;
 import com.gsc.bm.server.service.account.model.UserAccountInfo;
+import com.gsc.bm.server.service.account.model.UserCollection;
 import com.gsc.bm.server.service.account.model.UserGuiDeck;
 import com.gsc.bm.server.service.factories.CardFactoryService;
 import com.gsc.bm.server.service.factories.CharacterFactoryService;
@@ -23,6 +25,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     private final UserCredentialsRepository userCredentialsRepo;
     private final UserDecksRepository userDecksRepo;
     private final CardsGuiRepository cardsGuiRepo;
+    private final CharactersGuiRepository charactersGuiRepo;
     private final CardFactoryService cardFactoryService;
     private final CharacterFactoryService characterFactoryService;
 
@@ -30,11 +33,13 @@ public class UserAccountServiceImpl implements UserAccountService {
     public UserAccountServiceImpl(UserCredentialsRepository userCredentialsRepo,
                                   UserDecksRepository userDecksRepo,
                                   CardsGuiRepository cardsGuiRepo,
+                                  CharactersGuiRepository charactersGuiRepo,
                                   CardFactoryService cardFactoryService,
                                   CharacterFactoryService characterFactoryService) {
         this.userCredentialsRepo = userCredentialsRepo;
         this.userDecksRepo = userDecksRepo;
         this.cardsGuiRepo = cardsGuiRepo;
+        this.charactersGuiRepo = charactersGuiRepo;
         this.cardFactoryService = cardFactoryService;
         this.characterFactoryService = characterFactoryService;
     }
@@ -53,18 +58,24 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
-    public void addUserDeck(String username, String deckId, UserGuiDeck deck) {
+    public void addUserDeck(String username, UserGuiDeck deck) {
         userDecksRepo.save(
-                new UserDecksRecord(username, deckId, fromGuiToStoredDeck(deck))
+                new UserDecksRecord(username, deck.getDeckId(), fromGuiToStoredDeck(deck))
         );
     }
 
     // for now everyone has all the cards
-    private Set<Card> getUserCardCollection() {
-        return cardsGuiRepo.findAll()
-                .stream()
-                .map(cardsGuiRecord -> cardFactoryService.craftCard(cardsGuiRecord.getClazz()))
-                .collect(Collectors.toSet());
+    private UserCollection getUserCardCollection() {
+        return new UserCollection(
+                charactersGuiRepo.findAll()
+                        .stream()
+                        .map(r -> characterFactoryService.craftCharacterView(r.getClazz()))
+                        .collect(Collectors.toSet()),
+                cardsGuiRepo.findAll()
+                        .stream()
+                        .map(cardsGuiRecord -> cardFactoryService.craftCard(cardsGuiRecord.getClazz()))
+                        .collect(Collectors.toSet())
+        );
     }
 
     private Set<UserGuiDeck> getUserDecks(String username) {
@@ -77,7 +88,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     private UserGuiDeck fromStoredToGuiDeck(UserDecksRecord.UserStoredDeck deck, String deckId) {
         return new UserGuiDeck(
                 deckId,
-                characterFactoryService.craftCharacter(deck.getCharacterClazz()),
+                characterFactoryService.craftCharacterView(deck.getCharacterClazz()),
                 cardFactoryService.craftCard(deck.getBasicActionCardClazz()),
                 cardFactoryService.craftCard(deck.getLastResortCardClazz()),
                 deck.getCharacterBoundCardsClazz().stream().map(cardFactoryService::craftCard).collect(Collectors.toList()),

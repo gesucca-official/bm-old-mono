@@ -7,6 +7,6 @@ public interface UserAccountService {
 
     UserAccountInfo loadUserAccountInfo(String username);
 
-    void addUserDeck(String username, String deckId, UserGuiDeck deck);
+    void addUserDeck(String username, UserGuiDeck deck);
 
 }

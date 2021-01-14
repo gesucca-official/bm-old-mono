@@ -13,7 +13,16 @@ export class SessionService {
   private _usersConnected: User[] = [];
   private _usersInCurrentQueue: QueuedUser[] = [];
 
-  private _userAccountData: UserAccountData = {};
+  private _userAccountData: UserAccountData = {
+    username: null,
+    email: null,
+    role: null,
+    decks: [],
+    collection: {
+      characters: [],
+      cards: []
+    }
+  };
 
   get queued(): boolean {
     return this._queued;

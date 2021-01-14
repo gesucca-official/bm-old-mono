@@ -1,0 +1,18 @@
+package com.gsc.bm.server.service.view.model.deck;
+
+import com.gsc.bm.server.model.Resource;
+import lombok.Builder;
+import lombok.Getter;
+
+import java.util.Map;
+import java.util.Set;
+
+@Builder
+@Getter
+public class CharacterCardView {
+    private final String name;
+    private final String bindingName;
+    private final int itemsSize;
+    private final Map<Resource, Integer> resources;
+    private final Set<Resource> immunities;
+}

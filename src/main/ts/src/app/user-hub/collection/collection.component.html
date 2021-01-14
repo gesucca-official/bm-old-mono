@@ -1,27 +1,31 @@
 <div class="tabbed">
 
-  <div fxLayout="row wrap" fxLayoutGap="10px grid" fxFlexAlign="stretch">
-    <div fxFlex="20%" fxFlex.md="25%" fxFlex.sm="33%" fxFlex.xs="50%"
+  <div fxLayout="row wrap" fxLayoutGap="10px grid" fxFlexAlign="stretch" *ngIf="!editing">
+    <!--<div fxFlex="20%" fxFlex.md="25%" fxFlex.sm="33%" fxFlex.xs="50%"
          *ngFor="let deck of sessionService.userAccountData.decks">
       asdasd
-    </div>
-    <div fxFlex="20%" fxFlex.md="25%" fxFlex.sm="33%" fxFlex.xs="50%">
-      new deck
-    </div>
+    </div>-->
+    <button fxFlex="20%" fxFlex.md="25%" fxFlex.sm="33%" fxFlex.xs="50%"
+            mat-raised-button (click)="newDeck()">
+      New Deck
+    </button>
   </div>
 
-  <div fxLayout="row wrap" fxLayoutGap="10px grid" fxFlexAlign="stretch">
-    <div fxFlex="20%" fxFlex.md="25%" fxFlex.xs="95%" fxFlex.sm="33%"
-         *ngFor="let card of sessionService.userAccountData.collection">
-      <mat-card class="collection-card mat-elevation-z4">
-        <mat-card-header class="collection-card-header">
-          <mat-card-title class="smaller-title">{{card.name}}</mat-card-title>
-        </mat-card-header>
-        <img mat-card-image src="assets/img/cards/{{card.image}}" alt="Card Image" class="card-image">
-        <mat-card-content>
-          <p [innerHTML]="card.effect"></p>
-        </mat-card-content>
-      </mat-card>
-    </div>
-  </div>
+  <app-edit-deck *ngIf="editing"
+                 [deck]="targetDeck" (exit)="editing = false" (saveDeck)="saveDeck($event)"></app-edit-deck>
+
+  <!-- <div fxLayout="row wrap" fxLayoutGap="10px grid" fxFlexAlign="stretch">
+     <div fxFlex="20%" fxFlex.md="25%" fxFlex.xs="95%" fxFlex.sm="33%"
+          *ngFor="let card of sessionService.userAccountData.collection">
+       <mat-card class="collection-card mat-elevation-z4">
+         <mat-card-header class="collection-card-header">
+           <mat-card-title class="smaller-title">{{card.name}}</mat-card-title>
+         </mat-card-header>
+         <img mat-card-image src="assets/img/cards/{{card.image}}" alt="Card Image" class="card-image">
+         <mat-card-content>
+           <p [innerHTML]="card.effect"></p>
+         </mat-card-content>
+       </mat-card>
+     </div>
+   </div>-->
 </div>

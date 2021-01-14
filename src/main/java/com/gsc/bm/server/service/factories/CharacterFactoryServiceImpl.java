@@ -1,10 +1,20 @@
 package com.gsc.bm.server.service.factories;
 
 import com.gsc.bm.server.model.Character;
+import com.gsc.bm.server.service.view.ViewExtractorService;
+import com.gsc.bm.server.service.view.model.deck.CharacterCardView;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CharacterFactoryServiceImpl implements CharacterFactoryService {
+
+    private final ViewExtractorService viewService;
+
+    @Autowired
+    public CharacterFactoryServiceImpl(ViewExtractorService viewService) {
+        this.viewService = viewService;
+    }
 
     @Override
     public Character craftCharacter(String characterClazz) {
@@ -14,6 +24,11 @@ public class CharacterFactoryServiceImpl implements CharacterFactoryService {
             e.printStackTrace();
             return null; // this should really be managed better
         }
+    }
+
+    @Override
+    public CharacterCardView craftCharacterView(String characterClazz) {
+        return viewService.extractDeckBuildingView(craftCharacter(characterClazz));
     }
 
 }

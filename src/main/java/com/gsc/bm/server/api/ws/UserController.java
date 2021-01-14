@@ -26,10 +26,10 @@ public class UserController {
         return service.loadUserAccountInfo(username);
     }
 
-    @MessageMapping("/user/{username}/deck/{deckId}")
+    @MessageMapping("/user/{username}/deck")
     @SendToUser("/queue/user/{username}/account")
-    public UserAccountInfo addUserDeck(@DestinationVariable String username, @DestinationVariable String deckId, @Payload UserGuiDeck deck) {
-        service.addUserDeck(username, deckId, deck);
+    public UserAccountInfo addUserDeck(@DestinationVariable String username, @Payload UserGuiDeck deck) {
+        service.addUserDeck(username, deck);
         return service.loadUserAccountInfo(username);
     }
 }

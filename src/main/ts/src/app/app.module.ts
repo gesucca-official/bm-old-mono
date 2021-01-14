@@ -40,6 +40,8 @@ import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {AdminControlPanelComponent} from './user-hub/admin-control-panel/admin-control-panel.component';
 import {CollectionComponent} from './user-hub/collection/collection.component';
 import {SponsorComponent} from './home/sponsor/sponsor.component';
+import {EditDeckComponent} from './user-hub/collection/edit-deck/edit-deck.component';
+import {CollectionCardComponent} from './user-hub/collection/collection-card/collection-card.component';
 
 @NgModule({
   declarations: [
@@ -61,6 +63,8 @@ import {SponsorComponent} from './home/sponsor/sponsor.component';
     AdminControlPanelComponent,
     CollectionComponent,
     SponsorComponent,
+    EditDeckComponent,
+    CollectionCardComponent,
   ],
   imports: [
     CommonModule,

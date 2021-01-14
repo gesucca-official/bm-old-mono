@@ -4,6 +4,7 @@ import * as Stomp from 'stompjs';
 import {environment} from "../../environments/environment";
 import {Move} from "../model/move";
 import {SessionService} from "./session.service";
+import {Deck} from "../model/deck";
 
 @Injectable({
   providedIn: 'root'
@@ -42,6 +43,10 @@ export class WebsocketService {
 
   public isConnected(): boolean {
     return this.connected;
+  }
+
+  public saveDeck(username: string, deck: Deck) {
+    this.stompClient.send('/app/user/' + username + '/deck', JSON.stringify(deck));
   }
 
   public joinGame(playerId: string, gameType: string, callback: (sdkEvent) => void): void {
