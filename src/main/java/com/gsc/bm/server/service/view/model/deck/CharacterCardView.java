@@ -12,6 +12,7 @@ import java.util.Set;
 public class CharacterCardView {
     private final String name;
     private final String bindingName;
+    private final String sprite;
     private final int itemsSize;
     private final Map<Resource, Integer> resources;
     private final Set<Resource> immunities;

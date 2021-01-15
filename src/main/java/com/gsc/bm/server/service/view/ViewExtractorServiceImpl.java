@@ -85,7 +85,6 @@ public class ViewExtractorServiceImpl implements ViewExtractorService {
                 .build();
     }
 
-    // TODO make ad hoc view for opponents to efficiently hide cards
     @Override
     public ClientGameView extractViewFor(Game game, String playerId) {
         byte[] bytes = SerializationUtils.serialize(game);
@@ -134,6 +133,9 @@ public class ViewExtractorServiceImpl implements ViewExtractorService {
                 .build();
     }
 
+
+    // TODO duplicate code come on g
+
     private ClientCharacterView toClientView(Character character) {
         byte[] bytes = SerializationUtils.serialize(character);
         Character c = (Character) SerializationUtils.deserialize(bytes);
@@ -166,6 +168,7 @@ public class ViewExtractorServiceImpl implements ViewExtractorService {
         return CharacterCardView.builder()
                 .name(record.getGuiName())
                 .bindingName(character.getBindingName())
+                .sprite(record.getGuiImage())
                 .itemsSize(c.getItemsSize())
                 .resources(c.getResources())
                 .immunities(c.getImmunities())

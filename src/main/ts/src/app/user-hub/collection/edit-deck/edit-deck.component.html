@@ -5,13 +5,6 @@
            [(ngModel)]="deck.deckId"
            [ngModelOptions]="{standalone: true}">
   </mat-form-field>
-  <mat-form-field style="margin-left: 10px"><!--margin doesn't work with class, dunno why-->
-    <mat-select [(value)]="deck.character" placeholder="Character" panelClass="selection">
-      <mat-option *ngFor="let character of collection.characters" [value]="character">
-        {{character.name}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
   <div class="buttons">
     <button mat-raised-button color="accent" class="mat-elevation-z4" (click)="saveDeckAction()"
             [disabled]="!isDeckValid()">
@@ -23,29 +16,91 @@
   </div>
 </mat-card>
 
-<mat-card class="selection-panel mat-elevation-z4">
-  <mat-form-field style="margin-left: 10px">
-    <mat-select [(value)]="deck.basicActionCard" placeholder="Basic Action Card">
-      <mat-option *ngFor="let card of filterBasicActionCards()" [value]="card">
-        {{card.name}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-  <mat-form-field style="margin-left: 10px">
-    <mat-select [(value)]="deck.lastResortCard" placeholder="Last Resort Card">
-      <mat-option *ngFor="let card of filterLastResortCards()" [value]="card">
-        {{card.name}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-  <mat-form-field style="width: 90%; margin-left: 5%;">
-    <mat-select [(value)]="deck.characterBoundCards" placeholder="Character Bound Cards" multiple>
-      <mat-option *ngFor="let card of filterCharacterBoundCards()" [value]="card">
-        {{card.name}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-</mat-card>
+<mat-accordion>
+  <mat-expansion-panel class="selection-panel mat-elevation-z4">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Character Card
+      </mat-panel-title>
+      <mat-panel-description class="right-aligned">
+        <b>{{deck.character != null ? deck.character.name : 'Not Chosen'}}</b>
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <div fxLayout="row wrap" fxLayoutGap="10px grid" fxFlexAlign="stretch">
+      <div fxFlex="20%" fxFlex.md="25%" fxFlex.sm="33%" fxFlex.xs="50%"
+           *ngFor="let character of collection.characters">
+        <app-collection-character-card [character]="character" (click)="deck.character = character">
+        </app-collection-character-card>
+      </div>
+    </div>
+  </mat-expansion-panel>
+</mat-accordion>
+
+<mat-accordion>
+  <mat-expansion-panel class="selection-panel mat-elevation-z4">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Basic Action Card
+      </mat-panel-title>
+      <mat-panel-description class="right-aligned">
+        {{deck.basicActionCard != null ? 1 : 0}}/1 cards
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <p>
+      Selected: <b>{{deck.basicActionCard != null ? deck.basicActionCard.name : 'Not Chosen'}}</b>
+    </p>
+    <div fxLayout="row wrap" fxLayoutGap="10px grid" fxFlexAlign="stretch">
+      <div fxFlex="20%" fxFlex.md="25%" fxFlex.sm="33%" fxFlex.xs="50%"
+           *ngFor="let card of filterBasicActionCards()">
+        <app-collection-card [card]="card" (click)="deck.basicActionCard = card;"></app-collection-card>
+      </div>
+    </div>
+  </mat-expansion-panel>
+</mat-accordion>
+
+<mat-accordion>
+  <mat-expansion-panel class="selection-panel mat-elevation-z4">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Last Resort Card
+      </mat-panel-title>
+      <mat-panel-description class="right-aligned">
+        {{deck.lastResortCard != null ? 1 : 0}}/1 cards
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <p>
+      Selected: <b>{{deck.lastResortCard != null ? deck.lastResortCard.name : 'Not Chosen'}}</b>
+    </p>
+    <div fxLayout="row wrap" fxLayoutGap="10px grid" fxFlexAlign="stretch">
+      <div fxFlex="20%" fxFlex.md="25%" fxFlex.sm="33%" fxFlex.xs="50%"
+           *ngFor="let card of filterLastResortCards()">
+        <app-collection-card [card]="card" (click)="deck.lastResortCard = card;"></app-collection-card>
+      </div>
+    </div>
+  </mat-expansion-panel>
+</mat-accordion>
+
+<mat-accordion>
+  <mat-expansion-panel class="selection-panel mat-elevation-z4">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Character Bound Cards
+      </mat-panel-title>
+      <mat-panel-description class="right-aligned">
+        {{deck.characterBoundCards.length}}/2 cards
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <p>
+      Selected: <b>{{getCharBoundCardsNames()}}</b>
+    </p>
+    <div fxLayout="row wrap" fxLayoutGap="10px grid" fxFlexAlign="stretch">
+      <div fxFlex="20%" fxFlex.md="25%" fxFlex.sm="33%" fxFlex.xs="50%"
+           *ngFor="let card of filterCharacterBoundCards()">
+        <app-collection-card [card]="card" (click)="addCharacterBoundCard(card)"></app-collection-card>
+      </div>
+    </div>
+  </mat-expansion-panel>
+</mat-accordion>
 
 <mat-accordion>
   <mat-expansion-panel class="selection-panel mat-elevation-z4">

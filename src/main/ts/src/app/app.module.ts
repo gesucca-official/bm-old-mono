@@ -42,6 +42,7 @@ import {CollectionComponent} from './user-hub/collection/collection.component';
 import {SponsorComponent} from './home/sponsor/sponsor.component';
 import {EditDeckComponent} from './user-hub/collection/edit-deck/edit-deck.component';
 import {CollectionCardComponent} from './user-hub/collection/collection-card/collection-card.component';
+import {CollectionCharacterCardComponent} from "./user-hub/collection/character-card/collection-character-card.component";
 
 @NgModule({
   declarations: [
@@ -50,6 +51,7 @@ import {CollectionCardComponent} from './user-hub/collection/collection-card/col
     PhaserClientComponent,
     CodeDialogComponent,
     CharacterCardComponent,
+    CollectionCharacterCardComponent,
     CardInHandComponent,
     SignInComponent,
     ChooseGameComponent,
@@ -65,6 +67,7 @@ import {CollectionCardComponent} from './user-hub/collection/collection-card/col
     SponsorComponent,
     EditDeckComponent,
     CollectionCardComponent,
+    CollectionCharacterCardComponent
   ],
   imports: [
     CommonModule,

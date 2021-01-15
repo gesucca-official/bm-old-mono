@@ -99,4 +99,17 @@ export class EditDeckComponent implements OnInit {
       && this.deck.basicActionCard !== null
       && this.deck.lastResortCard !== null;
   }
+
+  addCharacterBoundCard(card: Card) {
+    this.deck.characterBoundCards.push(card);
+    if (this.deck.characterBoundCards.length > 2)
+      this.deck.characterBoundCards.splice(0, 1);
+  }
+
+  getCharBoundCardsNames(): string {
+    if (this.deck.characterBoundCards.length == 0)
+      return 'Not Chosen';
+    else
+      return this.deck.characterBoundCards.map(c => c.name).join(', ');
+  }
 }

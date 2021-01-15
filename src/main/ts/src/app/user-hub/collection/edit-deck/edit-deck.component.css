@@ -29,3 +29,8 @@ mat-panel-description.right-aligned {
 p {
   font-family: Electrolize, sans-serif;
 }
+
+b {
+  color: #86c1b9;
+  margin-left: 5px;
+}
