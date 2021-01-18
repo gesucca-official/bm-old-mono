@@ -61,9 +61,9 @@ export class WebsocketService {
   public joinGame(playerId: string, gameType: string, callback: (sdkEvent) => void): void {
     this.sessionService.queued = true;
     this.sessionService.queuedFor = gameType;
-    if (gameType == 'ffa')
+    if (gameType.includes('ffa'))
       // TODO this never gets unsubscribed from
-      this.stompClient.subscribe('/topic/game/ffa/joined', (sdkEvent) => this.sessionService.usersInCurrentQueue = JSON.parse(sdkEvent.body))
+      this.stompClient.subscribe('/topic/game/' + gameType + '/joined', (sdkEvent) => this.sessionService.usersInCurrentQueue = JSON.parse(sdkEvent.body))
 
     // no need to save this sub cause it will unsubscribe on completion
     const subscription = this.stompClient.subscribe(WebsocketService.inferJoinGameEndpoint(gameType), (sdkEvent) => {
@@ -72,17 +72,19 @@ export class WebsocketService {
       this.sessionService.queuedFor = null;
       callback(sdkEvent);
     });
-    this.stompClient.send('/app/game/' + gameType + '/join', {}, playerId);
+    this.stompClient.send('/app/game/' + gameType + '/join' +
+      (gameType.includes('open') ? '/' + playerId + '/asd1' : '') // TODO should choose deck
+      , {}, playerId);
   }
 
   public addComToGame(): void {
     // no subs here cause user is already joined and subbed
-    this.stompClient.send('/app/game/ffa/join/com', {});
+    this.stompClient.send('/app/game/quick/ffa/join/com', {});
   }
 
   public forceStartFfaGame(): void {
     // as above
-    this.stompClient.send('/app/game/ffa/start', {});
+    this.stompClient.send('/app/game/quick/ffa/start', {});
   }
 
   public subToGame(gameId: string,

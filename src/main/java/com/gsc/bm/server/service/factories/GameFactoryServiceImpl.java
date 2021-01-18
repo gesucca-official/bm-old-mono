@@ -33,6 +33,14 @@ public class GameFactoryServiceImpl implements GameFactoryService {
     }
 
     @Override
+    public Game craftOpen1vComGame(String username, String deckId) {
+        return new Game(List.of(
+                playerFactoryService.craftOpenPlayer(username, deckId),
+                playerFactoryService.craftRandomComPlayer()
+        ), "open1vCom", Objects.equals(env.getProperty("log.db"), "N"));
+    }
+
+    @Override
     public Game craftQuickMultiPlayerGame(List<QueuedPlayer> queuedPlayers) {
         String type =
                 queuedPlayers.stream().allMatch(QueuedPlayer::isHuman) && queuedPlayers.size() == 2
