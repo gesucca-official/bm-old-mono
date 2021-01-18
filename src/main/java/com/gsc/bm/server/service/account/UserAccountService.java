@@ -9,4 +9,6 @@ public interface UserAccountService {
 
     void addUserDeck(String username, UserGuiDeck deck);
 
+    void deleteUserDeck(String username, UserGuiDeck deck);
+
 }

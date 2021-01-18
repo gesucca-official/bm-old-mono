@@ -33,7 +33,11 @@ export class CollectionComponent {
     this.targetDeck = deck;
   }
 
-  saveDeck($event: Deck) {
-    this.websocketService.saveDeck(this.sessionService.userAccountData.username, $event);
+  saveDeck(deck: Deck) {
+    this.websocketService.saveDeck(this.sessionService.userAccountData.username, deck);
+  }
+
+  deleteDeck(deck: Deck) {
+    this.websocketService.deleteDeck(this.sessionService.userAccountData.username, deck);
   }
 }

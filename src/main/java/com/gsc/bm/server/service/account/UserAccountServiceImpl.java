@@ -1,10 +1,7 @@
 package com.gsc.bm.server.service.account;
 
 import com.gsc.bm.server.model.cards.Card;
-import com.gsc.bm.server.repo.external.UserCredentialsRecord;
-import com.gsc.bm.server.repo.external.UserCredentialsRepository;
-import com.gsc.bm.server.repo.external.UserDecksRecord;
-import com.gsc.bm.server.repo.external.UserDecksRepository;
+import com.gsc.bm.server.repo.external.*;
 import com.gsc.bm.server.repo.internal.CardsGuiRepository;
 import com.gsc.bm.server.repo.internal.CharactersGuiRepository;
 import com.gsc.bm.server.service.account.model.UserAccountInfo;
@@ -62,6 +59,11 @@ public class UserAccountServiceImpl implements UserAccountService {
         userDecksRepo.save(
                 new UserDecksRecord(username, deck.getDeckId(), fromGuiToStoredDeck(deck))
         );
+    }
+
+    @Override
+    public void deleteUserDeck(String username, UserGuiDeck deck) {
+        userDecksRepo.deleteById(new UserDeckRecordKey(username, deck.getDeckId()));
     }
 
     // for now everyone has all the cards

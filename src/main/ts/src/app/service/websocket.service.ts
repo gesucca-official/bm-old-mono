@@ -37,6 +37,8 @@ export class WebsocketService {
         (sdkEvent) => this.sessionService.userAccountData = JSON.parse(sdkEvent.body));
 
       this.stompClient.send('/app/user/' + username + '/account', {});
+      this.sessionService.isWaitingForUserAccountData = true;
+
       callback();
     });
   }
@@ -45,8 +47,15 @@ export class WebsocketService {
     return this.connected;
   }
 
+  // these deck methods maybe have to go somewhere else
   public saveDeck(username: string, deck: Deck) {
+    this.sessionService.isWaitingForUserAccountData = true;
     this.stompClient.send('/app/user/' + username + '/deck', {}, JSON.stringify(deck));
+  }
+
+  public deleteDeck(username: string, deck: Deck) {
+    this.sessionService.isWaitingForUserAccountData = true;
+    this.stompClient.send('/app/user/' + username + '/deck/delete', {}, JSON.stringify(deck));
   }
 
   public joinGame(playerId: string, gameType: string, callback: (sdkEvent) => void): void {

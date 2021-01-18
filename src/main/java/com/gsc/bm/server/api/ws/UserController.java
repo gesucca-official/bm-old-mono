@@ -32,4 +32,11 @@ public class UserController {
         service.addUserDeck(username, deck);
         return service.loadUserAccountInfo(username);
     }
+
+    @MessageMapping("/user/{username}/deck/delete")
+    @SendToUser("/queue/user/{username}/account")
+    public UserAccountInfo deleteUserDeck(@DestinationVariable String username, @Payload UserGuiDeck deck) {
+        service.deleteUserDeck(username, deck);
+        return service.loadUserAccountInfo(username);
+    }
 }

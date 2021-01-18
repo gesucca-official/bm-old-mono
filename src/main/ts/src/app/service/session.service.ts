@@ -24,6 +24,8 @@ export class SessionService {
     }
   };
 
+  private _isWaitingForUserAccountData: boolean = false;
+
   get queued(): boolean {
     return this._queued;
   }
@@ -65,7 +67,16 @@ export class SessionService {
   }
 
   set userAccountData(value: UserAccountData) {
+    this._isWaitingForUserAccountData = false;
     this._userAccountData = value;
+  }
+
+  get isWaitingForUserAccountData(): boolean {
+    return this._isWaitingForUserAccountData;
+  }
+
+  set isWaitingForUserAccountData(value: boolean) {
+    this._isWaitingForUserAccountData = value;
   }
 
 }
