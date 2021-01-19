@@ -2,6 +2,10 @@ package com.gsc.bm.server.service.factories;
 
 import com.gsc.bm.server.model.Character;
 import com.gsc.bm.server.model.cards.Card;
+import com.gsc.bm.server.repo.external.UserDeckRecordKey;
+import com.gsc.bm.server.repo.external.UserDecksRepository;
+import com.gsc.bm.server.repo.internal.StarterDeckBasicCardsRecord;
+import com.gsc.bm.server.repo.internal.StarterDeckBasicCardsRepository;
 import com.gsc.bm.server.repo.internal.StarterDeckRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,6 +13,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -16,13 +22,22 @@ import java.util.stream.IntStream;
 public class DeckFactoryServiceImpl implements DeckFactoryService {
 
     private final StarterDeckRepository starterDeckRepo;
+    private final StarterDeckBasicCardsRepository starterDeckBasicCardsRepo;
+    private final UserDecksRepository userDecksRepo;
     private final CardFactoryService cardFactoryService;
 
     @Autowired
-    public DeckFactoryServiceImpl(StarterDeckRepository starterDeckRepo, CardFactoryService cardFactoryService) {
+    public DeckFactoryServiceImpl(StarterDeckRepository starterDeckRepo,
+                                  StarterDeckBasicCardsRepository starterDeckBasicCardsRepo,
+                                  UserDecksRepository userDecksRepo,
+                                  CardFactoryService cardFactoryService) {
         this.starterDeckRepo = starterDeckRepo;
+        this.starterDeckBasicCardsRepo = starterDeckBasicCardsRepo;
+        this.userDecksRepo = userDecksRepo;
         this.cardFactoryService = cardFactoryService;
     }
+
+    // TODO some code can be factored out of these methods but I'm lazy
 
     @Override
     public List<Card> craftCharacterStarterDeck(String pgClazz) {
@@ -38,31 +53,92 @@ public class DeckFactoryServiceImpl implements DeckFactoryService {
                 .collect(Collectors.toList());
     }
 
-    // when all these special cards goes finally into db, all this things should not matter anymore
-    // and I could finally stop replacing class strings
-
     @Override
-    public Card craftBasicActionCard(Character character) {
-        return cardFactoryService.craftCard(
-                character.getBasicActionCard().getName().replace(CardFactoryService.BASE_CARDS_PKG, "")
-        );
+    public Card craftBasicActionStarterCard(Character character) {
+        Optional<StarterDeckBasicCardsRecord> basics = starterDeckBasicCardsRepo.findById(
+                character.getClass().getName().replace(CardFactoryService.BASE_CARDS_PKG, ""));
+        if (basics.isPresent())
+            return cardFactoryService.craftCard(basics.get().getBasicClazz());
+        else
+            throw new ValueNotFoundException(character.getClass().getName().replace(CardFactoryService.BASE_CARDS_PKG, ""));
     }
 
     @Override
-    public List<Card> craftCharacterBoundCards(Character character) {
-        return character.getCharacterBoundCards()
-                .stream()
-                .map(Class::getName)
-                .map(c -> c.replace(CardFactoryService.BASE_CARDS_PKG, ""))
-                .map(cardFactoryService::craftCard)
-                .collect(Collectors.toList());
+    public List<Card> craftCharacterBoundStarterCards(Character character) {
+        Optional<StarterDeckBasicCardsRecord> basics = starterDeckBasicCardsRepo.findById(
+                character.getClass().getName().replace(CardFactoryService.BASE_CARDS_PKG, ""));
+        if (basics.isPresent())
+            return List.of(
+                    cardFactoryService.craftCard(basics.get().getChBoundClazz1()),
+                    cardFactoryService.craftCard(basics.get().getChBoundClazz2())
+            );
+        else
+            throw new ValueNotFoundException(character.getClass().getName().replace(CardFactoryService.BASE_CARDS_PKG, ""));
+
     }
 
     @Override
-    public Card craftLastResortCard(Character character) {
-        return cardFactoryService.craftCard(
-                character.getLastResortCard().getName().replace(CardFactoryService.BASE_CARDS_PKG, "")
-        );
+    public Card craftLastResortStarterCard(Character character) {
+        Optional<StarterDeckBasicCardsRecord> basics = starterDeckBasicCardsRepo.findById(
+                character.getClass().getName().replace(CardFactoryService.BASE_CARDS_PKG, ""));
+        if (basics.isPresent())
+            return cardFactoryService.craftCard(basics.get().getLastResortClazz());
+        else
+            throw new ValueNotFoundException(character.getClass().getName().replace(CardFactoryService.BASE_CARDS_PKG, ""));
+    }
+
+    @Override
+    public List<Card> craftCharacterOpenDeck(String username, String deckId) {
+        List<Card> craftedDeck = new ArrayList<>(20);
+        userDecksRepo.findById(new UserDeckRecordKey(username, deckId))
+                .ifPresentOrElse(
+                        deck -> deck.getDeck().getRegularCardsClazz()
+                                .stream()
+                                .map(cardFactoryService::craftCard)
+                                .forEach(craftedDeck::add)
+                        , () -> {
+                            throw new ValueNotFoundException(username + "/" + deckId);
+                        });
+        return craftedDeck;
+    }
+
+    @Override
+    public Card craftBasicActionOpenCard(String username, String deckId) {
+        AtomicReference<Card> card = new AtomicReference<>();
+        userDecksRepo.findById(new UserDeckRecordKey(username, deckId))
+                .ifPresentOrElse(
+                        deck -> card.set(cardFactoryService.craftCard(deck.getDeck().getBasicActionCardClazz()))
+                        , () -> {
+                            throw new ValueNotFoundException(username + "/" + deckId);
+                        });
+        return card.get();
+    }
+
+    @Override
+    public List<Card> craftCharacterBoundOpenCards(String username, String deckId) {
+        List<Card> craftedDeck = new ArrayList<>(20);
+        userDecksRepo.findById(new UserDeckRecordKey(username, deckId))
+                .ifPresentOrElse(
+                        deck -> deck.getDeck().getCharacterBoundCardsClazz()
+                                .stream()
+                                .map(cardFactoryService::craftCard)
+                                .forEach(craftedDeck::add)
+                        , () -> {
+                            throw new ValueNotFoundException(username + "/" + deckId);
+                        });
+        return craftedDeck;
+    }
+
+    @Override
+    public Card craftLastResortOpenCard(String username, String deckId) {
+        AtomicReference<Card> card = new AtomicReference<>();
+        userDecksRepo.findById(new UserDeckRecordKey(username, deckId))
+                .ifPresentOrElse(
+                        deck -> card.set(cardFactoryService.craftCard(deck.getDeck().getLastResortCardClazz()))
+                        , () -> {
+                            throw new ValueNotFoundException(username + "/" + deckId);
+                        });
+        return card.get();
     }
 
 }

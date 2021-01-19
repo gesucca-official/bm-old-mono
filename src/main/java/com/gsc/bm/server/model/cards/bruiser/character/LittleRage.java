@@ -16,7 +16,7 @@ import java.util.Set;
 public class LittleRage extends AbstractCharacterBoundCard {
 
     public LittleRage() {
-        super(BigBadBruiser.NAME);
+        super(BigBadBruiser.class);
         setCanTarget(Set.of(CardTarget.SELF));
         setPriority(2);
     }

@@ -8,6 +8,7 @@ export interface Card {
   canTarget: string[],
   basicAction: boolean;
   characterBound: boolean,
+  boundToCharacter: string,
   lastResort: boolean
 
   image: string,

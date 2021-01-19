@@ -9,6 +9,8 @@ public interface GameFactoryService {
 
     Game craftQuick1vComGame(String playerId);
 
+    Game craftOpen1vComGame(String username, String deckId);
+
     Game craftQuickMultiPlayerGame(List<QueuedPlayer> players);
 
 }

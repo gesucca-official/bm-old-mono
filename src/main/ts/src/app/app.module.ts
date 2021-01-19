@@ -40,6 +40,10 @@ import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {AdminControlPanelComponent} from './user-hub/admin-control-panel/admin-control-panel.component';
 import {CollectionComponent} from './user-hub/collection/collection.component';
 import {SponsorComponent} from './home/sponsor/sponsor.component';
+import {EditDeckComponent} from './user-hub/collection/edit-deck/edit-deck.component';
+import {CollectionCardComponent} from './user-hub/collection/collection-card/collection-card.component';
+import {CollectionCharacterCardComponent} from "./user-hub/collection/character-card/collection-character-card.component";
+import {ChooseDeckDialogComponent} from './connection/choose-game/choose-deck-dialog/choose-deck-dialog.component';
 
 @NgModule({
   declarations: [
@@ -48,6 +52,7 @@ import {SponsorComponent} from './home/sponsor/sponsor.component';
     PhaserClientComponent,
     CodeDialogComponent,
     CharacterCardComponent,
+    CollectionCharacterCardComponent,
     CardInHandComponent,
     SignInComponent,
     ChooseGameComponent,
@@ -61,6 +66,10 @@ import {SponsorComponent} from './home/sponsor/sponsor.component';
     AdminControlPanelComponent,
     CollectionComponent,
     SponsorComponent,
+    EditDeckComponent,
+    CollectionCardComponent,
+    CollectionCharacterCardComponent,
+    ChooseDeckDialogComponent
   ],
   imports: [
     CommonModule,

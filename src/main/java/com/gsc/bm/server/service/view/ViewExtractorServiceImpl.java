@@ -8,7 +8,11 @@ import com.gsc.bm.server.model.game.Player;
 import com.gsc.bm.server.model.game.status.Status;
 import com.gsc.bm.server.repo.internal.CharactersGuiRecord;
 import com.gsc.bm.server.repo.internal.CharactersGuiRepository;
-import com.gsc.bm.server.service.view.model.*;
+import com.gsc.bm.server.service.view.model.client.*;
+import com.gsc.bm.server.service.view.model.deck.CharacterCardView;
+import com.gsc.bm.server.service.view.model.logging.SlimCharacterView;
+import com.gsc.bm.server.service.view.model.logging.SlimGameView;
+import com.gsc.bm.server.service.view.model.logging.SlimPlayerView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.SerializationUtils;
@@ -81,7 +85,6 @@ public class ViewExtractorServiceImpl implements ViewExtractorService {
                 .build();
     }
 
-    // TODO make ad hoc view for opponents to efficiently hide cards
     @Override
     public ClientGameView extractViewFor(Game game, String playerId) {
         byte[] bytes = SerializationUtils.serialize(game);
@@ -97,7 +100,7 @@ public class ViewExtractorServiceImpl implements ViewExtractorService {
                                 return toClientViewForOpponents(p);
                             else return toClientViewForSelf(p);
                         })
-                        .collect(Collectors.toMap(ClientPlayerView::getPlayerId, Function.identity()))
+                        .collect(Collectors.toMap(AbstractClientPlayerView::getPlayerId, Function.identity()))
                 )
                 .resolvedMoves(gameClone.getResolvedMoves())
                 .timeBasedEffects(gameClone.getTimeBasedEffects())
@@ -130,6 +133,9 @@ public class ViewExtractorServiceImpl implements ViewExtractorService {
                 .build();
     }
 
+
+    // TODO duplicate code come on g
+
     private ClientCharacterView toClientView(Character character) {
         byte[] bytes = SerializationUtils.serialize(character);
         Character c = (Character) SerializationUtils.deserialize(bytes);
@@ -147,6 +153,25 @@ public class ViewExtractorServiceImpl implements ViewExtractorService {
                 .immunities(c.getImmunities())
                 .timers(c.getTimers())
                 .sprite(record.getGuiImage()) // TODO load this at once in a character factory??
+                .build();
+    }
+
+    @Override
+    public CharacterCardView extractDeckBuildingView(Character character) {
+        byte[] bytes = SerializationUtils.serialize(character);
+        Character c = (Character) SerializationUtils.deserialize(bytes);
+        assert c != null;
+
+        String clazz = character.getClass().getName().replace(BASE_CARDS_PKG, "");
+        CharactersGuiRecord record = charactersRepo.findById(clazz)
+                .orElseThrow(() -> new RuntimeException("Couldn't load Character from internal DB! " + clazz));
+        return CharacterCardView.builder()
+                .name(record.getGuiName())
+                .bindingName(character.getBindingName())
+                .sprite(record.getGuiImage())
+                .itemsSize(c.getItemsSize())
+                .resources(c.getResources())
+                .immunities(c.getImmunities())
                 .build();
     }
 }

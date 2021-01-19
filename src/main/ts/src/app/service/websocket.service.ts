@@ -4,6 +4,7 @@ import * as Stomp from 'stompjs';
 import {environment} from "../../environments/environment";
 import {Move} from "../model/move";
 import {SessionService} from "./session.service";
+import {Deck} from "../model/deck";
 
 @Injectable({
   providedIn: 'root'
@@ -36,6 +37,8 @@ export class WebsocketService {
         (sdkEvent) => this.sessionService.userAccountData = JSON.parse(sdkEvent.body));
 
       this.stompClient.send('/app/user/' + username + '/account', {});
+      this.sessionService.isWaitingForUserAccountData = true;
+
       callback();
     });
   }
@@ -44,12 +47,23 @@ export class WebsocketService {
     return this.connected;
   }
 
-  public joinGame(playerId: string, gameType: string, callback: (sdkEvent) => void): void {
+  // these deck methods maybe have to go somewhere else
+  public saveDeck(username: string, deck: Deck) {
+    this.sessionService.isWaitingForUserAccountData = true;
+    this.stompClient.send('/app/user/' + username + '/deck', {}, JSON.stringify(deck));
+  }
+
+  public deleteDeck(username: string, deck: Deck) {
+    this.sessionService.isWaitingForUserAccountData = true;
+    this.stompClient.send('/app/user/' + username + '/deck/delete', {}, JSON.stringify(deck));
+  }
+
+  public joinGame(playerId: string, gameType: string, callback: (sdkEvent) => void, deck?: Deck): void {
     this.sessionService.queued = true;
     this.sessionService.queuedFor = gameType;
-    if (gameType == 'ffa')
+    if (gameType.includes('ffa'))
       // TODO this never gets unsubscribed from
-      this.stompClient.subscribe('/topic/game/ffa/joined', (sdkEvent) => this.sessionService.usersInCurrentQueue = JSON.parse(sdkEvent.body))
+      this.stompClient.subscribe('/topic/game/' + gameType + '/joined', (sdkEvent) => this.sessionService.usersInCurrentQueue = JSON.parse(sdkEvent.body))
 
     // no need to save this sub cause it will unsubscribe on completion
     const subscription = this.stompClient.subscribe(WebsocketService.inferJoinGameEndpoint(gameType), (sdkEvent) => {
@@ -58,17 +72,19 @@ export class WebsocketService {
       this.sessionService.queuedFor = null;
       callback(sdkEvent);
     });
-    this.stompClient.send('/app/game/' + gameType + '/join', {}, playerId);
+    this.stompClient.send('/app/game/' + gameType + '/join' +
+      (gameType.includes('open') ? '/' + playerId + '/' + deck.deckId : '')
+      , {}, playerId);
   }
 
   public addComToGame(): void {
     // no subs here cause user is already joined and subbed
-    this.stompClient.send('/app/game/ffa/join/com', {});
+    this.stompClient.send('/app/game/quick/ffa/join/com', {});
   }
 
   public forceStartFfaGame(): void {
     // as above
-    this.stompClient.send('/app/game/ffa/start', {});
+    this.stompClient.send('/app/game/quick/ffa/start', {});
   }
 
   public subToGame(gameId: string,

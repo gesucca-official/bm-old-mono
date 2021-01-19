@@ -1,4 +1,4 @@
-package com.gsc.bm.server.service.view.model;
+package com.gsc.bm.server.service.view.model.client;
 
 import com.gsc.bm.server.model.Resource;
 import com.gsc.bm.server.model.cards.Card;

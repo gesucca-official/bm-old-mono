@@ -9,9 +9,17 @@ public interface DeckFactoryService {
 
     List<Card> craftCharacterStarterDeck(String pgClazz);
 
-    Card craftBasicActionCard(Character character);
+    Card craftBasicActionStarterCard(Character character);
 
-    List<Card> craftCharacterBoundCards(Character character);
+    List<Card> craftCharacterBoundStarterCards(Character character);
 
-    Card craftLastResortCard(Character character);
+    Card craftLastResortStarterCard(Character character);
+
+    List<Card> craftCharacterOpenDeck(String username, String deckId);
+
+    Card craftBasicActionOpenCard(String username, String deckId);
+
+    List<Card> craftCharacterBoundOpenCards(String username, String deckId);
+
+    Card craftLastResortOpenCard(String username, String deckId);
 }

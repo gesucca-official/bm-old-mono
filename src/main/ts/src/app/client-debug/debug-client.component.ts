@@ -5,6 +5,7 @@ import {CodeDialogComponent} from "./code-dialog/code-dialog.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {GameService} from "../service/game.service";
 import {Move} from "../model/move";
+import {Deck} from "../model/deck";
 
 @Component({
   selector: 'app-debug-client',
@@ -19,8 +20,8 @@ export class DebugClientComponent {
               public snackBar: MatSnackBar) {
   }
 
-  joinGame(whichGame: string) {
-    this.websocketService.joinGame(this.gameService.playerId, whichGame, (sdkEvent => {
+  joinGame(whichGame: { game: string, deck?: Deck }) {
+    this.websocketService.joinGame(this.gameService.playerId, whichGame.game, (sdkEvent => {
       this.gameService.gameId = sdkEvent.body;
       this.websocketService.subToGame(
         this.gameService.gameId,
@@ -30,7 +31,7 @@ export class DebugClientComponent {
         (sdkEvent) => this.onGameUpdate(sdkEvent.body)
       );
       this.websocketService.requestGameView(this.gameService.gameId, this.gameService.playerId);
-    }));
+    }), whichGame.deck);
   }
 
   playCard(event: Move): void {

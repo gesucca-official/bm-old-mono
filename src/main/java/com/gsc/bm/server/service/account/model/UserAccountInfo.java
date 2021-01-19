@@ -1,6 +1,5 @@
 package com.gsc.bm.server.service.account.model;
 
-import com.gsc.bm.server.model.cards.Card;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -13,10 +12,10 @@ import java.util.Set;
 @ToString
 @EqualsAndHashCode
 public class UserAccountInfo {
-
     String username;
     String email;
     String role;
-    Set<Card> collection;
-
+    // TODO this is becoming gigantic to load all at once
+    Set<UserGuiDeck> decks;
+    UserCollection collection;
 }

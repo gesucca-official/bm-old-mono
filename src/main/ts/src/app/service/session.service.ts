@@ -13,7 +13,18 @@ export class SessionService {
   private _usersConnected: User[] = [];
   private _usersInCurrentQueue: QueuedUser[] = [];
 
-  private _userAccountData: UserAccountData = {};
+  private _userAccountData: UserAccountData = {
+    username: null,
+    email: null,
+    role: null,
+    decks: [],
+    collection: {
+      characters: [],
+      cards: []
+    }
+  };
+
+  private _isWaitingForUserAccountData: boolean = false;
 
   get queued(): boolean {
     return this._queued;
@@ -56,7 +67,16 @@ export class SessionService {
   }
 
   set userAccountData(value: UserAccountData) {
+    this._isWaitingForUserAccountData = false;
     this._userAccountData = value;
+  }
+
+  get isWaitingForUserAccountData(): boolean {
+    return this._isWaitingForUserAccountData;
+  }
+
+  set isWaitingForUserAccountData(value: boolean) {
+    this._isWaitingForUserAccountData = value;
   }
 
 }

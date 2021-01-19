@@ -4,6 +4,7 @@ import {Timer} from "./timer";
 
 export interface Character {
   name: string,
+  bindingName: string,
   dead: boolean,
   immunities: string[],
   resources: Resources,
