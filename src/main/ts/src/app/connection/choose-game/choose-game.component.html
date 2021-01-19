@@ -20,13 +20,12 @@
       </mat-menu>
       <button mat-raised-button
               class="choice-button"
-              [disabled]="sessionService.queued || gameService.playerId == null || gameService.gameState != null"
               [matMenuTriggerFor]="openPlayModes"
               (click)="$event.stopPropagation()">
         Open Modes
       </button>
       <mat-menu #openPlayModes="matMenu">
-        <button mat-menu-item (click)="joinGame('open/1vCom')">Join 1vCom Game</button>
+        <button mat-menu-item (click)="joinOpenGame('open/1vCom')">Join 1vCom Game</button>
       </mat-menu>
     </mat-card-content>
   </mat-card>

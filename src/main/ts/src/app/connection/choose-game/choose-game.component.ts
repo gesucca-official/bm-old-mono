@@ -6,6 +6,9 @@ import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
 import {User} from "../../model/user";
 import {MatSort} from "@angular/material/sort";
+import {MatDialog} from "@angular/material/dialog";
+import {ChooseDeckDialogComponent} from "./choose-deck-dialog/choose-deck-dialog.component";
+import {Deck} from "../../model/deck";
 
 @Component({
   selector: 'app-choose-game',
@@ -14,11 +17,12 @@ import {MatSort} from "@angular/material/sort";
 })
 export class ChooseGameComponent implements AfterViewInit {
 
-  @Output() joinGameRequest: EventEmitter<String> = new EventEmitter<String>();
+  @Output() joinGameRequest: EventEmitter<{ game: string, deck?: Deck }> = new EventEmitter<{ game: string, deck?: Deck }>();
 
   constructor(public websocketService: WebsocketService,
               public gameService: GameService,
-              public sessionService: SessionService) {
+              public sessionService: SessionService,
+              public dialog: MatDialog) {
   }
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -36,8 +40,16 @@ export class ChooseGameComponent implements AfterViewInit {
       this.dataSource = new MatTableDataSource<User>(this.sessionService.usersConnected);
   }
 
-  joinGame(game: string) {
-    this.joinGameRequest.emit(game); // TODO why am I emitting this event and not directly calling the service
+  joinOpenGame(game: string) {
+    this.dialog.open(ChooseDeckDialogComponent, {})
+      .afterClosed().subscribe(result => {
+      if (result)
+        this.joinGame(game, result)
+    })
+  }
+
+  joinGame(game: string, deck?: Deck) {
+    this.joinGameRequest.emit({game, deck});
   }
 
   addComPlayerToFfaGame() {

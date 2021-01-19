@@ -58,7 +58,7 @@ export class WebsocketService {
     this.stompClient.send('/app/user/' + username + '/deck/delete', {}, JSON.stringify(deck));
   }
 
-  public joinGame(playerId: string, gameType: string, callback: (sdkEvent) => void): void {
+  public joinGame(playerId: string, gameType: string, callback: (sdkEvent) => void, deck?: Deck): void {
     this.sessionService.queued = true;
     this.sessionService.queuedFor = gameType;
     if (gameType.includes('ffa'))
@@ -73,7 +73,7 @@ export class WebsocketService {
       callback(sdkEvent);
     });
     this.stompClient.send('/app/game/' + gameType + '/join' +
-      (gameType.includes('open') ? '/' + playerId + '/asd1' : '') // TODO should choose deck
+      (gameType.includes('open') ? '/' + playerId + '/' + deck.deckId : '')
       , {}, playerId);
   }
 

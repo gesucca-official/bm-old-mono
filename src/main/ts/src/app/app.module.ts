@@ -43,6 +43,7 @@ import {SponsorComponent} from './home/sponsor/sponsor.component';
 import {EditDeckComponent} from './user-hub/collection/edit-deck/edit-deck.component';
 import {CollectionCardComponent} from './user-hub/collection/collection-card/collection-card.component';
 import {CollectionCharacterCardComponent} from "./user-hub/collection/character-card/collection-character-card.component";
+import {ChooseDeckDialogComponent} from './connection/choose-game/choose-deck-dialog/choose-deck-dialog.component';
 
 @NgModule({
   declarations: [
@@ -67,7 +68,8 @@ import {CollectionCharacterCardComponent} from "./user-hub/collection/character-
     SponsorComponent,
     EditDeckComponent,
     CollectionCardComponent,
-    CollectionCharacterCardComponent
+    CollectionCharacterCardComponent,
+    ChooseDeckDialogComponent
   ],
   imports: [
     CommonModule,

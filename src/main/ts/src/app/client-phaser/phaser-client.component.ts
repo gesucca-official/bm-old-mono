@@ -4,6 +4,7 @@ import {PhaserSettingsService} from "./phaser-settings.service";
 import {WebsocketService} from "../service/websocket.service";
 import {GameService} from "../service/game.service";
 import {BattleScene} from "./scnenes/battle/battle-scene";
+import {Deck} from "../model/deck";
 
 @Component({
   selector: 'app-phaser-client',
@@ -23,11 +24,11 @@ export class PhaserClientComponent {
   ) {
   }
 
-  joinGame(whichGame: string) {
+  joinGame(whichGame: { game: string, deck?: Deck }) {
     window['gameService'] = this.gameService;
     window['settingsService'] = this.settingsService;
 
-    this.websocketService.joinGame(this.gameService.playerId, whichGame, (sdkEvent => {
+    this.websocketService.joinGame(this.gameService.playerId, whichGame.game, (sdkEvent => {
       this.gameService.gameId = sdkEvent.body;
       this.websocketService.subToGame(
         this.gameService.gameId,
@@ -43,7 +44,7 @@ export class PhaserClientComponent {
       this.websocketService.requestGameView(this.gameService.gameId, this.gameService.playerId);
 
 
-    }));
+    }), whichGame.deck);
   }
 
   private initGameConfig() {
