@@ -60,7 +60,7 @@ export class WebsocketService {
 
   public joinGame(playerId: string, gameType: string, callback: (sdkEvent) => void, deck?: Deck): void {
     this.sessionService.queued = true;
-    this.sessionService.queuedFor = gameType;
+    this.sessionService.queuedFor = gameType.split('/')[1]; // TODO come on this is nowhere near being safe
     if (gameType.includes('ffa'))
       // TODO this never gets unsubscribed from
       this.stompClient.subscribe('/topic/game/' + gameType + '/joined', (sdkEvent) => this.sessionService.usersInCurrentQueue = JSON.parse(sdkEvent.body))

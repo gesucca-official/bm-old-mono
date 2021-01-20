@@ -15,6 +15,7 @@ export class UserHubComponent {
 
   @ViewChild(DebugClientComponent) debugClient: DebugClientComponent;
   @ViewChild(PhaserClientComponent) phaserClient: PhaserClientComponent;
+  hubHidden: boolean = false;
 
   constructor(public websocketService: WebsocketService, public gameService: GameService, public sessionService: SessionService) {
   }

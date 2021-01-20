@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, EventEmitter, Output} from '@angular/core';
 import Phaser from 'phaser';
 import {PhaserSettingsService} from "./phaser-settings.service";
 import {WebsocketService} from "../service/websocket.service";
@@ -13,7 +13,7 @@ import {Deck} from "../model/deck";
 })
 export class PhaserClientComponent {
 
-  battleScene: boolean;
+  @Output() currentlyGaming: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   config: Phaser.Types.Core.GameConfig;
 
@@ -48,7 +48,7 @@ export class PhaserClientComponent {
   }
 
   private initGameConfig() {
-    this.battleScene = true;
+    this.currentlyGaming.emit(true);
 
     this.config = {
       type: Phaser.AUTO,

@@ -61,7 +61,7 @@
       </mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <mat-slide-toggle class="choice-button" [(ngModel)]="gameService.graphicClient" [disabled]="true">
+      <mat-slide-toggle class="choice-button" [(ngModel)]="gameService.graphicClient">
         {{gameService.graphicClient ? 'Graphic' : 'Debug'}}
       </mat-slide-toggle>
     </mat-card-content>

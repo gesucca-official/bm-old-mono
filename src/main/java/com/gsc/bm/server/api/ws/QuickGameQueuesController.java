@@ -50,7 +50,7 @@ public class QuickGameQueuesController {
     public synchronized List<QueuedPlayer> queueForQuickFfa(String playerId) {
         String game = queueFor(QueueService.GameQueue.Q_FFA, playerId, true);
         if (game != null)
-            messagingTemplate.convertAndSend("/topic/game/ffa/ready", game);
+            messagingTemplate.convertAndSend("/topic/game/quick/ffa/ready", game);
         return queueService.getUsersInQueue(QueueService.GameQueue.Q_FFA);
     }
 
@@ -59,7 +59,7 @@ public class QuickGameQueuesController {
     public synchronized List<QueuedPlayer> addComPlayerToFfaQueue() {
         String game = queueFor(QueueService.GameQueue.Q_FFA, "QueuedComPlayer", false);
         if (game != null)
-            messagingTemplate.convertAndSend("/topic/game/ffa/ready", game);
+            messagingTemplate.convertAndSend("/topic/game/quick/ffa/ready", game);
         return queueService.getUsersInQueue(QueueService.GameQueue.Q_FFA);
     }
 
@@ -68,7 +68,7 @@ public class QuickGameQueuesController {
     public synchronized String forceStartFfaGame() {
         Optional<List<QueuedPlayer>> queuedPlayers = queueService.flushQueue(QueueService.GameQueue.Q_FFA);
         if (queuedPlayers.isPresent()) {
-            messagingTemplate.convertAndSend("/topic/game/ffa/joined", queueService.getUsersInQueue(QueueService.GameQueue.Q_FFA));
+            messagingTemplate.convertAndSend("/topic/game/quick/ffa/joined", queueService.getUsersInQueue(QueueService.GameQueue.Q_FFA));
             return gameSessionService.newGame(
                     gameFactoryService.craftQuickMultiPlayerGame(queuedPlayers.get()));
         }
