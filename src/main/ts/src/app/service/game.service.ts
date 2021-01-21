@@ -3,21 +3,37 @@ import {GameState} from "../model/game-state";
 import {Opponent, Player} from "../model/player";
 import {Card} from "../model/card";
 import {Character} from "../model/character";
+import {WebsocketService} from "./websocket.service";
+import {Move} from "../model/move";
+import {Deck} from "../model/deck";
 
 @Injectable({
   providedIn: 'root'
 })
 export class GameService {
 
-  private _graphicClient: boolean;
+  constructor(private websocketService: WebsocketService) {
+  }
+
+  private _graphicClient: boolean = true;
 
   private _gameId: string;
   private _playerId: string;
   private _gameState: GameState;
+  private _gameType: { game: string, deck?: Deck }; // I really should make an interface for this
 
   clearGame(): void {
     this._gameId = null;
     this._gameState = null;
+    this._gameType = null;
+  }
+
+  get gameType(): { game: string; deck?: Deck } {
+    return this._gameType;
+  }
+
+  set gameType(value: { game: string; deck?: Deck }) {
+    this._gameType = value;
   }
 
   get playerState(): Player {
@@ -69,6 +85,18 @@ export class GameService {
 
   set graphicClient(value: boolean) {
     this._graphicClient = value;
+  }
+
+  getCardObjFromName(name: string): Card {
+    for (let c of this.cardsInHand)
+      if (c.name === name)
+        return c;
+    return null;
+  }
+
+  // bouncing this to not "inject" another service in phaser game scene
+  submitMove(move: Move) {
+    this.websocketService.submitMove(move);
   }
 
   isPlayable(card: Card, character: Character): boolean {

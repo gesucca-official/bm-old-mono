@@ -21,7 +21,7 @@ export class TitleScene extends Phaser.Scene {
       ['BOTTE MICIDIALI'])
       .setOrigin(0.5, 0.5)
       .setFontSize(this.settingsService.scaleForMin(72) * window.devicePixelRatio)
-      .setFontFamily('Trebuchet MS')
+      .setFontFamily('Electrolize')
       .setColor('#00ffff');
 
     this.browseText = this.add.text(
@@ -29,7 +29,7 @@ export class TitleScene extends Phaser.Scene {
       this.settingsService.getScreenHeight() * (14 / 16),
       ['BROWSE CARDS'])
       .setFontSize(this.settingsService.scaleForMin(24) * window.devicePixelRatio)
-      .setFontFamily('Trebuchet MS')
+      .setFontFamily('Electrolize')
       .setColor('#00ffff')
       .on('pointerdown', () => alert('clicked'))
       .on('pointerover', () => this.browseText.setColor('#ff69b4'))

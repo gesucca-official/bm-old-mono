@@ -13,6 +13,14 @@ body {
   overflow-y: auto;
 }
 
+canvas {
+  position: absolute;
+  overflow: hidden;
+  top: 0;
+  margin: 0;
+  padding: 0;
+}
+
 .mat-badge-content {
   font-weight: 600;
   font-size: 12px;

@@ -74,7 +74,7 @@ export class UI_CardInHand extends UI_AbstractObject {
   private renderName(scene: Phaser.Scene, template: Phaser.GameObjects.Image, model: Card) {
     return scene.add.text(this.getTextX(template.displayWidth), this.getTextY(template.displayHeight), [model.name])
       .setFontSize(this.settingsService.scaleForMin(36))
-      .setFontFamily('Trebuchet MS')
+      .setFontFamily('Electrolize')
       .setColor('#000000');
   }
 

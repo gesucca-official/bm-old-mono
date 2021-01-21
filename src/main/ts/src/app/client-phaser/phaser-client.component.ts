@@ -1,27 +1,30 @@
-import {Component, EventEmitter, Output} from '@angular/core';
+import {AfterViewInit, Component} from '@angular/core';
 import Phaser from 'phaser';
 import {PhaserSettingsService} from "./phaser-settings.service";
 import {WebsocketService} from "../service/websocket.service";
 import {GameService} from "../service/game.service";
 import {BattleScene} from "./scnenes/battle/battle-scene";
 import {Deck} from "../model/deck";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-phaser-client',
   templateUrl: './phaser-client.component.html',
   styleUrls: ['./phaser-client.component.css']
 })
-export class PhaserClientComponent {
-
-  @Output() currentlyGaming: EventEmitter<boolean> = new EventEmitter<boolean>();
+export class PhaserClientComponent implements AfterViewInit {
 
   config: Phaser.Types.Core.GameConfig;
 
   constructor(
+    private router: Router,
     protected websocketService: WebsocketService,
     protected gameService: GameService,
-    protected settingsService: PhaserSettingsService
-  ) {
+    protected settingsService: PhaserSettingsService) {
+  }
+
+  ngAfterViewInit(): void {
+    this.joinGame(this.gameService.gameType);
   }
 
   joinGame(whichGame: { game: string, deck?: Deck }) {
@@ -33,28 +36,35 @@ export class PhaserClientComponent {
       this.websocketService.subToGame(
         this.gameService.gameId,
         this.gameService.playerId,
-        // TODO obviously this
         (sdkEvent) => console.log(sdkEvent.body),
         (sdkEvent) => console.log(sdkEvent.body),
-        (sdkEvent) => {
-          this.gameService.gameState = JSON.parse(sdkEvent.body);
-          this.initGameConfig() // cannot initialize game config here!!!
-        }
+        (sdkEvent) => this.viewUpdateCallback(sdkEvent)
       );
       this.websocketService.requestGameView(this.gameService.gameId, this.gameService.playerId);
-
-
     }), whichGame.deck);
   }
 
-  private initGameConfig() {
-    this.currentlyGaming.emit(true);
+  private viewUpdateCallback(sdkEvent: any) {
+    this.gameService.gameState = JSON.parse(sdkEvent.body);
 
+    if (this.gameService.gameState.over) {
+      this.router.navigateByUrl('/hub')
+      this.gameService.clearGame();
+      this.settingsService.currentScene.game.destroy(true, true);
+    }
+
+    if (this.settingsService.currentScene === undefined)
+      this.initGameConfig();
+    else {
+      this.settingsService.currentScene.scene.restart();
+    }
+  }
+
+  private initGameConfig() {
     this.config = {
-      type: Phaser.AUTO,
+      type: Phaser.CANVAS,
       scale: {
         mode: Phaser.Scale.FIT,
-        parent: 'phaserClient',
         autoCenter: Phaser.Scale.NONE,
         width: this.settingsService.getScreenWidth(),
         height: this.settingsService.getScreenHeight()

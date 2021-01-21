@@ -82,6 +82,7 @@ import {ChooseDeckDialogComponent} from './connection/choose-game/choose-deck-di
       {path: 'rules', component: RulesComponent},
       {path: 'hub', component: UserHubComponent},
       {path: 'sign-up', component: SignUpComponent},
+      {path: 'phaser', component: PhaserClientComponent},
       {path: '**', redirectTo: '', component: HomeComponent}
     ], {onSameUrlNavigation: 'reload'}),
     FlexLayoutModule,

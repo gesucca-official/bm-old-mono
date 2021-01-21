@@ -46,6 +46,8 @@ export class BattleScene extends Phaser.Scene {
   }
 
   create() {
+    this.settingsService.currentScene = this;
+
     for (let i = 0; i < this.gameService.opponents.length; i++) {
       const oppo = new UI_Opponent(this, this.gameService.opponents[i], i, this.gameService.opponents.length);
       this.opponents.set(this.gameService.opponents[i].playerId, oppo.getContainer());
@@ -60,9 +62,9 @@ export class BattleScene extends Phaser.Scene {
       gameObject.x = dragX;
       gameObject.y = dragY;
     });
-    this.input.on('drop', (pointer, gameObject, dropZone) => {
-      alert(gameObject.data.list.card + ' dropped on ' + dropZone.data.list.target)
-    })
+    this.input.on('drop', (pointer, gameObject, dropZone) =>
+      this.handleDropEvent(gameObject.data.list.card, dropZone.data.list.target)
+    );
 
     if (this.gameService.gameState.resolvedMoves && this.gameService.gameState.resolvedMoves.length > 0)
       this.setupMoveAnimation(0);
@@ -93,4 +95,20 @@ export class BattleScene extends Phaser.Scene {
         this.setupMoveAnimation(index + 1);
     });
   }
+
+  private handleDropEvent(dropped: string, target: string): void {
+    const card = this.gameService.getCardObjFromName(dropped);
+    if (card.characterBound) {
+      // todo manage choices
+    } else {
+      this.gameService.submitMove({
+        playedCardName: dropped,
+        playerId: this.gameService.playerState.playerId,
+        targetId: target,
+        gameId: this.gameService.gameId,
+        choices: null
+      });
+    }
+  }
+
 }

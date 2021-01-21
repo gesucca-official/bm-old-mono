@@ -10,6 +10,7 @@ export class ResolvedMoveAnimation {
 
   private readonly button: Phaser.GameObjects.Container;
   private background: Phaser.GameObjects.Rectangle;
+  private report: Phaser.GameObjects.Text;
 
   constructor(scene: Phaser.Scene,
               settings: PhaserSettingsService,
@@ -26,7 +27,7 @@ export class ResolvedMoveAnimation {
       0xa2ff33, 1);
     const text = this.scene.add.text(0, 0, ['OK'])
       .setFontSize(this.settings.scaleForMin(36))
-      .setFontFamily('Trebuchet MS')
+      .setFontFamily('Electrolize')
       .setColor('#000000');
     this.button = this.scene.add.container(
       this.settings.getScreenWidth() * (7 / 8),
@@ -35,6 +36,11 @@ export class ResolvedMoveAnimation {
       .setSize(rectangle.displayWidth, rectangle.displayHeight)
       .setDepth(100)
       .setInteractive();
+    // for now I will just write the report here
+    this.report = this.scene.add.text(this.settings.scaleForMin(100), this.settings.scaleForMin(100), JSON.stringify(this.move, null, 2))
+      .setFontSize(this.settings.scaleForMin(30))
+      .setFontFamily('Electrolize')
+      .setColor('#000000').setDepth(100);
   }
 
   getOkButton(): Phaser.GameObjects.Container {
@@ -55,6 +61,7 @@ export class ResolvedMoveAnimation {
   resetAndDestroy(): void {
     this.background.destroy();
     this.button.destroy();
+    this.report.destroy();
 
     this.getPlayer(this.move.playerId).setDepth(this.getPlayer(this.move.playerId).depth - 100);
   }

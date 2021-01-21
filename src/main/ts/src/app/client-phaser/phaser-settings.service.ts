@@ -5,6 +5,16 @@ import {Injectable} from "@angular/core";
 })
 export class PhaserSettingsService {
 
+  get currentScene(): Phaser.Scene {
+    return this._currentScene;
+  }
+
+  set currentScene(value: Phaser.Scene) {
+    this._currentScene = value;
+  }
+
+  private _currentScene: Phaser.Scene;
+
   getScreenWidth(): number {
     return window.innerWidth * window.devicePixelRatio;
   }

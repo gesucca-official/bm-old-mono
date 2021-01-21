@@ -36,7 +36,7 @@ export class UI_Opponent extends UI_AbstractObject {
     this.name = scene.add.text(
       -this.character.displayWidth * 0.45, -this.character.displayHeight * 0.55, [model.playerId])
       .setFontSize(this.settingsService.scaleForMin(36))
-      .setFontFamily('titleFont')
+      .setFontFamily('Electrolize')
       .setColor('#ffffff');
 
     this.stats = this.renderCharacterResources();
@@ -69,7 +69,7 @@ export class UI_Opponent extends UI_AbstractObject {
       -healthSymbol.displayHeight / 2 + this.settingsService.scaleForMin(10),
       '' + this.model.character.resources['HEALTH'])
       .setFontSize(this.settingsService.scaleForMin(32))
-      .setFontFamily('textFont')
+      .setFontFamily('Electrolize')
       .setColor('#ffffff');
 
     const alertnessSymbol = this.scene.add.image(0, this.settingsService.scaleForMin(75), 'alertness')
@@ -79,7 +79,7 @@ export class UI_Opponent extends UI_AbstractObject {
       -alertnessSymbol.displayHeight / 2 + alertnessSymbol.y,
       '' + this.model.character.resources['ALERTNESS'])
       .setFontSize(this.settingsService.scaleForMin(32))
-      .setFontFamily('textFont')
+      .setFontFamily('Electrolize')
       .setColor('#ffffff');
 
     return this.scene.add.container(this.name.x, this.name.y + this.name.displayHeight * 2,
