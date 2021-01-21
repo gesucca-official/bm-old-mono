@@ -38,7 +38,9 @@ public class GameSessionServiceImpl implements GameSessionService {
                 .stream()
                 .filter(p -> !(p instanceof ComPlayer))
                 .map(Player::getPlayerId)
-                .peek(p -> connectionsService.userActivityChanged(p, "Playing against " + game.getPlayers().values()))
+                .peek(p -> connectionsService.userActivityChanged(
+                        p, "Playing against "
+                                + game.getOpponents(p).stream().map(Player::getPlayerId).collect(Collectors.joining(","))))
                 .collect(Collectors.toSet());
 
         _GAMES.put(game, usersSubscribed);

@@ -1,6 +1,4 @@
-<ngx-loading class="tabbed"
-             [show]="sessionService.isWaitingForUserAccountData"
-             [config]="{fullScreenBackdrop: true}"></ngx-loading>
+<ngx-loading [show]="sessionService.isWaitingForUserAccountData" [config]="{fullScreenBackdrop: true}"></ngx-loading>
 <div class="tabbed" *ngIf="!sessionService.isWaitingForUserAccountData"><br>
 
   <div fxLayout="row wrap" fxLayoutGap="10px grid" fxFlexAlign="stretch" *ngIf="!editing">

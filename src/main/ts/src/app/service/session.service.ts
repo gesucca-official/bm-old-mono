@@ -25,6 +25,7 @@ export class SessionService {
   };
 
   private _isWaitingForUserAccountData: boolean = false;
+  private _isLoadingGame: boolean = false;
 
   get queued(): boolean {
     return this._queued;
@@ -77,6 +78,14 @@ export class SessionService {
 
   set isWaitingForUserAccountData(value: boolean) {
     this._isWaitingForUserAccountData = value;
+  }
+
+  get isLoadingGame(): boolean {
+    return this._isLoadingGame;
+  }
+
+  set isLoadingGame(value: boolean) {
+    this._isLoadingGame = value;
   }
 
 }

@@ -17,3 +17,4 @@
                     [character]="gameService.playerState.character"
                     (onPlayThis)="playCard($event)"></app-card-in-hand>
 </div>
+<ngx-loading [show]="sessionService.isLoadingGame" [config]="{fullScreenBackdrop: true}"></ngx-loading>

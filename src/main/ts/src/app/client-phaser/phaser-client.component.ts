@@ -6,6 +6,7 @@ import {GameService} from "../service/game.service";
 import {BattleScene} from "./scnenes/battle/battle-scene";
 import {Deck} from "../model/deck";
 import {Router} from "@angular/router";
+import {SessionService} from "../service/session.service";
 
 @Component({
   selector: 'app-phaser-client',
@@ -18,6 +19,7 @@ export class PhaserClientComponent implements AfterViewInit {
 
   constructor(
     private router: Router,
+    public sessionService: SessionService,
     protected websocketService: WebsocketService,
     protected gameService: GameService,
     protected settingsService: PhaserSettingsService) {
@@ -61,6 +63,7 @@ export class PhaserClientComponent implements AfterViewInit {
   }
 
   private initGameConfig() {
+    this.sessionService.isLoadingGame = false;
     this.config = {
       type: Phaser.CANVAS,
       scale: {

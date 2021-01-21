@@ -6,6 +6,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {GameService} from "../service/game.service";
 import {Move} from "../model/move";
 import {Deck} from "../model/deck";
+import {SessionService} from "../service/session.service";
 
 @Component({
   selector: 'app-debug-client',
@@ -15,7 +16,8 @@ import {Deck} from "../model/deck";
 export class DebugClientComponent {
 
   constructor(protected websocketService: WebsocketService,
-              public  gameService: GameService,
+              public gameService: GameService,
+              public sessionService: SessionService,
               public dialog: MatDialog,
               public snackBar: MatSnackBar) {
   }
@@ -28,7 +30,10 @@ export class DebugClientComponent {
         this.gameService.playerId,
         (sdkEvent) => this.snackBar.open(sdkEvent.body, 'ok', {duration: 3000}),
         (sdkEvent) => this.snackBar.open(sdkEvent.body, 'ok', {duration: 1500}),
-        (sdkEvent) => this.onGameUpdate(sdkEvent.body)
+        (sdkEvent) => {
+          this.sessionService.isLoadingGame = false;
+          this.onGameUpdate(sdkEvent.body);
+        }
       );
       this.websocketService.requestGameView(this.gameService.gameId, this.gameService.playerId);
     }), whichGame.deck);
