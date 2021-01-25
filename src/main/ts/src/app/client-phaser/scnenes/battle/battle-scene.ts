@@ -2,8 +2,8 @@ import {GameService} from "../../../service/game.service";
 import {PhaserSettingsService} from "../../phaser-settings.service";
 import {UI_CardInHand} from "./model/ui-card-in-hand";
 import {UI_Opponent} from "./model/ui-opponent";
-import {UI_Player} from "./model/ui-player";
 import {ResolvedMoveAnimation} from "./animations/resolves-moves";
+import {UI_Player} from "./model/ui-player";
 
 export class BattleScene extends Phaser.Scene {
 
@@ -49,14 +49,14 @@ export class BattleScene extends Phaser.Scene {
     this.settingsService.currentScene = this;
 
     for (let i = 0; i < this.gameService.opponents.length; i++) {
-      const oppo = new UI_Opponent(this, this.gameService.opponents[i], i, this.gameService.opponents.length);
+      const oppo = new UI_Opponent(this, this.gameService.opponents[i], i, this.gameService.opponents.length, 36);
       this.opponents.set(this.gameService.opponents[i].playerId, oppo.getContainer());
       oppo.getItems().forEach(i => this.items.push(i));
     }
     for (let i = 0; i < this.gameService.playerState.cardsInHand.length; i++) {
       this.cards.push(new UI_CardInHand(this, this.gameService.playerState.cardsInHand[i], i).getContainer());
     }
-    this.player = new UI_Player(this, this.gameService.playerState).getContainer();
+    this.player = new UI_Player(this, this.gameService.playerState, 55, '-back').getContainer();
 
     this.input.on('drag', (pointer, gameObject, dragX, dragY) => {
       gameObject.x = dragX;

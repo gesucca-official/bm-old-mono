@@ -34,9 +34,9 @@ export class DetailsAnimation {
     }
   }
 
-  public showPlayerDetails(scene: Phaser.Scene, player: UI_AbstractObject, settings: PhaserSettingsService) {
-    if (!this.detailsShownFor.get(player.getId())) {
-      player.getAnimationTargets().forEach(target => {
+  public showPlayerDetails(scene: Phaser.Scene, obj: UI_AbstractObject, settings: PhaserSettingsService) {
+    if (!this.detailsShownFor.get(obj.getId())) {
+      obj.getAnimationTargets().forEach(target => {
         target.setDepth(target.depth + 5);
         this.originPosOf.set(target.name, [target.x, target.y]);
         scene.tweens.add({
@@ -44,14 +44,14 @@ export class DetailsAnimation {
           ease: 'Sine.easeInOut',
           delay: 100,
           duration: 250,
-          x: (target.x - player.getX()) * 1.5 + (settings.getScreenWidth() / 3) - player.getContainer().displayWidth / 2,
-          y: (target.y - player.getY()) * 1.5 + (settings.getScreenHeight() / 2),
+          x: (target.x - obj.getX() + obj.getContainer().displayWidth / 2) * 1.5 + settings.scaleForWidth(35),
+          y: (target.y - obj.getY()) * 1.5 + (settings.getScreenHeight() / 2),
           scale: 1.5
         });
-        this.detailsShownFor.set(player.getId(), true);
+        this.detailsShownFor.set(obj.getId(), true);
       })
     } else {
-      player.getAnimationTargets().forEach(target => {
+      obj.getAnimationTargets().forEach(target => {
         scene.tweens.killAll();
         target.setDepth(target.depth - 5);
         scene.tweens.add({
@@ -64,7 +64,7 @@ export class DetailsAnimation {
           scale: 1
         });
       });
-      this.detailsShownFor.set(player.getId(), false);
+      this.detailsShownFor.set(obj.getId(), false);
     }
   }
 

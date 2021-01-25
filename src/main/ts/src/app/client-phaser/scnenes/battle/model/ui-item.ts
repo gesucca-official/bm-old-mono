@@ -55,23 +55,23 @@ export class UI_Item extends UI_AbstractObject {
 
   getX(): number {
     return (-this.playerSprite.displayWidth / 2) + (this.index * this.playerSprite.displayWidth / 3)
-      + this.settingsService.scaleForMin(35)
+      + this.getWidth() / 2
       + this.playerSprite.x;
   }
 
   getY(): number {
-    return (this.playerSprite.displayHeight / 2) - this.settingsService.scaleForMin(35) + this.playerSprite.y;
+    return this.playerSprite.y + this.playerSprite.displayHeight / 2 - this.getHeight() / 2;
   }
 
   getPlayerSprite(): Phaser.GameObjects.Container {
     return this.playerSprite;
   }
 
-  private getItemSize(): number {
-    return (this.playerSprite.displayWidth / 3) - this.settingsService.scaleForMin(5);
-  }
-
   getTintTarget(): Phaser.GameObjects.Image {
     return this.item;
+  }
+
+  private getItemSize(): number {
+    return (this.playerSprite.displayWidth / 3) - this.settingsService.scaleForMin(25);
   }
 }
