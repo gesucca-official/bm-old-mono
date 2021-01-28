@@ -65,7 +65,7 @@ export class PhaserClientComponent implements AfterViewInit {
   private initGameConfig() {
     this.sessionService.isLoadingGame = false;
     this.config = {
-      type: Phaser.CANVAS,
+      type: Phaser.AUTO,
       scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.NONE,

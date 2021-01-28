@@ -1,6 +1,7 @@
 import {UI_AbstractObject} from "../model/ui-abstract-object";
 import {PhaserSettingsService} from "../../../phaser-settings.service";
 import {UI_Item} from "../model/ui-item";
+import {UI_Player} from "../model/ui-player";
 
 export class DetailsAnimation {
 
@@ -17,6 +18,8 @@ export class DetailsAnimation {
   private readonly originScaleOf: Map<string, number> = new Map<string, number>();
 
   private blurredBackground: Phaser.GameObjects.Rectangle;
+  private playerSummary: Phaser.GameObjects.Text;
+  private itemSummary: Phaser.GameObjects.Text;
 
   private constructor() {
   }
@@ -31,6 +34,18 @@ export class DetailsAnimation {
         .setInteractive(); // this prevents things underneath it to be clicked
     } else {
       this.blurredBackground.destroy();
+    }
+  }
+
+  public showPlayerSummary(scene: Phaser.Scene, player: UI_Player, settings: PhaserSettingsService) {
+    if (!this.detailsShownFor.get(player.getId())) {
+      this.playerSummary = scene.add.text(settings.getScreenWidth() / 2, settings.getScreenHeight() / 3,
+        JSON.stringify(player.getModel().character, null, 2))
+        .setFontSize(settings.scaleForMin(30))
+        .setFontFamily('Electrolize')
+        .setColor('#000000').setDepth(100);
+    } else {
+      this.playerSummary.destroy();
     }
   }
 
@@ -87,6 +102,7 @@ export class DetailsAnimation {
       });
       this.detailsShownFor.set(item.getId() + '_itemDetails', true);
       item.getPlayerSprite().setAlpha(0.5);
+      this.playerSummary.setVisible(false);
     } else {
       item.getAnimationTargets().forEach(target => {
         scene.tweens.killAll();
@@ -103,6 +119,19 @@ export class DetailsAnimation {
       });
       this.detailsShownFor.set(item.getId() + '_itemDetails', false);
       item.getPlayerSprite().setAlpha(1);
+      this.playerSummary.setVisible(true);
+    }
+  }
+
+  public showItemSummary(scene: Phaser.Scene, item: UI_Item, settings: PhaserSettingsService) {
+    if (!this.detailsShownFor.get(item.getId() + '_itemDetails')) {
+      this.itemSummary = scene.add.text(settings.getScreenWidth() / 2, settings.getScreenHeight() / 3,
+        JSON.stringify(item.getModel(), null, 2))
+        .setFontSize(settings.scaleForMin(30))
+        .setFontFamily('Electrolize')
+        .setColor('#000000').setDepth(100);
+    } else {
+      this.itemSummary.destroy();
     }
   }
 

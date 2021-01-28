@@ -53,6 +53,7 @@ export class UI_Player extends UI_AbstractObject {
       this.items.push(item.getContainer().setName(this.getId() + '_item' + i));
     }
     this.container.on('pointerup', () => DetailsAnimation.getInstance().focusDetails(scene, this, this.settingsService));
+    this.container.on('pointerup', () => DetailsAnimation.getInstance().showPlayerSummary(scene, this, this.settingsService));
     this.container.on('pointerup', () => DetailsAnimation.getInstance().showPlayerDetails(scene, this, this.settingsService));
   }
 
@@ -89,6 +90,10 @@ export class UI_Player extends UI_AbstractObject {
 
   getTintTarget(): Phaser.GameObjects.Image {
     return this.character;
+  }
+
+  getModel(): Player | Opponent {
+    return this.model;
   }
 
   private renderName(scene: Phaser.Scene, size: number): Phaser.GameObjects.Text {

@@ -34,6 +34,7 @@ export class UI_Item extends UI_AbstractObject {
     this.container.setInteractive();
     scene.input.enableDebug(this.container);
 
+    this.container.on('pointerup', () => DetailsAnimation.getInstance().showItemSummary(scene, this, this.settingsService));
     this.container.on('pointerup', () => DetailsAnimation.getInstance().showItemDetails(scene, this));
   }
 
@@ -69,6 +70,10 @@ export class UI_Item extends UI_AbstractObject {
 
   getTintTarget(): Phaser.GameObjects.Image {
     return this.item;
+  }
+
+  getModel(): Card {
+    return this.model;
   }
 
   private getItemSize(): number {
