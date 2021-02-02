@@ -12,9 +12,8 @@ export class BattleScene extends Phaser.Scene {
   private readonly settingsService: PhaserSettingsService;
 
   player: Phaser.GameObjects.Container;
-  cards: Phaser.GameObjects.Container[] = [];
   opponents: Map<string, Phaser.GameObjects.Container> = new Map<string, Phaser.GameObjects.Container>();
-  items: Phaser.GameObjects.Container[] = [];
+  cards: Phaser.GameObjects.Container[] = [];
 
   constructor() {
     super({key: BattleScene.KEY});
@@ -51,7 +50,6 @@ export class BattleScene extends Phaser.Scene {
     for (let i = 0; i < this.gameService.opponents.length; i++) {
       const oppo = new UI_Opponent(this, this.gameService.opponents[i], i, this.gameService.opponents.length, 36);
       this.opponents.set(this.gameService.opponents[i].playerId, oppo.getContainer());
-      oppo.getItems().forEach(i => this.items.push(i));
     }
     for (let i = 0; i < this.gameService.playerState.cardsInHand.length; i++) {
       this.cards.push(new UI_CardInHand(this, this.gameService.playerState.cardsInHand[i], i).getContainer());
@@ -97,6 +95,8 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private handleDropEvent(dropped: string, target: string): void {
+    if (!confirm(target))
+      return;
     const card = this.gameService.getCardObjFromName(dropped);
     if (card.characterBound) {
       // todo manage choices

@@ -86,7 +86,7 @@ export class DetailsAnimation {
   public showItemDetails(scene: Phaser.Scene, item: UI_Item): void {
     if (!this.detailsShownFor.get(item.getId() + '_itemDetails')) {
       item.getAnimationTargets().forEach(target => {
-        target.setDepth(target.depth + 1);
+        target.setDepth(target.depth + 5);
         // I have to change the name to avoid overriding the original position set in players details
         this.originPosOf.set(target.name + '_itemDetails', [target.x, target.y]);
         this.originScaleOf.set(target.name + '_itemDetails', target.scale);
