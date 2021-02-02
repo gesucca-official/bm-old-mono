@@ -1,6 +1,7 @@
 import {Card} from "../../../../model/card";
 import {HIGHLIGHT, RESET_HIGHLIGHT} from "../animations/highlight";
 import {UI_AbstractObject} from "./ui-abstract-object";
+import {DetailsAnimation} from "../animations/details";
 
 export class UI_CardInHand extends UI_AbstractObject {
 
@@ -19,18 +20,21 @@ export class UI_CardInHand extends UI_AbstractObject {
     const text = this.renderName(scene, this.template, model);
     const image = this.renderImage(scene, this.template, model);
 
+    const detailsButton = this.renderDetailsButton(scene);
+
     this.container = scene.add.container(
       this.getX(), this.getY(),
-      [this.template, text, image]);
+      [this.template, text, image, detailsButton]);
 
     this.container.setSize(this.template.displayWidth, this.template.displayHeight);
     this.container.setDepth(index + 3);
     this.container.setData({card: model.name})
     this.container.setInteractive();
-    scene.input.setDraggable(this.container)
 
-    if (!this.gameService.isPlayable(model, this.gameService.playerState.character))
+    scene.input.setDraggable(this.container)
+    if (!this.gameService.isPlayable(model, this.gameService.playerState.character)) {
       this.template.setTint(0xd3d3d3);
+    }
 
     // set animations
     HIGHLIGHT(scene, this.settingsService, this, 'pointerover', true);
@@ -43,6 +47,10 @@ export class UI_CardInHand extends UI_AbstractObject {
 
   getId(): string {
     return this.model.name;
+  }
+
+  getModel(): Card {
+    return this.model;
   }
 
   getAnimationTargets(): (Phaser.GameObjects.Container | Phaser.GameObjects.Zone)[] {
@@ -81,6 +89,18 @@ export class UI_CardInHand extends UI_AbstractObject {
   private renderTemplate(scene: Phaser.Scene) {
     return scene.add.image(0, 0, 'card')
       .setDisplaySize(this.getWidth(), this.getHeight());
+  }
+
+  private renderDetailsButton(scene: Phaser.Scene): Phaser.GameObjects.Rectangle {
+    const button = scene.add.rectangle(-50, 100,
+      this.settingsService.scaleForMin(200),
+      this.settingsService.scaleForMin(100),
+      0xa2ff33, 1)
+      .setInteractive();
+
+    button.on('pointerdown', () => DetailsAnimation.getInstance().focusDetails(scene, this, this.settingsService));
+    button.on('pointerdown', () => DetailsAnimation.getInstance().showCardSummary(scene, this, this.settingsService));
+    return button;
   }
 
   private getTextX(templateWidth: number): number {

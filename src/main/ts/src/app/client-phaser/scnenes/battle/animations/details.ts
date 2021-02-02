@@ -2,6 +2,7 @@ import {UI_AbstractObject} from "../model/ui-abstract-object";
 import {PhaserSettingsService} from "../../../phaser-settings.service";
 import {UI_Item} from "../model/ui-item";
 import {UI_Player} from "../model/ui-player";
+import {UI_CardInHand} from "../model/ui-card-in-hand";
 
 export class DetailsAnimation {
 
@@ -34,6 +35,20 @@ export class DetailsAnimation {
         .setInteractive(); // this prevents things underneath it to be clicked
     } else {
       this.blurredBackground.destroy();
+    }
+  }
+
+  public showCardSummary(scene: Phaser.Scene, card: UI_CardInHand, settings: PhaserSettingsService) {
+    if (!this.detailsShownFor.get(card.getId())) {
+      this.playerSummary = scene.add.text(settings.getScreenWidth() / 2, settings.getScreenHeight() / 3,
+        JSON.stringify(card.getModel(), null, 2))
+        .setFontSize(settings.scaleForMin(30))
+        .setFontFamily('Electrolize')
+        .setColor('#000000').setDepth(100);
+      this.detailsShownFor.set(card.getId(), true);
+    } else {
+      this.playerSummary.destroy();
+      this.detailsShownFor.set(card.getId(), false);
     }
   }
 
