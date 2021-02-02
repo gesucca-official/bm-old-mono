@@ -49,12 +49,13 @@ export class UI_Player extends UI_AbstractObject {
     scene.input.enableDebug(this.container);
 
     for (let i = 0; i < model.character.items.length; i++) {
-      const item = new UI_Item(scene, model.character.items[i], this.getContainer(), i);
+      const item = new UI_Item(scene, model.character.items[i], this, i);
       this.items.push(item.getContainer().setName(this.getId() + '_item' + i));
     }
-    this.container.on('pointerup', () => DetailsAnimation.getInstance().focusDetails(scene, this, this.settingsService));
-    this.container.on('pointerup', () => DetailsAnimation.getInstance().showPlayerSummary(scene, this, this.settingsService));
-    this.container.on('pointerup', () => DetailsAnimation.getInstance().showPlayerDetails(scene, this, this.settingsService));
+    this.container.on('pointerdown', () => DetailsAnimation.getInstance().toggleDetails(this.getId()));
+    this.container.on('pointerdown', () => DetailsAnimation.getInstance().focusDetails(this, scene));
+    this.container.on('pointerdown', () => DetailsAnimation.getInstance().showSummary(this, scene));
+    this.container.on('pointerdown', () => DetailsAnimation.getInstance().zoomObjForDetails(this, scene));
   }
 
   getId(): string {
@@ -85,6 +86,12 @@ export class UI_Player extends UI_AbstractObject {
     this.items.forEach(i => targets.push(i));
     targets.push(this.container);
     targets.push(this.zone);
+    return targets;
+  }
+
+  getInteractiveAfterAnimation(): Phaser.GameObjects.Container[] {
+    const targets: any = [];
+    this.items.forEach(i => targets.push(i));
     return targets;
   }
 

@@ -1,19 +1,20 @@
 import {Card} from "../../../../model/card";
 import {UI_AbstractObject} from "./ui-abstract-object";
 import {DetailsAnimation} from "../animations/details";
+import {UI_Player} from "./ui-player";
 
 export class UI_Item extends UI_AbstractObject {
 
-  private readonly playerSprite: Phaser.GameObjects.Container;
+  private readonly player: UI_Player;
   private readonly model: Card;
   private readonly index: number;
 
   private readonly item: Phaser.GameObjects.Image;
   private readonly zone: Phaser.GameObjects.Zone;
 
-  constructor(scene: Phaser.Scene, model: Card, playerSprite: Phaser.GameObjects.Container, index: number) {
+  constructor(scene: Phaser.Scene, model: Card, owner: UI_Player, index: number) {
     super();
-    this.playerSprite = playerSprite;
+    this.player = owner;
     this.model = model;
     this.index = index;
 
@@ -23,23 +24,20 @@ export class UI_Item extends UI_AbstractObject {
     this.container = scene.add.container(this.getX(), this.getY(), [item]);
     this.container.setSize(item.displayWidth, item.displayHeight);
     this.container.setName(model.name);
-    this.container.setDepth(playerSprite.depth + 1);
+    this.container.setDepth(owner.getContainer().depth + 1);
     this.zone = scene.add.zone(
       this.container.x, this.container.y, this.container.displayWidth, this.container.displayHeight)
       .setRectangleDropZone(this.container.displayWidth, this.container.displayHeight)
       .setData({target: model.name})
       .setName(this.getId() + '_dropZone')
-      .setDepth(playerSprite.depth + 1);
+      .setDepth(owner.getContainer().depth + 1);
 
-    this.container.setInteractive();
     scene.input.enableDebug(this.container);
 
-    this.container.on('pointerup', () => DetailsAnimation.getInstance().showItemSummary(scene, this, this.settingsService));
-    this.container.on('pointerup', () => DetailsAnimation.getInstance().showItemDetails(scene, this));
-  }
-
-  getAnimationTargets(): (Phaser.GameObjects.Container | Phaser.GameObjects.Zone)[] {
-    return [this.container, this.zone];
+    this.container.on('pointerdown', () => DetailsAnimation.getInstance().toggleDetails(this.getId()));
+    this.container.on('pointerdown', () => DetailsAnimation.getInstance().focusDetails(this, scene));
+    this.container.on('pointerdown', () => DetailsAnimation.getInstance().showSummary(this, scene));
+    this.container.on('pointerdown', () => DetailsAnimation.getInstance().zoomItemForDetails(this, scene));
   }
 
   getId(): string {
@@ -55,17 +53,17 @@ export class UI_Item extends UI_AbstractObject {
   }
 
   getX(): number {
-    return (-this.playerSprite.displayWidth / 2) + (this.index * this.playerSprite.displayWidth / 3)
+    return (-this.player.getContainer().displayWidth / 2) + (this.index * this.player.getContainer().displayWidth / 3)
       + this.getWidth() / 2
-      + this.playerSprite.x;
+      + this.player.getContainer().x;
   }
 
   getY(): number {
-    return this.playerSprite.y + this.playerSprite.displayHeight / 2 - this.getHeight() / 2;
+    return this.player.getContainer().y + this.player.getContainer().displayHeight / 2 - this.getHeight() / 2;
   }
 
-  getPlayerSprite(): Phaser.GameObjects.Container {
-    return this.playerSprite;
+  getOwner(): UI_Player {
+    return this.player;
   }
 
   getTintTarget(): Phaser.GameObjects.Image {
@@ -76,7 +74,15 @@ export class UI_Item extends UI_AbstractObject {
     return this.model;
   }
 
+  getAnimationTargets(): (Phaser.GameObjects.Container | Phaser.GameObjects.Zone)[] {
+    return [this.container, this.zone];
+  }
+
+  getInteractiveAfterAnimation(): Phaser.GameObjects.Container[] {
+    return [];
+  }
+
   private getItemSize(): number {
-    return (this.playerSprite.displayWidth / 3) - this.settingsService.scaleForMin(25);
+    return (this.player.getContainer().displayWidth / 3) - this.settingsService.scaleForMin(25);
   }
 }

@@ -15,16 +15,13 @@ export class UI_CardInHand extends UI_AbstractObject {
     this.model = model;
     this.index = index;
 
-    this.template = this.renderTemplate(scene)
-      .setName('template');
+    this.template = this.renderTemplate(scene).setName('template');
     const text = this.renderName(scene, this.template, model);
     const image = this.renderImage(scene, this.template, model);
 
     const detailsButton = this.renderDetailsButton(scene);
 
-    this.container = scene.add.container(
-      this.getX(), this.getY(),
-      [this.template, text, image, detailsButton]);
+    this.container = scene.add.container(this.getX(), this.getY(), [this.template, text, image, detailsButton]);
 
     this.container.setSize(this.template.displayWidth, this.template.displayHeight);
     this.container.setDepth(index + 3);
@@ -55,6 +52,10 @@ export class UI_CardInHand extends UI_AbstractObject {
 
   getAnimationTargets(): (Phaser.GameObjects.Container | Phaser.GameObjects.Zone)[] {
     return [this.container];
+  }
+
+  getInteractiveAfterAnimation(): Phaser.GameObjects.Container[] {
+    return [];
   }
 
   getHeight(): number {
@@ -98,8 +99,10 @@ export class UI_CardInHand extends UI_AbstractObject {
       0xa2ff33, 1)
       .setInteractive();
 
-    button.on('pointerdown', () => DetailsAnimation.getInstance().focusDetails(scene, this, this.settingsService));
-    button.on('pointerdown', () => DetailsAnimation.getInstance().showCardSummary(scene, this, this.settingsService));
+    button.on('pointerdown', () => DetailsAnimation.getInstance().toggleDetails(this.getId()));
+    button.on('pointerdown', () => DetailsAnimation.getInstance().focusDetails(this, scene));
+    button.on('pointerdown', () => DetailsAnimation.getInstance().showSummary(this, scene));
+    button.on('pointerdown', () => DetailsAnimation.getInstance().zoomObjForDetails(this, scene));
     return button;
   }
 
