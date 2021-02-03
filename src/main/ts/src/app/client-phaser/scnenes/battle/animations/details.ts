@@ -4,6 +4,12 @@ import {UI_Item} from "../model/ui-item";
 
 export class DetailsAnimation {
 
+  private settings: PhaserSettingsService;
+
+  private constructor() {
+    this.settings = window['settingsService'];
+  }
+
   private static _INSTANCE: DetailsAnimation;
 
   public static getInstance(): DetailsAnimation {
@@ -24,12 +30,6 @@ export class DetailsAnimation {
 
   // tween added to animation targets
   private tween: Map<string, Phaser.Tweens.Tween> = new Map<string, Phaser.Tweens.Tween>();
-
-  private settings: PhaserSettingsService;
-
-  private constructor() {
-    this.settings = window['settingsService'];
-  }
 
   public toggleDetails(objId: string) {
     if (!this.detailsShownFor.get(objId))

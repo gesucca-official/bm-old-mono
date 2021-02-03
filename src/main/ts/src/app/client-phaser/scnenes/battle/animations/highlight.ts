@@ -1,23 +1,36 @@
 import {PhaserSettingsService} from "../../../phaser-settings.service";
-import {UI_AbstractObject} from "../model/ui-abstract-object";
+import {UI_CardInHand} from "../model/ui-card-in-hand";
 
-export function HIGHLIGHT(scene: Phaser.Scene,
-                          settings: PhaserSettingsService,
-                          target: UI_AbstractObject,
-                          event?: string,
-                          raise?: boolean): void {
-  target.getContainer().on(event ? event : 'pointerover', () => {
+export class HighlightAnimation {
+
+  private settings: PhaserSettingsService;
+
+  private constructor() {
+    this.settings = window['settingsService'];
+  }
+
+  private static _INSTANCE: HighlightAnimation;
+
+  public static getInstance(): HighlightAnimation {
+    if (!this._INSTANCE)
+      this._INSTANCE = new HighlightAnimation();
+    return this._INSTANCE;
+  }
+
+  private readonly tweens: Map<string, Phaser.Tweens.Tween[]> = new Map<string, Phaser.Tweens.Tween[]>();
+
+  highlight(target: UI_CardInHand, scene: Phaser.Scene) {
     target.getContainer().setDepth(target.getContainer().depth + 10);
     target.getTintTarget().setTint(0x44ff44);
-    if (raise)
-      scene.tweens.add({
-        targets: target.getAnimationTargets(),
-        ease: 'Sine.easeInOut',
-        delay: 100,
-        duration: 250,
-        y: target.getContainer().y - settings.scaleForHeight(20)
-      });
-    scene.tweens.add({
+
+    const raiseTween = scene.tweens.add({
+      targets: target.getAnimationTargets(),
+      ease: 'Sine.easeInOut',
+      delay: 100,
+      duration: 250,
+      y: target.getContainer().y - this.settings.scaleForHeight(20)
+    });
+    const zoomTween = scene.tweens.add({
       targets: target.getAnimationTargets(),
       ease: 'Sine.easeInOut',
       delay: 250,
@@ -26,14 +39,16 @@ export function HIGHLIGHT(scene: Phaser.Scene,
       yoyo: true,
       repeat: -1
     });
-  });
-}
+    this.tweens.set(target.getId(), [raiseTween, zoomTween]);
+  }
 
-export function RESET_HIGHLIGHT(scene: Phaser.Scene, target: UI_AbstractObject, event?: string, origScale?: number): void {
-  target.getContainer().on(event ? event : 'pointerout', () => {
+  resetHighlight(target: UI_CardInHand, scene: Phaser.Scene) {
+    this.tweens.get(target.getId()).forEach(t => {
+      t.stop();
+      t.remove();
+    });
     target.getContainer().setDepth(target.getContainer().depth - 10);
     target.getTintTarget().clearTint();
-    scene.tweens.killAll();
     scene.tweens.add({
       targets: target.getAnimationTargets(),
       ease: 'Sine.easeInOut',
@@ -47,7 +62,7 @@ export function RESET_HIGHLIGHT(scene: Phaser.Scene, target: UI_AbstractObject, 
       ease: 'Sine.easeInOut',
       delay: 100,
       duration: 250,
-      scale: origScale ? origScale : 1,
+      scale: 1
     });
-  });
+  }
 }
