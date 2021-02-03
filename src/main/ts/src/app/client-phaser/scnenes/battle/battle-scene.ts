@@ -4,6 +4,7 @@ import {UI_CardInHand} from "./model/ui-card-in-hand";
 import {UI_Opponent} from "./model/ui-opponent";
 import {ResolvedMoveAnimation} from "./animations/resolves-moves";
 import {UI_Player} from "./model/ui-player";
+import {DiscardChoiceAnimation} from "./animations/discard-choice";
 
 export class BattleScene extends Phaser.Scene {
 
@@ -13,7 +14,7 @@ export class BattleScene extends Phaser.Scene {
 
   player: Phaser.GameObjects.Container;
   opponents: Map<string, Phaser.GameObjects.Container> = new Map<string, Phaser.GameObjects.Container>();
-  cards: Phaser.GameObjects.Container[] = [];
+  cards: UI_CardInHand[] = [];
 
   constructor() {
     super({key: BattleScene.KEY});
@@ -52,7 +53,7 @@ export class BattleScene extends Phaser.Scene {
       this.opponents.set(this.gameService.opponents[i].playerId, oppo.getContainer());
     }
     for (let i = 0; i < this.gameService.playerState.cardsInHand.length; i++) {
-      this.cards.push(new UI_CardInHand(this, this.gameService.playerState.cardsInHand[i], i).getContainer());
+      this.cards.push(new UI_CardInHand(this, this.gameService.playerState.cardsInHand[i], i));
     }
     this.player = new UI_Player(this, this.gameService.playerState, 55, '-back').getContainer();
 
@@ -97,18 +98,31 @@ export class BattleScene extends Phaser.Scene {
   private handleDropEvent(dropped: string, target: string): void {
     if (!confirm(target))
       return;
-    const card = this.gameService.getCardObjFromName(dropped);
-    if (card.characterBound) {
-      // todo manage choices
-    } else {
-      this.gameService.submitMove({
+    const card = this.getCardObjFromName(dropped);
+    if (card.getModel().characterBound) {
+      DiscardChoiceAnimation.getInstance().triggerDiscardChoice(this, card, (cardToDiscard) => this.gameService.submitMove({
         playedCardName: dropped,
         playerId: this.gameService.playerState.playerId,
         targetId: target,
         gameId: this.gameService.gameId,
+        choices: {'DISCARD_ONE': cardToDiscard}
+      }));
+    } else {
+      this.gameService.submitMove({
+        playedCardName: dropped,
+        playerId: this.gameService.playerState.playerId,
+        targetId: target, // TODO what happens if target is item?
+        gameId: this.gameService.gameId,
         choices: null
       });
     }
+  }
+
+  private getCardObjFromName(name: string) {
+    for (let c of this.cards)
+      if (c.getModel().name === name)
+        return c;
+    return null;
   }
 
 }

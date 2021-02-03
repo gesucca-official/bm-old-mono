@@ -73,6 +73,7 @@ export class DetailsAnimation {
 
   public zoomObjForDetails(obj: UI_AbstractObject, scene: Phaser.Scene) {
     if (this.detailsShownFor.get(obj.getId())) {
+      console.debug('Placing zoomed Obj ' + obj.getId());
       obj.getAnimationTargets().forEach(target => {
         target.setDepth(target.depth + 5);
         this.originPosOf.set(target.name, [target.x, target.y]);
@@ -88,6 +89,11 @@ export class DetailsAnimation {
           scale: 1.5
         });
         this.tween.set(obj.getId() + '.' + target.name, tween);
+        console.debug('Animation Target: ' + target.name);
+        console.debug('Animation Target X: ' + target.x);
+        console.debug('Whole Obj X: ' + obj.getX());
+        console.debug('Animation Target Y: ' + target.y);
+        console.debug('Whole Obj Y: ' + obj.getY());
       });
       obj.getInteractiveAfterAnimation().forEach(i => i.setInteractive());
     } else {

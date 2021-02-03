@@ -79,6 +79,13 @@ export class UI_CardInHand extends UI_AbstractObject {
     return this.template;
   }
 
+  toggleDetailsButton() {
+    this.detailsButtonShown = !this.detailsButtonShown;
+    if (this.detailsButtonShown) {
+      this.detailsButton.setVisible(false);
+    }
+  }
+
   private renderName(scene: Phaser.Scene, template: Phaser.GameObjects.Image, model: Card) {
     return scene.add.text(this.getTextX(template.displayWidth), this.getTextY(template.displayHeight), [model.name])
       .setFontSize(this.settingsService.scaleForMin(36))
@@ -157,12 +164,5 @@ export class UI_CardInHand extends UI_AbstractObject {
     this.container.on('pointerout', () => HighlightAnimation.getInstance().resetHighlight(this, scene));
     this.container.on('pointerdown', () => this.displayDetailsButton(scene));
     this.container.on('pointerdown', () => this.toggleDetailsButton());
-  }
-
-  private toggleDetailsButton() {
-    this.detailsButtonShown = !this.detailsButtonShown;
-    if (this.detailsButtonShown) {
-      this.detailsButton.setVisible(false);
-    }
   }
 }
