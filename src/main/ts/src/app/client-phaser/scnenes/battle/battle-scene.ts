@@ -60,10 +60,14 @@ export class BattleScene extends Phaser.Scene {
     this.input.on('drag', (pointer, gameObject, dragX, dragY) => {
       gameObject.x = dragX;
       gameObject.y = dragY;
+      // TODO turn off details button while dragging
     });
-    this.input.on('drop', (pointer, gameObject, dropZone) =>
-      this.handleDropEvent(gameObject.data.list.card, dropZone.data.list.target)
-    );
+    this.input.on('drop', (pointer, gameObject, dropZone) => {
+      console.debug('Drop Event occurred! Logging gameObject and dropZone');
+      console.debug(gameObject.data.list);
+      console.debug(dropZone.data.list);
+      this.handleDropEvent(gameObject.data.list.card, dropZone.data.list.target);
+    });
 
     if (this.gameService.gameState.resolvedMoves && this.gameService.gameState.resolvedMoves.length > 0)
       this.setupMoveAnimation(0);
@@ -96,11 +100,11 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private handleDropEvent(dropped: string, target: string): void {
-    if (!confirm(target))
+    if (!target || !confirm(target)) // target is not there when it is a discard action
       return;
     const card = this.getCardObjFromName(dropped);
     if (card.getModel().characterBound) {
-      DiscardChoiceAnimation.getInstance().triggerDiscardChoice(this, card, (cardToDiscard) => this.gameService.submitMove({
+      DiscardChoiceAnimation.getInstance().triggerDiscardChoice(this, card, this.cards, (cardToDiscard) => this.gameService.submitMove({
         playedCardName: dropped,
         playerId: this.gameService.playerState.playerId,
         targetId: target,
