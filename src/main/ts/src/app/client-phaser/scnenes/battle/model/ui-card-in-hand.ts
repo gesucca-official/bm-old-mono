@@ -35,6 +35,11 @@ export class UI_CardInHand extends UI_AbstractObject {
     }
 
     this.setCardEvents(scene);
+
+    scene.input.on('drag', () => {
+      if (this.detailsButtonShown)
+        this.toggleDetailsButton();
+    });
   }
 
   getIndex(): number {
@@ -81,7 +86,7 @@ export class UI_CardInHand extends UI_AbstractObject {
 
   toggleDetailsButton() {
     this.detailsButtonShown = !this.detailsButtonShown;
-    if (this.detailsButtonShown) {
+    if (!this.detailsButtonShown) {
       this.detailsButton.setVisible(false);
     }
   }
@@ -138,8 +143,6 @@ export class UI_CardInHand extends UI_AbstractObject {
         this.setCardEvents(scene);
       })
     });
-
-    this.detailsButtonShown = true; // upon first construction I set it to visible
   }
 
   private getTextX(templateWidth: number): number {
